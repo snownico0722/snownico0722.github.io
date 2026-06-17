@@ -3,148 +3,43 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 /* ============================================================
-   变形导航(FLIP):点首页大卡片 → 同款横幅从卡片位置长大到详情头部,
-   首页其余内容淡出;返回则反向缩回卡片原位。
+   导航:只切状态类,不显隐、不量高、不 FLIP —— 所以不闪。
+   data-view 决定谁是主角(别的缩小让位); is-open 决定哪间厂房展开。
    ============================================================ */
 (function () {
   const stage = document.getElementById("stage");
-  const home = stage.querySelector('.view[data-zone="home"]');
-  const views = {};
-  stage.querySelectorAll(".view[data-zone]").forEach(function (v) {
-    views[v.getAttribute("data-zone")] = v;
+  const zones = {};
+  stage.querySelectorAll(".zone[data-zone]").forEach(function (z) {
+    zones[z.getAttribute("data-zone")] = z;
   });
-  let current = "home";
-  let animating = false;
-  const DUR = 480;
-  const EASE = "cubic-bezier(0.45, 0, 0.15, 1)";
 
-  function lockHeight(to) {
-    const h0 = stage.offsetHeight;
-    stage.style.height = h0 + "px";
-    const h1 = to.offsetHeight;
-    requestAnimationFrame(function () { stage.style.height = h1 + "px"; });
-    setTimeout(function () { stage.style.height = ""; }, DUR + 40);
+  function setView(view) {
+    if (view !== "home" && !zones[view]) view = "home";
+    stage.setAttribute("data-view", view);
+    Object.keys(zones).forEach(function (k) {
+      zones[k].classList.toggle("is-open", k === view);
+    });
   }
 
-  // FLIP:让 head 从 source 卡片的位置/尺寸,动画到它自己的最终位置
-  function flip(source, head) {
-    if (!source) return;
-    const a = source.getBoundingClientRect();
-    const b = head.getBoundingClientRect();
-    const dx = a.left - b.left;
-    const dy = a.top - b.top;
-    const sx = a.width / b.width;
-    const sy = a.height / b.height;
-    head.animate(
-      [
-        { transformOrigin: "top left", transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
-        { transformOrigin: "top left", transform: "none" },
-      ],
-      { duration: DUR, easing: EASE }
-    );
-  }
-
-  function fade(el, from, to) {
-    el.animate([{ opacity: from }, { opacity: to }], { duration: DUR * 0.7, easing: "ease" });
-  }
-
-  function toDetail(zone, sourceBanner) {
-    const to = views[zone];
-    const head = to.querySelector(".banner.is-head");
-    animating = true;
-
-    to.hidden = false;
-    to.classList.add("is-active");
-    lockHeight(to);
-
-    // 首页留在原地淡出
-    home.classList.add("is-stacked");
-    fade(home, 1, 0);
-
-    // 横幅形变
-    flip(sourceBanner, head);
-
-    setTimeout(function () {
-      home.hidden = true;
-      home.classList.remove("is-stacked");
-      home.style.opacity = "";
-      current = zone;
-      animating = false;
-    }, DUR);
-  }
-
-  function toHome(zone) {
-    const from = views[zone];
-    const head = from.querySelector(".banner.is-head");
-    // 对应的首页大卡片(变回它)
-    const target = home.querySelector('.overview .banner[data-go="' + zone + '"]');
-    animating = true;
-
-    home.hidden = false;
-    lockHeight(home);
-
-    // 详情头反向缩回卡片位置
-    if (target) {
-      const a = head.getBoundingClientRect();
-      const b = target.getBoundingClientRect();
-      const dx = a.left - b.left, dy = a.top - b.top;
-      const sx = a.width / b.width, sy = a.height / b.height;
-      target.animate(
-        [
-          { transformOrigin: "top left", transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
-          { transformOrigin: "top left", transform: "none" },
-        ],
-        { duration: DUR, easing: EASE }
-      );
-    }
-    fade(home, 0, 1);
-    from.style.opacity = "0";
-
-    setTimeout(function () {
-      from.hidden = true;
-      from.classList.remove("is-active");
-      from.style.opacity = "";
-      current = "home";
-      animating = false;
-    }, DUR);
-  }
-
-  function navigate(zone, sourceEl) {
-    if (animating || zone === current) return;
-    if (zone === "home") toHome(current);
-    else toDetail(zone, sourceEl);
-  }
-
-  // hash 同步(可分享/前进后退);点击就近找发起的横幅
   document.addEventListener("click", function (e) {
     const t = e.target.closest("[data-go]");
     if (!t) return;
-    const zone = t.getAttribute("data-go");
+    let zone = t.getAttribute("data-go");
+    // 再点已展开的厂房 = 收起回首页
+    if (zone === stage.getAttribute("data-view")) zone = "home";
     const target = zone === "home" ? "" : zone;
     if (("#" + target) === location.hash || (target === "" && !location.hash)) {
-      navigate(zone, t);
+      setView(zone);
     } else {
-      // 记住发起元素,hashchange 时取用
-      pendingSource = t;
       location.hash = target;
     }
   });
 
-  let pendingSource = null;
   window.addEventListener("hashchange", function () {
-    const zone = location.hash.replace("#", "") || "home";
-    navigate(zone, pendingSource);
-    pendingSource = null;
+    setView(location.hash.replace("#", "") || "home");
   });
 
-  // 首屏:带 #games 之类直接落到详情(无动画)
-  const initial = location.hash.replace("#", "") || "home";
-  if (initial !== "home" && views[initial]) {
-    home.hidden = true;
-    views[initial].hidden = false;
-    views[initial].classList.add("is-active");
-    current = initial;
-  }
+  setView(location.hash.replace("#", "") || "home");
 })();
 
 /* ---------- 飘浮火花 ---------- */

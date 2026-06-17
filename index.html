@@ -13,23 +13,26 @@
   <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
   <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
 
-  <div class="stage" id="stage">
+  <div class="stage" id="stage" data-view="home">
 
-    <!-- ================= 首页 · 概览 ================= -->
-    <section class="view view-home is-active" data-zone="home">
-      <div class="hero">
-        <svg class="hero-hat" viewBox="0 0 100 100" aria-hidden="true"><use href="#hat" /></svg>
-        <h1 class="hero-title">魔法工厂</h1>
-        <p class="hero-id">魔法师 · snownico0722</p>
-        <p class="hero-line">一个人的魔法工厂。变些好玩又好用的小玩意,摆出来给大家玩。</p>
-        <div class="hero-links">
-          <a class="hero-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">GitHub</a>
-          <span class="hero-link is-off" aria-disabled="true" title="还没开张">哔哩哔哩 · 还没开张</span>
-        </div>
+    <!-- 魔法师:一直在,详情时缩小不消失 -->
+    <div class="hero">
+      <svg class="hero-hat" viewBox="0 0 100 100" aria-hidden="true"><use href="#hat" /></svg>
+      <h1 class="hero-title">魔法工厂</h1>
+      <p class="hero-id">魔法师 · snownico0722</p>
+      <p class="hero-line">一个人的魔法工厂。变些好玩又好用的小玩意,摆出来给大家玩。</p>
+      <div class="hero-links">
+        <a class="hero-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">GitHub</a>
+        <span class="hero-link is-off" aria-disabled="true" title="还没开张">哔哩哔哩 · 还没开张</span>
       </div>
+    </div>
 
-      <p class="overview-hint">挑一间厂房,推门进去 ↓</p>
-      <div class="overview">
+    <p class="hint">挑一间厂房推门进去,其它的会让到一边 ↓</p>
+
+    <!-- 两间厂房:横幅一直在,点开展开内容 -->
+    <div class="zones">
+
+      <section class="zone zone-tools" data-zone="tools">
         <button class="banner banner-tools" data-go="tools">
           <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
           <span class="banner-text">
@@ -37,7 +40,25 @@
             <span class="banner-sub">带得走的工具 · 装上就能用</span>
           </span>
           <span class="banner-count">2 件出厂</span>
+          <svg class="banner-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
+        <div class="body"><div class="body-inner">
+          <article class="crate">
+            <div class="crate-tag">No.001</div>
+            <h3 class="crate-name"><a href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo · 一张纸</a></h3>
+            <p class="crate-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown,没有主窗口,没有账号,没有管理器。</p>
+            <div class="crate-foot"><span class="chip">Windows</span><span class="chip">C# · WPF</span><span class="stars" data-repo="PaperTodo">★ <span class="count">76</span></span></div>
+          </article>
+          <article class="crate">
+            <div class="crate-tag">No.002</div>
+            <h3 class="crate-name"><a href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">书签栏归位器</a></h3>
+            <p class="crate-desc">极简 Chrome 扩展。让书签栏永远是你下次保存书签的默认位置。一次轻轻的触碰,不打扰。</p>
+            <div class="crate-foot"><span class="chip">Chrome</span><span class="chip">JS · MV3</span><span class="stars" data-repo="bookmark-bar-default-resetter">★ <span class="count">1</span></span></div>
+          </article>
+        </div></div>
+      </section>
+
+      <section class="zone zone-games" data-zone="games">
         <button class="banner banner-games" data-go="games">
           <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#wand" /></svg>
           <span class="banner-text">
@@ -45,63 +66,26 @@
             <span class="banner-sub">当场玩的 · 文字游戏 / 测试</span>
           </span>
           <span class="banner-count">1 台在玩 · 更多在变</span>
+          <svg class="banner-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-      </div>
-    </section>
-
-    <!-- ================= 工具坊 ================= -->
-    <section class="view view-detail detail-tools" data-zone="tools" hidden>
-      <button class="banner banner-tools is-head" data-go="home">
-        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
-        <span class="banner-text">
-          <span class="banner-name">工具坊</span>
-          <span class="banner-sub">带得走的工具 · 都在 GitHub 上</span>
-        </span>
-        <span class="banner-back">← 概览</span>
-      </button>
-      <div class="body">
-        <article class="crate">
-          <div class="crate-tag">No.001</div>
-          <h3 class="crate-name"><a href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo · 一张纸</a></h3>
-          <p class="crate-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown,没有主窗口,没有账号,没有管理器。</p>
-          <div class="crate-foot"><span class="chip">Windows</span><span class="chip">C# · WPF</span><span class="stars" data-repo="PaperTodo">★ <span class="count">76</span></span></div>
-        </article>
-        <article class="crate">
-          <div class="crate-tag">No.002</div>
-          <h3 class="crate-name"><a href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">书签栏归位器</a></h3>
-          <p class="crate-desc">极简 Chrome 扩展。让书签栏永远是你下次保存书签的默认位置。一次轻轻的触碰,不打扰。</p>
-          <div class="crate-foot"><span class="chip">Chrome</span><span class="chip">JS · MV3</span><span class="stars" data-repo="bookmark-bar-default-resetter">★ <span class="count">1</span></span></div>
-        </article>
-      </div>
-    </section>
-
-    <!-- ================= 游戏厅 ================= -->
-    <section class="view view-detail detail-games" data-zone="games" hidden>
-      <button class="banner banner-games is-head" data-go="home">
-        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#wand" /></svg>
-        <span class="banner-text">
-          <span class="banner-name">游戏厅</span>
-          <span class="banner-sub">当场玩的 · 文字游戏 / 测试陆续上架</span>
-        </span>
-        <span class="banner-back">← 概览</span>
-      </button>
-      <div class="body">
-        <div class="machine">
-          <div class="machine-bar"><span class="machine-tag">试玩 No.1</span><span class="machine-light"></span></div>
-          <h3 class="machine-name">作品打分机</h3>
-          <p class="machine-desc">魔法师亲手定的十分制量表。给个分,听他怎么说。</p>
-          <div class="scorer">
-            <div class="score-screen"><div class="score-num" id="screen-num">?</div><div class="score-say" id="screen-say">按下面任意一个分数 ↓</div></div>
-            <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
+        <div class="body"><div class="body-inner">
+          <div class="machine">
+            <div class="machine-bar"><span class="machine-tag">试玩 No.1</span><span class="machine-light"></span></div>
+            <h3 class="machine-name">作品打分机</h3>
+            <p class="machine-desc">魔法师亲手定的十分制量表。给个分,听他怎么说。</p>
+            <div class="scorer">
+              <div class="score-screen"><div class="score-num" id="screen-num">?</div><div class="score-say" id="screen-say">按下面任意一个分数 ↓</div></div>
+              <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
+            </div>
           </div>
-        </div>
-        <div class="coming-list">
-          <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等魔法师写。这台机器先占着位。</span></div>
-          <div class="coming"><span class="coming-tag">待上架</span><span><strong>测试</strong> — 测点什么由魔法师定。位子留好了。</span></div>
-        </div>
-      </div>
-    </section>
+          <div class="coming-list">
+            <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等魔法师写。这台机器先占着位。</span></div>
+            <div class="coming"><span class="coming-tag">待上架</span><span><strong>测试</strong> — 测点什么由魔法师定。位子留好了。</span></div>
+          </div>
+        </div></div>
+      </section>
 
+    </div>
   </div>
 
   <p class="foot">一个人的魔法工厂,纯手工施法 — HTML / CSS / SVG,无框架,无构建。<span id="year"></span></p>
