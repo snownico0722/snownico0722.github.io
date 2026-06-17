@@ -1,31 +1,82 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" data-theme="paper">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>snownico0722 · 个人首页</title>
-  <meta name="description" content="snownico0722 的个人主页" />
+  <title>snownico0722</title>
+  <meta name="description" content="第一性原理，功利主义。把概念祛魅，压缩成一句话。要实证，要量化，对双标零容忍。" />
+  <link rel="preconnect" href="https://api.github.com" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <main class="card">
-    <div class="avatar">SN</div>
-    <h1>你好,我是 snownico0722</h1>
-    <p class="tagline">开发者 · 创造者 · 终身学习者</p>
+  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换明暗" title="明 / 墨">墨</button>
 
-    <p class="bio">
-      欢迎来到我的个人主页。这里记录我的项目、想法和正在做的事情。
-    </p>
+  <main class="sheet">
 
-    <nav class="links">
-      <a href="https://github.com/snownico0722" target="_blank" rel="noopener">GitHub</a>
-      <a href="mailto:you@example.com">邮箱</a>
-      <a href="#" target="_blank" rel="noopener">博客</a>
-    </nav>
+    <header class="head">
+      <div class="seal" aria-hidden="true">理</div>
+      <h1>snownico0722</h1>
+      <p class="kernel">
+        第一性原理，功利主义。把概念祛魅，压缩成一句话。<br />
+        要实证，要量化，对双标零容忍。
+      </p>
+    </header>
 
-    <footer>
-      <span id="year"></span> · 由 GitHub Pages 托管
+    <hr class="rule" />
+
+    <section class="block" aria-label="方法">
+      <h2 class="label">方法</h2>
+      <p class="formula">真实有效　·　完整闭环　·　可执行验证　·　代价记账</p>
+      <ul class="claims">
+        <li>不做方向稿。只交付可运行、可验证的东西。</li>
+        <li>讨厌的不是错误，是错误被包装成正确，浅层总结被包装成理解。</li>
+        <li>任何决定都要付出代价。我只是不假装没有代价。</li>
+      </ul>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="block" aria-label="项目">
+      <h2 class="label">项目</h2>
+      <p class="block-note">两个工具，同一条原则：安静、可用、不打扰。原生实现，不堆框架，不把成本转嫁给用户。</p>
+
+      <article class="repo">
+        <div class="repo-top">
+          <a class="repo-name" href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo</a>
+          <span class="repo-stars" data-repo="PaperTodo"><span class="star">★</span><span class="count">76</span></span>
+        </div>
+        <p class="repo-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown，没有主窗口，没有账号，没有管理器。</p>
+        <p class="repo-meta">C# · WPF · .NET 10</p>
+      </article>
+
+      <article class="repo">
+        <div class="repo-top">
+          <a class="repo-name" href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">bookmark-bar-default-resetter</a>
+          <span class="repo-stars" data-repo="bookmark-bar-default-resetter"><span class="star">★</span><span class="count">1</span></span>
+        </div>
+        <p class="repo-desc">极简 Chrome 扩展（MV3）。让书签栏始终是下次保存书签的默认文件夹。一次触碰，不打扰。</p>
+        <p class="repo-meta">JavaScript · Manifest V3 · Service Worker</p>
+      </article>
+    </section>
+
+    <hr class="rule" />
+
+    <section class="block" aria-label="领域">
+      <h2 class="label">使同一套方法的地方</h2>
+      <ul class="domains">
+        <li>电子游戏设计</li>
+        <li>AI 能力测评</li>
+        <li>桌面工程 · WPF / Avalonia</li>
+        <li>循证健身</li>
+        <li>第一性原理思辨</li>
+      </ul>
+    </section>
+
+    <footer class="foot">
+      <a href="https://github.com/snownico0722" target="_blank" rel="noopener">github.com/snownico0722</a>
+      <span class="foot-note">本页同样是原生实现 — 纯 HTML / CSS / JS，无框架，无构建。<span id="year"></span></span>
     </footer>
+
   </main>
 
   <script src="main.js"></script>
