@@ -59,7 +59,7 @@
           <span class="banner-name">游戏厅</span>
           <span class="banner-sub">推门即入的术式,不用装</span>
         </span>
-        <span class="banner-count">结界搭建中</span>
+        <span class="banner-count">1 台开张</span>
       </button>
     </div>
 
@@ -102,13 +102,25 @@
       </div></div>
 
       <div class="body" data-body="games"><div class="body-inner">
-        <div class="empty-stage">
-          <svg class="empty-joy" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
-          <p class="empty-title">结界还没结好</p>
-          <p class="empty-sub">这屋以后摆真能玩的。术式没成形之前,宁可空着,也不拿半成品糊弄你。</p>
+        <div class="machine">
+          <div class="machine-bar"><span class="machine-tag">术式 No.1</span><span class="machine-light"></span></div>
+          <h3 class="machine-name">鬼话发生器</h3>
+          <p class="machine-desc">给个主题,挑个腔调,我替你把空气摇成一篇煞有介事的长文。三种鬼话,一键成篇 —— 只能拿来玩,别当真。</p>
+          <div class="bs">
+            <div class="bs-controls">
+              <input class="bs-input" id="bs-input" type="text" maxlength="20" placeholder="输入一个主题,比如「年度复盘」" />
+              <div class="bs-styles" id="bs-styles" role="group" aria-label="选择腔调"></div>
+              <button class="bs-go" id="bs-go" type="button">摇一篇 ✦</button>
+            </div>
+            <div class="bs-out" id="bs-out" aria-live="polite"></div>
+            <div class="bs-foot">
+              <button class="bs-copy" id="bs-copy" type="button" hidden>复制</button>
+              <span class="bs-count" id="bs-count"></span>
+            </div>
+          </div>
         </div>
         <div class="coming-list">
-          <div class="coming"><span class="coming-tag">在写</span><span><strong>文字游戏</strong> — 一个字一个字码,急不来。</span></div>
+          <div class="coming"><span class="coming-tag">在写</span><span><strong>规则怪谈</strong> — 给你一份互相矛盾的规则,活下去全靠抓出它们的破绽。慢慢磨。</span></div>
         </div>
       </div></div>
     </div>
@@ -164,6 +176,7 @@
     </defs>
   </svg>
 
+  <script src="bs-data.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

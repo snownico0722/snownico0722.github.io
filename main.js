@@ -146,6 +146,93 @@ document.getElementById("year").textContent = new Date().getFullYear();
   recompute();
 })();
 
+/* ============================================================
+   鬼话发生器:同一台机器 + 三套语料(职场黑话 / 老胡体 / 玄学鸡汤)。
+   引擎照搬经典"狗屁不通"思路:主题词 + 句式模板 + 名言/废话,
+   循环拼接到目标字数,避免连续重复。纯本地,只能拿来玩。
+   ============================================================ */
+(function () {
+  const input = document.getElementById("bs-input");
+  const stylesBox = document.getElementById("bs-styles");
+  const goBtn = document.getElementById("bs-go");
+  const out = document.getElementById("bs-out");
+  const copyBtn = document.getElementById("bs-copy");
+  const countEl = document.getElementById("bs-count");
+  if (!input || !out) return;
+
+  const rand = (arr) => arr[(Math.random() * arr.length) | 0];
+
+  // 占位 __T__ = 主题词
+  const STYLES = window.__BS_STYLES__;
+  const ORDER = ["jargon", "huge", "soup"];
+
+  let active = "jargon";
+  ORDER.forEach(function (key) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = "bs-style" + (key === active ? " on" : "");
+    b.textContent = STYLES[key].label;
+    b.addEventListener("click", function () {
+      active = key;
+      stylesBox.querySelectorAll(".bs-style").forEach((x) => x.classList.remove("on"));
+      b.classList.add("on");
+    });
+    stylesBox.appendChild(b);
+  });
+
+  function generate(theme, key) {
+    const S = STYLES[key];
+    const target = 220 + ((Math.random() * 160) | 0); // 目标字数
+    const paras = [];
+    let para = "";
+    let lastBucket = -1;
+    let guard = 0;
+    // 句式来源:开篇一句,中间在 名言/铺陈/转折 间随机,适时分段
+    para += fill(rand(S.open), theme);
+    while (totalLen(paras) < target && guard++ < 80) {
+      let bucket;
+      do { bucket = (Math.random() * 3) | 0; } while (bucket === lastBucket && Math.random() < 0.7);
+      lastBucket = bucket;
+      const pool = bucket === 0 ? S.quote : bucket === 1 ? S.body : S.turn;
+      para += fill(rand(pool), theme);
+      if (para.length > 60 && Math.random() < 0.35) { paras.push(para); para = ""; }
+    }
+    if (para) paras.push(para);
+    paras.push(fill(rand(S.close), theme));
+    return paras;
+
+    function totalLen(ps) { return ps.reduce((a, p) => a + p.length, 0) + para.length; }
+  }
+
+  function fill(tpl, theme) {
+    return tpl.replace(/__T__/g, theme);
+  }
+
+  function run() {
+    const theme = (input.value || "").trim() || rand(["年度复盘", "我的人生", "这杯奶茶", "周一", "搬砖", "摸鱼", "爱情"]);
+    const paras = generate(theme, active);
+    out.innerHTML = "";
+    paras.forEach(function (p) {
+      const el = document.createElement("p");
+      el.textContent = p;
+      out.appendChild(el);
+    });
+    const len = paras.join("").length;
+    countEl.textContent = "约 " + len + " 字 · " + STYLES[active].label;
+    copyBtn.hidden = false;
+  }
+
+  goBtn.addEventListener("click", run);
+  input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
+  copyBtn.addEventListener("click", function () {
+    const text = Array.from(out.querySelectorAll("p")).map((p) => p.textContent).join("\n");
+    navigator.clipboard && navigator.clipboard.writeText(text).then(function () {
+      copyBtn.textContent = "已复制";
+      setTimeout(function () { copyBtn.textContent = "复制"; }, 1500);
+    });
+  });
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
