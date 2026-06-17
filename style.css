@@ -51,7 +51,8 @@ body {
 .hero-back { position: absolute; top: 0; left: 0; font-size: 0.8rem; font-weight: 700; color: var(--magic-d); background: var(--paper); border: 1.5px solid var(--ink); border-radius: 999px; padding: 0.25rem 0.7rem; box-shadow: 0 2px 0 var(--ink); opacity: 0; pointer-events: none; transform: translateX(-4px); transition: opacity 0.3s var(--ease) 0.12s, transform 0.3s var(--ease) 0.12s; }
 .stage:not([data-view="home"]) .hero-back { opacity: 1; transform: none; }
 
-.hero-hat { width: 72px; height: 72px; fill: var(--magic); stroke: var(--ink); stroke-width: 2.5; filter: drop-shadow(0 4px 0 var(--magic-d)); animation: bob 3.4s ease-in-out infinite; transition: width 0.5s var(--ease), height 0.5s var(--ease); }
+.hero-hat { width: 72px; height: 72px; fill: var(--magic); stroke: var(--ink); stroke-width: 2.5; filter: drop-shadow(0 4px 0 var(--magic-d)); animation: bob 3.4s ease-in-out infinite; transition: width 0.5s var(--ease), height 0.5s var(--ease); cursor: pointer; }
+.hero-hat:hover { fill: var(--magic-d); }
 @keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-8px) rotate(4deg); } }
 .hero-title { font-size: clamp(2.3rem, 9vw, 3.4rem); font-weight: 800; letter-spacing: 0.05em; line-height: 1.1; margin-top: 0.5rem; background: linear-gradient(105deg, var(--magic), var(--ember) 62%, var(--brass)); -webkit-background-clip: text; background-clip: text; color: transparent; transition: font-size 0.5s var(--ease); }
 .hero-id { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em; color: var(--magic-d); margin-top: 0.2rem; transition: font-size 0.5s var(--ease); }
@@ -149,12 +150,21 @@ body {
 .bs-copy:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .bs-count { font-size: 0.78rem; color: var(--ink-faint); margin-left: auto; }
 
-/* ---------- 房间内机器选择器 ---------- */
-.picker { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 6px 0 1.1rem; }
-.pick { font-family: inherit; font-size: 0.86rem; font-weight: 700; color: var(--ink-soft); background: var(--paper); border: 2px solid var(--ink); border-radius: 999px; padding: 0.4rem 0.95rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease, color 0.15s ease; }
-.pick:hover { background: var(--bg); }
-.pick.on { background: var(--magic); color: var(--paper); transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+/* ---------- 房间内机器选择器(比房间标签轻一档) ---------- */
+.picker { display: flex; gap: 0.45rem; flex-wrap: wrap; margin: 6px 0 1.1rem; padding-bottom: 0.9rem; border-bottom: 1.5px dashed var(--line); }
+.pick { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink-faint); background: transparent; border: 1.5px solid var(--line); border-radius: 999px; padding: 0.32rem 0.85rem; cursor: pointer; transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease; }
+.pick:hover { color: var(--ink-soft); border-color: var(--ink-faint); }
+.pick.on { color: var(--paper); background: var(--magic-d); border-color: var(--ink); }
 .machine[hidden] { display: none; }
+.machine.m-in { animation: mFade 0.32s var(--ease) both; }
+@keyframes mFade { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+/* ---------- 施法火花(点魔法师帽子) ---------- */
+.cast-spark { position: fixed; width: 8px; height: 8px; border-radius: 50%; pointer-events: none; z-index: 50; animation: cast 0.66s ease-out forwards; }
+@keyframes cast {
+  0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+  100% { transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) scale(0.2); opacity: 0; }
+}
 
 /* ---------- 规则怪谈《夜班守则》 ---------- */
 .rg-rules-toggle { width: 100%; text-align: left; font-family: inherit; font-size: 0.88rem; font-weight: 700; color: #cdd3e0; background: #20242e; border: 2px solid var(--ink); border-radius: 12px; padding: 0.6rem 0.9rem; cursor: pointer; margin-bottom: 0.8rem; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }

@@ -156,9 +156,38 @@ document.getElementById("year").textContent = new Date().getFullYear();
       const id = btn.getAttribute("data-machine");
       picker.querySelectorAll(".pick").forEach((p) => p.classList.toggle("on", p === btn));
       body.querySelectorAll(".machine[data-machine]").forEach(function (m) {
-        m.hidden = m.getAttribute("data-machine") !== id;
+        const show = m.getAttribute("data-machine") === id;
+        m.hidden = !show;
+        m.classList.remove("m-in");
+        if (show) { void m.offsetWidth; m.classList.add("m-in"); }
       });
     });
+  });
+})();
+
+/* ---------- 施法火花:点魔法师帽子,迸一串火花 ---------- */
+(function () {
+  const hat = document.querySelector(".hero-hat");
+  if (!hat) return;
+  const COLORS = ["#ffb43c", "#ff7a3c", "#7c5cff", "#4ec5d6", "#36c46f"];
+  hat.addEventListener("click", function (e) {
+    e.stopPropagation(); // 别触发招牌的"回门口"
+    const r = hat.getBoundingClientRect();
+    const cx = r.left + r.width / 2;
+    const cy = r.top + r.height / 2;
+    for (let i = 0; i < 14; i++) {
+      const s = document.createElement("div");
+      s.className = "cast-spark";
+      const ang = (Math.PI * 2 * i) / 14 + Math.random() * 0.4;
+      const dist = 40 + Math.random() * 55;
+      s.style.left = cx + "px";
+      s.style.top = cy + "px";
+      s.style.background = COLORS[(Math.random() * COLORS.length) | 0];
+      s.style.setProperty("--dx", Math.cos(ang) * dist + "px");
+      s.style.setProperty("--dy", Math.sin(ang) * dist + "px");
+      document.body.appendChild(s);
+      s.addEventListener("animationend", () => s.remove());
+    }
   });
 })();
 
