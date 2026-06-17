@@ -1,52 +1,97 @@
 // 魔法工厂 · 无依赖脚本
 
-// 年份
 document.getElementById("year").textContent = new Date().getFullYear();
 
-/* ---------- 车间路由:点门 → 动画切换,#锚点可分享、前进后退可用 ---------- */
+/* ---------- 舞台内部切换:旧的淡出左移、新的淡入右移,高度平滑过渡 ---------- */
 (function () {
-  const stage = document.querySelector(".stage");
+  const stage = document.getElementById("stage");
   const views = {};
-  document.querySelectorAll(".view[data-zone]").forEach(function (v) {
+  let current = "hub";
+  let animating = false;
+
+  stage.querySelectorAll(".view[data-zone]").forEach(function (v) {
     views[v.getAttribute("data-zone")] = v;
   });
 
-  function show(zone) {
+  function go(zone, instant) {
     if (!views[zone]) zone = "hub";
-    Object.keys(views).forEach(function (k) {
-      const v = views[k];
-      if (k === zone) {
-        v.hidden = false;
-        // 重放进场动画
-        v.classList.remove("enter");
-        void v.offsetWidth;
-        v.classList.add("enter");
-      } else {
-        v.hidden = true;
-      }
+    if (zone === current) return;
+    if (animating && !instant) return;
+    const from = views[current];
+    const to = views[zone];
+
+    if (instant) {
+      from.hidden = true; from.className = from.className.replace(/\bis-\w+\b/g, "").trim();
+      to.hidden = false; to.classList.add("is-active");
+      current = zone;
+      return;
+    }
+
+    animating = true;
+    // 锁定起始高度,准备过渡
+    const startH = stage.offsetHeight;
+    stage.style.height = startH + "px";
+
+    // 新视图入场(绝对定位叠上来)
+    to.hidden = false;
+    to.classList.remove("is-active");
+    to.classList.add("is-entering");
+    // 旧视图离场
+    from.classList.remove("is-active");
+    from.classList.add("is-leaving");
+
+    // 量新视图高度,过渡 stage 高度
+    const targetH = to.offsetHeight;
+    requestAnimationFrame(function () {
+      stage.style.height = targetH + "px";
     });
-    stage.setAttribute("data-view", zone);
-    window.scrollTo(0, 0);
+
+    // 收尾
+    setTimeout(function () {
+      from.classList.remove("is-leaving");
+      from.hidden = true;
+      to.classList.remove("is-entering");
+      to.classList.add("is-active");
+      stage.style.height = "";
+      current = zone;
+      animating = false;
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }, 420);
   }
 
-  // 点门 / 返回 / 串门
+  // 点门 / 返回 / 串门 / 招牌回厂区 —— 走 hash,便于前进后退与分享
   document.addEventListener("click", function (e) {
     const t = e.target.closest("[data-go]");
     if (!t) return;
+    e.preventDefault();
     const zone = t.getAttribute("data-go");
-    if (("#" + zone) !== location.hash) {
-      location.hash = zone === "hub" ? "" : zone;
+    const target = zone === "hub" ? "" : zone;
+    if (("#" + target) === location.hash || (target === "" && !location.hash)) {
+      go(zone);
     } else {
-      show(zone); // 同一目标也强制刷新动画
+      location.hash = target;
     }
   });
 
   window.addEventListener("hashchange", function () {
-    show(location.hash.replace("#", "") || "hub");
+    go(location.hash.replace("#", "") || "hub");
   });
 
-  // 首屏:按 URL 锚点直达对应车间
-  show(location.hash.replace("#", "") || "hub");
+  // 首屏直达
+  const initial = location.hash.replace("#", "") || "hub";
+  if (initial !== "hub") go(initial, true);
+})();
+
+/* ---------- 厂长浮层 ---------- */
+(function () {
+  const modal = document.getElementById("boss-modal");
+  const btn = document.getElementById("boss-btn");
+  if (!modal || !btn) return;
+  function open() { modal.hidden = false; }
+  function close() { modal.hidden = true; }
+  btn.addEventListener("click", open);
+  modal.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
+  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
 })();
 
 /* ---------- 飘浮火花 ---------- */

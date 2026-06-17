@@ -1,24 +1,15 @@
 /* ============================================================
    魔法工厂 · snownico0722
-   一座厂,多个车间。点门 → 动画切进车间,不靠滚屏。
-   纯手写,无框架。
+   常驻顶栏(招牌 + 厂长图标)。下面舞台内部切换:
+   旧的淡出左移、新的淡入右移,舞台高度平滑过渡。
    ============================================================ */
 
 :root {
-  --bg: #fbf3e4;
-  --bg-2: #f6e7cd;
-  --paper: #fffdf8;
-  --ink: #2b2620;
-  --ink-soft: #6b6357;
-  --ink-faint: #a89c88;
-  --line: #e6d8bd;
-  --brass: #c9952f;
-  --brass-d: #9c6f1c;
-  --magic: #7c5cff;
-  --magic-2: #4ec5d6;
-  --ember: #ff7a3c;
-  --ember-2: #ffb43c;
-  --open: #36c46f;
+  --bg: #fbf3e4; --bg-2: #f6e7cd; --paper: #fffdf8;
+  --ink: #2b2620; --ink-soft: #6b6357; --ink-faint: #a89c88; --line: #e6d8bd;
+  --brass: #c9952f; --brass-d: #9c6f1c;
+  --magic: #7c5cff; --magic-2: #4ec5d6;
+  --ember: #ff7a3c; --ember-2: #ffb43c; --open: #36c46f;
   --shadow: rgba(120, 90, 40, 0.16);
 }
 
@@ -26,134 +17,110 @@
 
 body {
   min-height: 100vh;
-  font-family: "Baloo 2", "Quicksand", "PingFang SC", "Microsoft YaHei",
-    "Segoe UI", system-ui, sans-serif;
-  line-height: 1.7;
-  color: var(--ink);
+  font-family: "Baloo 2", "Quicksand", "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
+  line-height: 1.7; color: var(--ink);
   background:
     radial-gradient(circle at 18% 0%, var(--bg-2), transparent 55%),
     radial-gradient(circle at 90% 12%, #efe0ff 0%, transparent 40%),
     var(--bg);
-  background-attachment: fixed;
-  overflow-x: hidden;
+  background-attachment: fixed; overflow-x: hidden;
 }
 
-/* ---------- 全厂背景氛围 ---------- */
-.bg-gear {
-  position: fixed;
-  fill: rgba(201, 149, 47, 0.10);
-  stroke: rgba(156, 111, 28, 0.12);
-  stroke-width: 2;
-  z-index: 0;
-  pointer-events: none;
-}
+/* ---------- 背景氛围 ---------- */
+.bg-gear { position: fixed; fill: rgba(201,149,47,0.10); stroke: rgba(156,111,28,0.12); stroke-width: 2; z-index: 0; pointer-events: none; }
 .bg-gear-1 { width: 230px; height: 230px; top: -60px; left: -70px; animation: spin 26s linear infinite; }
 .bg-gear-2 { width: 320px; height: 320px; bottom: -120px; right: -110px; animation: spin-rev 34s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes spin-rev { to { transform: rotate(-360deg); } }
 
 .sparks { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.sparks i {
-  position: absolute; bottom: -10px; width: 6px; height: 6px;
-  border-radius: 50%; background: var(--ember-2); opacity: 0;
-  animation: rise linear infinite;
-}
-@keyframes rise {
-  0% { transform: translateY(0) scale(1); opacity: 0; }
-  10% { opacity: 0.9; } 90% { opacity: 0.5; }
-  100% { transform: translateY(-105vh) scale(0.3); opacity: 0; }
+.sparks i { position: absolute; bottom: -10px; width: 6px; height: 6px; border-radius: 50%; background: var(--ember-2); opacity: 0; animation: rise linear infinite; }
+@keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.5; } 100% { transform: translateY(-105vh) scale(0.3); opacity: 0; } }
+
+/* ---------- 整体容器 ---------- */
+.wrap {
+  position: relative; z-index: 1;
+  width: 100%; max-width: 680px; margin: 0 auto;
+  padding: clamp(1rem, 3.5vw, 2.2rem) 1.1rem 2.5rem;
 }
 
-/* ---------- 舞台:车间在这里切换 ---------- */
-.stage {
-  position: relative;
-  z-index: 1;
-  min-height: 100vh;
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
-  padding: clamp(1.25rem, 4vw, 3rem) 1.1rem 3rem;
+/* ---------- 常驻顶栏 ---------- */
+.topbar {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 1.6rem;
 }
-.view {
-  width: 100%;
-  max-width: 680px;
+.brand {
+  display: flex; align-items: center; gap: 0.55rem;
+  background: none; border: none; cursor: pointer; font-family: inherit; padding: 0;
 }
-/* 进场动画:缩放 + 淡入,像推门进车间 */
-.view[hidden] { display: none; }
-.view.enter { animation: zoomIn 0.42s cubic-bezier(0.2, 0.8, 0.25, 1) both; }
-@keyframes zoomIn {
-  from { opacity: 0; transform: scale(0.94) translateY(12px); }
-  to   { opacity: 1; transform: none; }
-}
-
-/* ---------- 招牌(导览页) ---------- */
-.signboard { text-align: center; margin-bottom: 1.8rem; }
-.title {
-  font-size: clamp(2.6rem, 11vw, 4rem);
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  line-height: 1.1;
+.brand-gear { width: 38px; height: 38px; fill: var(--brass); stroke: var(--ink); stroke-width: 2.5; animation: spin 12s linear infinite; }
+.brand-name {
+  font-size: 1.6rem; font-weight: 800; letter-spacing: 0.04em;
   background: linear-gradient(105deg, var(--magic), var(--ember) 60%, var(--brass));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
-.subtitle {
-  margin-top: 0.3rem; font-size: 0.72rem; letter-spacing: 0.32em;
-  font-weight: 600; color: var(--ink-faint);
+.boss-btn {
+  width: 46px; height: 46px; flex: none; cursor: pointer;
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 50%;
+  box-shadow: 0 3px 0 var(--ink); display: grid; place-items: center;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.open-sign {
-  display: inline-flex; align-items: center; gap: 0.5rem; margin-top: 1.1rem;
+.boss-btn svg { width: 30px; height: 30px; fill: var(--ember); }
+.boss-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.boss-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
+/* ---------- 舞台:内部切换 ---------- */
+.stage {
+  position: relative;
+  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.view { width: 100%; }
+/* 非激活:抽出文档流叠在上面,不可交互 */
+.view[hidden] { display: none; }
+.view.is-leaving,
+.view.is-entering {
+  position: absolute; top: 0; left: 0; right: 0;
+}
+.view.is-active { position: relative; }
+
+/* 进出动画 */
+.view.is-entering { animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.25, 1) both; }
+.view.is-leaving  { animation: slideOut 0.32s ease both; pointer-events: none; }
+@keyframes slideIn  { from { opacity: 0; transform: translateX(26px); } to { opacity: 1; transform: none; } }
+@keyframes slideOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-26px); } }
+
+/* ---------- 导览页 ---------- */
+.hub-tagline {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.3rem;
   padding: 0.4rem 1rem; font-size: 0.86rem; font-weight: 600; color: var(--ink-soft);
   background: var(--paper); border: 1.5px solid var(--line); border-radius: 999px;
 }
-.bulb {
-  width: 10px; height: 10px; border-radius: 50%; background: var(--open);
-  animation: blink 2.2s ease-in-out infinite;
-}
-@keyframes blink {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(54, 196, 111, 0.55); opacity: 1; }
-  50% { box-shadow: 0 0 0 7px rgba(54, 196, 111, 0); opacity: 0.7; }
-}
+.bulb { width: 10px; height: 10px; border-radius: 50%; background: var(--open); animation: blink 2.2s ease-in-out infinite; }
+@keyframes blink { 0%,100% { box-shadow: 0 0 0 0 rgba(54,196,111,0.55); opacity: 1; } 50% { box-shadow: 0 0 0 7px rgba(54,196,111,0); opacity: 0.7; } }
 
-/* ---------- 厂区导览:几道门 ---------- */
-.doors {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 1rem;
-  margin-bottom: 2rem;
-}
+.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
 .door {
-  display: flex; flex-direction: column; align-items: center; text-align: center;
-  gap: 0.3rem; padding: 1.6rem 1rem 1.3rem; cursor: pointer; font-family: inherit;
+  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.3rem;
+  padding: 2rem 1rem 1.5rem; cursor: pointer; font-family: inherit;
   background: var(--paper); border: 2px solid var(--ink); border-radius: 18px;
   box-shadow: 0 6px 0 var(--ink), 0 7px 18px var(--shadow);
   transition: transform 0.16s ease, box-shadow 0.16s ease;
 }
 .door:hover { transform: translateY(-5px); box-shadow: 0 11px 0 var(--ink), 0 13px 26px var(--shadow); }
 .door:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
-.door-ico { width: 46px; height: 46px; stroke: var(--ink); stroke-width: 2; margin-bottom: 0.4rem; }
+.door-ico { width: 52px; height: 52px; stroke: var(--ink); stroke-width: 2; margin-bottom: 0.4rem; }
 .door-tools .door-ico { fill: var(--brass); animation: spin 11s linear infinite; }
 .door-games .door-ico { fill: var(--magic); }
-.door-office .door-ico { fill: var(--ember-2); }
 .door-no { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: var(--ink-faint); }
-.door-name { font-size: 1.25rem; font-weight: 800; color: var(--ink); }
+.door-name { font-size: 1.3rem; font-weight: 800; color: var(--ink); }
 .door-sub { font-size: 0.8rem; color: var(--ink-soft); }
-.door-count {
-  margin-top: 0.5rem; font-size: 0.72rem; font-weight: 700; color: var(--paper);
-  background: var(--ink); padding: 0.15rem 0.6rem; border-radius: 999px;
-}
-.hub-foot { text-align: center; font-size: 0.8rem; color: var(--ink-faint); }
+.door-count { margin-top: 0.5rem; font-size: 0.72rem; font-weight: 700; color: var(--paper); background: var(--ink); padding: 0.15rem 0.6rem; border-radius: 999px; }
 
 /* ---------- 车间顶栏 ---------- */
-.zone-top {
-  display: flex; align-items: center; justify-content: space-between; gap: 0.6rem;
-  margin-bottom: 0.4rem;
-}
-.zone-titleblock { text-align: center; }
-.zone-no { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: var(--ink-faint); }
-.zone-title { font-size: 1.5rem; font-weight: 800; line-height: 1.1; }
+.zone-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.4rem; }
+.zone-title { font-size: 1.5rem; font-weight: 800; line-height: 1.1; text-align: center; }
 .zone-tools .zone-title { color: var(--brass-d); }
 .zone-games .zone-title { color: var(--magic); }
-.zone-office .zone-title { color: var(--ember); }
 .back, .hop {
   font-family: inherit; font-size: 0.8rem; font-weight: 700; color: var(--ink-soft);
   background: var(--paper); border: 1.5px solid var(--ink); border-radius: 999px;
@@ -161,108 +128,69 @@ body {
   transition: background 0.15s ease, color 0.15s ease;
 }
 .back:hover, .hop:hover { background: var(--ink); color: var(--paper); }
-.hop-ghost { border: none; background: none; width: 4.5rem; }
 .zone-lead { text-align: center; color: var(--ink-soft); font-size: 0.96rem; margin-bottom: 1.6rem; }
 
-/* ---------- 货箱(工具坊) ---------- */
-.crate {
-  position: relative; background: var(--paper); border: 2px solid var(--ink);
-  border-radius: 16px; padding: 1.3rem; margin-bottom: 1.1rem;
-  box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow);
-  transition: transform 0.18s ease, box-shadow 0.18s ease;
-}
+/* ---------- 货箱 ---------- */
+.crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin-bottom: 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; }
 .crate:hover { transform: translateY(-4px); box-shadow: 0 9px 0 var(--ink), 0 12px 26px var(--shadow); }
-.crate-tag {
-  position: absolute; top: -12px; left: 16px; font-size: 0.72rem; font-weight: 700;
-  letter-spacing: 0.1em; color: var(--paper); background: var(--ink);
-  padding: 0.15rem 0.6rem; border-radius: 7px;
-}
+.crate-tag { position: absolute; top: -12px; left: 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--paper); background: var(--ink); padding: 0.15rem 0.6rem; border-radius: 7px; }
 .crate-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.45rem; }
-.crate-name a {
-  color: var(--ink); text-decoration: none;
-  background-image: linear-gradient(var(--ember-2), var(--ember-2));
-  background-size: 100% 0.5em; background-repeat: no-repeat; background-position: 0 88%;
-  transition: background-size 0.2s ease;
-}
+.crate-name a { color: var(--ink); text-decoration: none; background-image: linear-gradient(var(--ember-2), var(--ember-2)); background-size: 100% 0.5em; background-repeat: no-repeat; background-position: 0 88%; transition: background-size 0.2s ease; }
 .crate-name a:hover { background-size: 100% 100%; }
 .crate-desc { color: var(--ink-soft); font-size: 0.96rem; margin-bottom: 0.9rem; }
 .crate-foot { display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap; }
-.chip {
-  font-size: 0.76rem; font-weight: 600; color: var(--ink-soft);
-  background: var(--bg-2); padding: 0.2rem 0.65rem; border-radius: 999px;
-}
+.chip { font-size: 0.76rem; font-weight: 600; color: var(--ink-soft); background: var(--bg-2); padding: 0.2rem 0.65rem; border-radius: 999px; }
 .stars { margin-left: auto; font-size: 0.86rem; font-weight: 700; color: var(--brass-d); }
 
-/* ---------- 试玩机(游戏厅) ---------- */
-.machine {
-  background: var(--paper); border: 2px solid var(--ink); border-radius: 16px;
-  padding: 1.2rem 1.3rem 1.3rem; margin-bottom: 1.2rem;
-  box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow);
-}
+/* ---------- 试玩机 ---------- */
+.machine { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.2rem 1.3rem 1.3rem; margin-bottom: 1.2rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); }
 .machine-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
-.machine-tag {
-  font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; color: var(--magic);
-  background: rgba(124, 92, 255, 0.12); padding: 0.18rem 0.6rem; border-radius: 7px;
-}
-.machine-light { width: 11px; height: 11px; border-radius: 50%; background: var(--magic-2);
-  box-shadow: 0 0 8px var(--magic-2); animation: blink 1.6s ease-in-out infinite; }
+.machine-tag { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; color: var(--magic); background: rgba(124,92,255,0.12); padding: 0.18rem 0.6rem; border-radius: 7px; }
+.machine-light { width: 11px; height: 11px; border-radius: 50%; background: var(--magic-2); box-shadow: 0 0 8px var(--magic-2); animation: blink 1.6s ease-in-out infinite; }
 .machine-name { font-size: 1.3rem; font-weight: 800; }
 .machine-desc { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 1rem; }
-.score-screen {
-  background: #161320; border-radius: 12px; padding: 1.1rem 1rem; text-align: center;
-  margin-bottom: 0.9rem; border: 2px solid var(--ink); min-height: 96px;
-  display: flex; flex-direction: column; justify-content: center;
-}
+.score-screen { background: #161320; border-radius: 12px; padding: 1.1rem 1rem; text-align: center; margin-bottom: 0.9rem; border: 2px solid var(--ink); min-height: 96px; display: flex; flex-direction: column; justify-content: center; }
 .score-num { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--magic-2); margin-bottom: 0.35rem; }
 .score-say { font-size: 0.98rem; color: #e6e1f5; line-height: 1.55; }
 .score-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.45rem; }
-.score-pad button {
-  font-family: inherit; font-size: 1.05rem; font-weight: 800; color: var(--ink);
-  background: var(--bg); border: 2px solid var(--ink); border-radius: 10px;
-  padding: 0.55rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink);
-  transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease;
-}
+.score-pad button { font-family: inherit; font-size: 1.05rem; font-weight: 800; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; padding: 0.55rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease; }
 .score-pad button:hover { background: var(--ember-2); }
-.score-pad button:active, .score-pad button.on {
-  transform: translateY(3px); box-shadow: 0 0 0 var(--ink);
-  background: var(--magic); color: var(--paper);
-}
+.score-pad button:active, .score-pad button.on { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); background: var(--magic); color: var(--paper); }
 
 /* ---------- 在造预告 ---------- */
 .coming-list { display: flex; flex-direction: column; gap: 0.6rem; }
-.coming {
-  display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; color: var(--ink-soft);
-  padding: 0.7rem 0.9rem; background: rgba(255, 255, 255, 0.5);
-  border: 1.5px dashed var(--line); border-radius: 12px;
-}
+.coming { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; color: var(--ink-soft); padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.5); border: 1.5px dashed var(--line); border-radius: 12px; }
 .coming strong { color: var(--ink); }
-.coming-tag {
-  flex: none; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; color: var(--ember);
-  background: rgba(255, 122, 60, 0.12); padding: 0.15rem 0.5rem; border-radius: 6px; margin-top: 0.1rem;
-}
+.coming-tag { flex: none; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; color: var(--ember); background: rgba(255,122,60,0.12); padding: 0.15rem 0.5rem; border-radius: 6px; margin-top: 0.1rem; }
 
-/* ---------- 控制室 ---------- */
-.office-card {
-  text-align: center; background: var(--paper); border: 2px solid var(--ink);
-  border-radius: 18px; padding: 2.2rem 1.5rem;
-  box-shadow: 0 6px 0 var(--ink), 0 8px 20px var(--shadow);
+.wrap-foot { text-align: center; font-size: 0.8rem; color: var(--ink-faint); margin-top: 2rem; }
+
+/* ---------- 厂长浮层 ---------- */
+.modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1.2rem; }
+.modal[hidden] { display: none; }
+.modal-mask { position: absolute; inset: 0; background: rgba(30, 24, 14, 0.45); backdrop-filter: blur(2px); animation: fade 0.2s ease both; }
+.modal-card {
+  position: relative; text-align: center; max-width: 26rem; width: 100%;
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 20px;
+  padding: 2rem 1.6rem 1.8rem; box-shadow: 0 8px 0 var(--ink), 0 14px 36px var(--shadow);
+  animation: pop 0.28s cubic-bezier(0.2, 0.8, 0.25, 1) both;
 }
-.office-line { font-size: 1.05rem; color: var(--ink-soft); margin-bottom: 1.5rem; max-width: 26rem; margin-inline: auto; }
-.gate-link {
-  display: inline-block; font-size: 1rem; font-weight: 700; color: var(--paper);
-  text-decoration: none; padding: 0.7rem 1.5rem; background: var(--magic);
-  border: 2px solid var(--ink); border-radius: 999px; box-shadow: 0 4px 0 var(--ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
+.modal-x { position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.5rem; line-height: 1; color: var(--ink-faint); background: none; border: none; cursor: pointer; }
+.modal-x:hover { color: var(--ink); }
+.boss-big { width: 64px; height: 64px; fill: var(--ember); margin-bottom: 0.5rem; }
+.boss-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.6rem; }
+.boss-line { font-size: 1rem; color: var(--ink-soft); margin-bottom: 1.4rem; }
+.gate-link { display: inline-block; font-size: 1rem; font-weight: 700; color: var(--paper); text-decoration: none; padding: 0.7rem 1.5rem; background: var(--magic); border: 2px solid var(--ink); border-radius: 999px; box-shadow: 0 4px 0 var(--ink); transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .gate-link:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
 .gate-link:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 
-/* ---------- 响应式:手机把门竖排 ---------- */
-@media (max-width: 560px) {
+/* ---------- 响应式 ---------- */
+@media (max-width: 520px) {
   .doors { grid-template-columns: 1fr; gap: 0.8rem; }
   .door { flex-direction: row; justify-content: flex-start; text-align: left; gap: 0.9rem; padding: 1.1rem; flex-wrap: wrap; }
   .door-ico { margin-bottom: 0; }
-  .door-no, .door-name, .door-sub { width: auto; }
   .door-name { flex: 1; }
   .door-count { margin-top: 0; width: 100%; }
 }

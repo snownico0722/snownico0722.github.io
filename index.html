@@ -9,142 +9,128 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- 全厂通用氛围:火花 + 背景齿轮,切车间时不重置 -->
+  <!-- 全厂氛围:火花 + 背景齿轮,切车间时不动 -->
   <div class="sparks" aria-hidden="true"></div>
   <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
   <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
 
-  <div class="stage" data-view="hub">
+  <div class="wrap">
 
-    <!-- ============ 厂区导览(落地页) ============ -->
-    <section class="view view-hub" data-zone="hub">
-      <header class="signboard">
-        <h1 class="title">魔法工厂</h1>
-        <p class="subtitle">THE&nbsp;MAGIC&nbsp;FACTORY&nbsp;·&nbsp;snownico0722</p>
-        <p class="open-sign"><span class="bulb"></span>营业中 · 选个车间进去逛</p>
-      </header>
+    <!-- ===== 常驻顶栏:招牌 + 厂长小图标 ===== -->
+    <header class="topbar">
+      <button class="brand" data-go="hub" title="回厂区">
+        <svg class="brand-gear" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+        <span class="brand-name">魔法工厂</span>
+      </button>
+      <button class="boss-btn" id="boss-btn" title="厂长在此" aria-label="厂长在此">
+        <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#boss" /></svg>
+      </button>
+    </header>
 
-      <nav class="doors" aria-label="厂区导览">
-        <button class="door door-tools" data-go="tools">
-          <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
-          <span class="door-no">一号车间</span>
-          <span class="door-name">工具坊</span>
-          <span class="door-sub">带得走的工具 · 装上就能用</span>
-          <span class="door-count" data-count="tools">2 件出厂</span>
-        </button>
+    <!-- ===== 舞台:只有这里面在切换 ===== -->
+    <div class="stage" id="stage">
 
-        <button class="door door-games" data-go="games">
-          <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
-          <span class="door-no">二号车间</span>
-          <span class="door-name">游戏厅</span>
-          <span class="door-sub">当场玩的 · 文字游戏 / 测试</span>
-          <span class="door-count">1 台在玩 · 更多在造</span>
-        </button>
+      <!-- 厂区导览 -->
+      <section class="view is-active" data-zone="hub">
+        <p class="hub-tagline"><span class="bulb"></span>营业中 · 选个车间进去逛</p>
+        <nav class="doors" aria-label="厂区导览">
+          <button class="door door-tools" data-go="tools">
+            <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+            <span class="door-no">一号车间</span>
+            <span class="door-name">工具坊</span>
+            <span class="door-sub">带得走的工具 · 装上就能用</span>
+            <span class="door-count">2 件出厂</span>
+          </button>
+          <button class="door door-games" data-go="games">
+            <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
+            <span class="door-no">二号车间</span>
+            <span class="door-name">游戏厅</span>
+            <span class="door-sub">当场玩的 · 文字游戏 / 测试</span>
+            <span class="door-count">1 台在玩 · 更多在造</span>
+          </button>
+        </nav>
+      </section>
 
-        <button class="door door-office" data-go="office">
-          <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#bulb-ico" /></svg>
-          <span class="door-no">控制室</span>
-          <span class="door-name">厂长在此</span>
-          <span class="door-sub">这厂谁开的 · 怎么找到他</span>
-          <span class="door-count">推门进来</span>
-        </button>
-      </nav>
-
-      <p class="hub-foot">一个人开的厂,纯手工打造 — HTML / CSS / SVG,无框架,无构建。<span id="year"></span></p>
-    </section>
-
-    <!-- ============ 一号车间 · 工具坊 ============ -->
-    <section class="view view-zone zone-tools" data-zone="tools" hidden>
-      <div class="zone-top">
-        <button class="back" data-go="hub">← 回厂区</button>
-        <div class="zone-titleblock">
-          <span class="zone-no">一号车间</span>
+      <!-- 一号车间 · 工具坊 -->
+      <section class="view zone-tools" data-zone="tools" hidden>
+        <div class="zone-top">
+          <button class="back" data-go="hub">← 厂区</button>
           <h2 class="zone-title">工具坊</h2>
+          <button class="hop" data-go="games">游戏厅 →</button>
         </div>
-        <button class="hop" data-go="games">去游戏厅 →</button>
-      </div>
-      <p class="zone-lead">下载装上就能用,都在 GitHub 上。</p>
+        <p class="zone-lead">下载装上就能用,都在 GitHub 上。</p>
 
-      <article class="crate">
-        <div class="crate-tag">No.001</div>
-        <h3 class="crate-name">
-          <a href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo · 一张纸</a>
-        </h3>
-        <p class="crate-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown,没有主窗口,没有账号,没有管理器。</p>
-        <div class="crate-foot">
-          <span class="chip">Windows</span>
-          <span class="chip">C# · WPF</span>
-          <span class="stars" data-repo="PaperTodo">★ <span class="count">76</span></span>
-        </div>
-      </article>
-
-      <article class="crate">
-        <div class="crate-tag">No.002</div>
-        <h3 class="crate-name">
-          <a href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">书签栏归位器</a>
-        </h3>
-        <p class="crate-desc">极简 Chrome 扩展。让书签栏永远是你下次保存书签的默认位置。一次轻轻的触碰,不打扰。</p>
-        <div class="crate-foot">
-          <span class="chip">Chrome</span>
-          <span class="chip">JS · MV3</span>
-          <span class="stars" data-repo="bookmark-bar-default-resetter">★ <span class="count">1</span></span>
-        </div>
-      </article>
-    </section>
-
-    <!-- ============ 二号车间 · 游戏厅 ============ -->
-    <section class="view view-zone zone-games" data-zone="games" hidden>
-      <div class="zone-top">
-        <button class="back" data-go="hub">← 回厂区</button>
-        <div class="zone-titleblock">
-          <span class="zone-no">二号车间</span>
-          <h2 class="zone-title">游戏厅</h2>
-        </div>
-        <button class="hop" data-go="tools">去工具坊 →</button>
-      </div>
-      <p class="zone-lead">不用下载,点一下就在这页里玩。文字游戏和测试陆续上架。</p>
-
-      <div class="machine">
-        <div class="machine-bar">
-          <span class="machine-tag">试玩 No.1</span>
-          <span class="machine-light"></span>
-        </div>
-        <h3 class="machine-name">作品打分机</h3>
-        <p class="machine-desc">店主亲手定的十分制量表。给个分,听他怎么说。</p>
-        <div class="scorer">
-          <div class="score-screen">
-            <div class="score-num" id="screen-num">?</div>
-            <div class="score-say" id="screen-say">按下面任意一个分数 ↓</div>
+        <article class="crate">
+          <div class="crate-tag">No.001</div>
+          <h3 class="crate-name">
+            <a href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo · 一张纸</a>
+          </h3>
+          <p class="crate-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown,没有主窗口,没有账号,没有管理器。</p>
+          <div class="crate-foot">
+            <span class="chip">Windows</span><span class="chip">C# · WPF</span>
+            <span class="stars" data-repo="PaperTodo">★ <span class="count">76</span></span>
           </div>
-          <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
+        </article>
+
+        <article class="crate">
+          <div class="crate-tag">No.002</div>
+          <h3 class="crate-name">
+            <a href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">书签栏归位器</a>
+          </h3>
+          <p class="crate-desc">极简 Chrome 扩展。让书签栏永远是你下次保存书签的默认位置。一次轻轻的触碰,不打扰。</p>
+          <div class="crate-foot">
+            <span class="chip">Chrome</span><span class="chip">JS · MV3</span>
+            <span class="stars" data-repo="bookmark-bar-default-resetter">★ <span class="count">1</span></span>
+          </div>
+        </article>
+      </section>
+
+      <!-- 二号车间 · 游戏厅 -->
+      <section class="view zone-games" data-zone="games" hidden>
+        <div class="zone-top">
+          <button class="back" data-go="hub">← 厂区</button>
+          <h2 class="zone-title">游戏厅</h2>
+          <button class="hop" data-go="tools">工具坊 →</button>
         </div>
-      </div>
+        <p class="zone-lead">不用下载,点一下就在这页里玩。文字游戏和测试陆续上架。</p>
 
-      <div class="coming-list">
-        <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等厂长写。这台机器先占着位。</span></div>
-        <div class="coming"><span class="coming-tag">待上架</span><span><strong>测试</strong> — 测点什么由厂长定。位子留好了。</span></div>
-      </div>
-    </section>
-
-    <!-- ============ 控制室 ============ -->
-    <section class="view view-zone zone-office" data-zone="office" hidden>
-      <div class="zone-top">
-        <button class="back" data-go="hub">← 回厂区</button>
-        <div class="zone-titleblock">
-          <span class="zone-no">控制室</span>
-          <h2 class="zone-title">厂长在此</h2>
+        <div class="machine">
+          <div class="machine-bar"><span class="machine-tag">试玩 No.1</span><span class="machine-light"></span></div>
+          <h3 class="machine-name">作品打分机</h3>
+          <p class="machine-desc">店主亲手定的十分制量表。给个分,听他怎么说。</p>
+          <div class="scorer">
+            <div class="score-screen">
+              <div class="score-num" id="screen-num">?</div>
+              <div class="score-say" id="screen-say">按下面任意一个分数 ↓</div>
+            </div>
+            <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
+          </div>
         </div>
-        <span class="hop hop-ghost" aria-hidden="true"></span>
-      </div>
-      <div class="office-card">
-        <p class="office-line">一个人开的厂。造点好玩又好用的小东西,摆出来欢迎大家来玩。</p>
-        <a class="gate-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">github.com/snownico0722</a>
-      </div>
-    </section>
 
+        <div class="coming-list">
+          <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等厂长写。这台机器先占着位。</span></div>
+          <div class="coming"><span class="coming-tag">待上架</span><span><strong>测试</strong> — 测点什么由厂长定。位子留好了。</span></div>
+        </div>
+      </section>
+
+    </div>
+
+    <p class="wrap-foot">一个人开的厂,纯手工打造 — HTML / CSS / SVG,无框架,无构建。<span id="year"></span></p>
   </div>
 
-  <!-- SVG 图标库 -->
+  <!-- ===== 厂长浮层 ===== -->
+  <div class="modal" id="boss-modal" hidden>
+    <div class="modal-mask" data-close></div>
+    <div class="modal-card" role="dialog" aria-modal="true" aria-label="厂长在此">
+      <button class="modal-x" data-close aria-label="关闭">×</button>
+      <svg class="boss-big" viewBox="0 0 100 100" aria-hidden="true"><use href="#boss" /></svg>
+      <h2 class="boss-title">厂长 · snownico0722</h2>
+      <p class="boss-line">一个人开的厂。造点好玩又好用的小东西,摆出来欢迎大家来玩。</p>
+      <a class="gate-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">github.com/snownico0722</a>
+    </div>
+  </div>
+
+  <!-- ===== SVG 图标库 ===== -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <g id="gear">
@@ -169,10 +155,12 @@
         <circle cx="64" cy="51" r="5" fill="#000" fill-opacity="0.2" />
         <circle cx="74" cy="61" r="5" fill="#000" fill-opacity="0.2" />
       </g>
-      <g id="bulb-ico">
-        <circle cx="50" cy="42" r="26" />
-        <rect x="38" y="64" width="24" height="9" rx="3" fill="#000" fill-opacity="0.2" />
-        <rect x="41" y="75" width="18" height="7" rx="3" fill="#000" fill-opacity="0.2" />
+      <g id="boss">
+        <!-- 戴安全帽的厂长 -->
+        <path d="M22 50 a28 28 0 0 1 56 0 Z" />
+        <rect x="18" y="50" width="64" height="8" rx="4" />
+        <rect x="46" y="22" width="8" height="12" rx="4" fill="#000" fill-opacity="0.18" />
+        <circle cx="50" cy="72" r="16" fill="#000" fill-opacity="0.16" />
       </g>
     </defs>
   </svg>
