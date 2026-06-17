@@ -4,38 +4,66 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>魔法工厂 · snownico0722</title>
-  <meta name="description" content="一座造好玩又好用小东西的魔法工厂。一号车间带得走,二号车间当场玩。" />
+  <meta name="description" content="一座造好玩又好用小东西的魔法工厂。选个车间进去逛。" />
   <link rel="preconnect" href="https://api.github.com" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <!-- 全厂通用氛围:火花 + 背景齿轮,切车间时不重置 -->
   <div class="sparks" aria-hidden="true"></div>
+  <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+  <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
 
-  <div class="factory">
+  <div class="stage" data-view="hub">
 
-    <!-- 厂门招牌 -->
-    <header class="signboard">
-      <div class="gears" aria-hidden="true">
-        <svg class="gear gear-a" viewBox="0 0 100 100"><use href="#gear" /></svg>
-        <svg class="gear gear-b" viewBox="0 0 100 100"><use href="#gear" /></svg>
+    <!-- ============ 厂区导览(落地页) ============ -->
+    <section class="view view-hub" data-zone="hub">
+      <header class="signboard">
+        <h1 class="title">魔法工厂</h1>
+        <p class="subtitle">THE&nbsp;MAGIC&nbsp;FACTORY&nbsp;·&nbsp;snownico0722</p>
+        <p class="open-sign"><span class="bulb"></span>营业中 · 选个车间进去逛</p>
+      </header>
+
+      <nav class="doors" aria-label="厂区导览">
+        <button class="door door-tools" data-go="tools">
+          <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+          <span class="door-no">一号车间</span>
+          <span class="door-name">工具坊</span>
+          <span class="door-sub">带得走的工具 · 装上就能用</span>
+          <span class="door-count" data-count="tools">2 件出厂</span>
+        </button>
+
+        <button class="door door-games" data-go="games">
+          <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
+          <span class="door-no">二号车间</span>
+          <span class="door-name">游戏厅</span>
+          <span class="door-sub">当场玩的 · 文字游戏 / 测试</span>
+          <span class="door-count">1 台在玩 · 更多在造</span>
+        </button>
+
+        <button class="door door-office" data-go="office">
+          <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#bulb-ico" /></svg>
+          <span class="door-no">控制室</span>
+          <span class="door-name">厂长在此</span>
+          <span class="door-sub">这厂谁开的 · 怎么找到他</span>
+          <span class="door-count">推门进来</span>
+        </button>
+      </nav>
+
+      <p class="hub-foot">一个人开的厂,纯手工打造 — HTML / CSS / SVG,无框架,无构建。<span id="year"></span></p>
+    </section>
+
+    <!-- ============ 一号车间 · 工具坊 ============ -->
+    <section class="view view-zone zone-tools" data-zone="tools" hidden>
+      <div class="zone-top">
+        <button class="back" data-go="hub">← 回厂区</button>
+        <div class="zone-titleblock">
+          <span class="zone-no">一号车间</span>
+          <h2 class="zone-title">工具坊</h2>
+        </div>
+        <button class="hop" data-go="games">去游戏厅 →</button>
       </div>
-      <h1 class="title">魔法工厂</h1>
-      <p class="subtitle">THE&nbsp;MAGIC&nbsp;FACTORY&nbsp;·&nbsp;snownico0722</p>
-      <p class="open-sign"><span class="bulb"></span>营业中 · 随便逛,随便拿,记得来玩</p>
-    </header>
-
-    <p class="intro">
-      这座工厂有两个车间。<br />
-      一号车间出厂<strong>能装进你电脑的工具</strong>,二号车间摆着<strong>当场就能玩的小玩意</strong>。
-    </p>
-
-    <!-- ============ 一号车间 · 带得走的 ============ -->
-    <section class="zone zone-tools" aria-label="GitHub 项目">
-      <div class="zone-head">
-        <span class="zone-no">一号车间</span>
-        <h2 class="zone-title">带得走的工具</h2>
-        <p class="zone-sub">下载装上就能用 · 都在 GitHub 上</p>
-      </div>
+      <p class="zone-lead">下载装上就能用,都在 GitHub 上。</p>
 
       <article class="crate">
         <div class="crate-tag">No.001</div>
@@ -64,15 +92,18 @@
       </article>
     </section>
 
-    <!-- ============ 二号车间 · 当场玩的 ============ -->
-    <section class="zone zone-toys" aria-label="在线小玩具">
-      <div class="zone-head">
-        <span class="zone-no">二号车间</span>
-        <h2 class="zone-title">当场玩的小玩意</h2>
-        <p class="zone-sub">不用下载,点一下就在这页里玩</p>
+    <!-- ============ 二号车间 · 游戏厅 ============ -->
+    <section class="view view-zone zone-games" data-zone="games" hidden>
+      <div class="zone-top">
+        <button class="back" data-go="hub">← 回厂区</button>
+        <div class="zone-titleblock">
+          <span class="zone-no">二号车间</span>
+          <h2 class="zone-title">游戏厅</h2>
+        </div>
+        <button class="hop" data-go="tools">去工具坊 →</button>
       </div>
+      <p class="zone-lead">不用下载,点一下就在这页里玩。文字游戏和测试陆续上架。</p>
 
-      <!-- 试玩机 No.1:作品打分机 -->
       <div class="machine">
         <div class="machine-bar">
           <span class="machine-tag">试玩 No.1</span>
@@ -80,40 +111,40 @@
         </div>
         <h3 class="machine-name">作品打分机</h3>
         <p class="machine-desc">店主亲手定的十分制量表。给个分,听他怎么说。</p>
-
         <div class="scorer">
-          <div class="score-screen" id="screen">
+          <div class="score-screen">
             <div class="score-num" id="screen-num">?</div>
             <div class="score-say" id="screen-say">按下面任意一个分数 ↓</div>
           </div>
           <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
         </div>
-
-        <p class="machine-foot">机身小字:评分和它该得的差太多,会触发「主观补正」直接打 1 分制裁 —— 打的不是作品,是评分体系的双标。</p>
       </div>
 
-      <!-- 在造预告 -->
       <div class="coming-list">
-        <div class="coming">
-          <span class="coming-tag">在造</span>
-          <span><strong>双标照妖镜</strong> — 你说 A 落后,它用同一把尺子问:那你珍视的 B 呢,敢说也落后吗。</span>
-        </div>
-        <div class="coming">
-          <span class="coming-tag">在造</span>
-          <span><strong>祛魅压缩机</strong> — 丢进一个玄之又玄的词,吐出一句人话。</span>
-        </div>
+        <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等厂长写。这台机器先占着位。</span></div>
+        <div class="coming"><span class="coming-tag">待上架</span><span><strong>测试</strong> — 测点什么由厂长定。位子留好了。</span></div>
       </div>
     </section>
 
-    <!-- 厂门出口 -->
-    <footer class="gate">
-      <a class="gate-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">进厂转转 → github.com/snownico0722</a>
-      <p class="gate-note">本工厂全手工打造 — 纯 HTML / CSS / SVG,无框架,无构建。<span id="year"></span></p>
-    </footer>
+    <!-- ============ 控制室 ============ -->
+    <section class="view view-zone zone-office" data-zone="office" hidden>
+      <div class="zone-top">
+        <button class="back" data-go="hub">← 回厂区</button>
+        <div class="zone-titleblock">
+          <span class="zone-no">控制室</span>
+          <h2 class="zone-title">厂长在此</h2>
+        </div>
+        <span class="hop hop-ghost" aria-hidden="true"></span>
+      </div>
+      <div class="office-card">
+        <p class="office-line">一个人开的厂。造点好玩又好用的小东西,摆出来欢迎大家来玩。</p>
+        <a class="gate-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">github.com/snownico0722</a>
+      </div>
+    </section>
 
   </div>
 
-  <!-- SVG 齿轮定义 -->
+  <!-- SVG 图标库 -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <g id="gear">
@@ -129,6 +160,19 @@
         </g>
         <circle cx="50" cy="50" r="34" />
         <circle cx="50" cy="50" r="13" fill="#000" fill-opacity="0.18" />
+      </g>
+      <g id="joy">
+        <rect x="14" y="34" width="72" height="46" rx="16" />
+        <circle cx="36" cy="57" r="5" fill="#000" fill-opacity="0.2" />
+        <rect x="30" y="50" width="3" height="14" rx="1.5" fill="#000" fill-opacity="0.2" />
+        <rect x="24" y="56" width="14" height="3" rx="1.5" fill="#000" fill-opacity="0.2" />
+        <circle cx="64" cy="51" r="5" fill="#000" fill-opacity="0.2" />
+        <circle cx="74" cy="61" r="5" fill="#000" fill-opacity="0.2" />
+      </g>
+      <g id="bulb-ico">
+        <circle cx="50" cy="42" r="26" />
+        <rect x="38" y="64" width="24" height="9" rx="3" fill="#000" fill-opacity="0.2" />
+        <rect x="41" y="75" width="18" height="7" rx="3" fill="#000" fill-opacity="0.2" />
       </g>
     </defs>
   </svg>

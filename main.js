@@ -3,13 +3,58 @@
 // 年份
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// 飘浮的火花:随机生成,从底部升起
+/* ---------- 车间路由:点门 → 动画切换,#锚点可分享、前进后退可用 ---------- */
+(function () {
+  const stage = document.querySelector(".stage");
+  const views = {};
+  document.querySelectorAll(".view[data-zone]").forEach(function (v) {
+    views[v.getAttribute("data-zone")] = v;
+  });
+
+  function show(zone) {
+    if (!views[zone]) zone = "hub";
+    Object.keys(views).forEach(function (k) {
+      const v = views[k];
+      if (k === zone) {
+        v.hidden = false;
+        // 重放进场动画
+        v.classList.remove("enter");
+        void v.offsetWidth;
+        v.classList.add("enter");
+      } else {
+        v.hidden = true;
+      }
+    });
+    stage.setAttribute("data-view", zone);
+    window.scrollTo(0, 0);
+  }
+
+  // 点门 / 返回 / 串门
+  document.addEventListener("click", function (e) {
+    const t = e.target.closest("[data-go]");
+    if (!t) return;
+    const zone = t.getAttribute("data-go");
+    if (("#" + zone) !== location.hash) {
+      location.hash = zone === "hub" ? "" : zone;
+    } else {
+      show(zone); // 同一目标也强制刷新动画
+    }
+  });
+
+  window.addEventListener("hashchange", function () {
+    show(location.hash.replace("#", "") || "hub");
+  });
+
+  // 首屏:按 URL 锚点直达对应车间
+  show(location.hash.replace("#", "") || "hub");
+})();
+
+/* ---------- 飘浮火花 ---------- */
 (function () {
   const layer = document.querySelector(".sparks");
   if (!layer) return;
   const COLORS = ["#ffb43c", "#ff7a3c", "#7c5cff", "#4ec5d6"];
-  const COUNT = 18;
-  for (let i = 0; i < COUNT; i++) {
+  for (let i = 0; i < 18; i++) {
     const s = document.createElement("i");
     s.style.left = Math.random() * 100 + "vw";
     s.style.background = COLORS[(Math.random() * COLORS.length) | 0];
@@ -21,14 +66,12 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
-// 作品打分机:逐字搬店主亲手定的十分制量表
+/* ---------- 作品打分机:逐字搬店主的十分制量表 ---------- */
 (function () {
   const pad = document.getElementById("pad");
   if (!pad) return;
   const num = document.getElementById("screen-num");
   const say = document.getElementById("screen-say");
-
-  // 原话照搬,不改写
   const SCALE = {
     10: "神作留空 / 我就是要吹爆。",
     9: "同类里的佼佼者。",
@@ -41,7 +84,6 @@ document.getElementById("year").textContent = new Date().getFullYear();
     2: "什么垃圾。",
     1: "我甚至会怀疑这个作品的粉丝。",
   };
-
   for (let s = 10; s >= 1; s--) {
     const b = document.createElement("button");
     b.type = "button";
@@ -56,23 +98,19 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
+/* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
     const repo = node.getAttribute("data-repo");
     fetch("https://api.github.com/repos/snownico0722/" + repo, {
       headers: { Accept: "application/vnd.github+json" },
     })
-      .then(function (r) {
-        if (!r.ok) throw new Error(r.status);
-        return r.json();
-      })
+      .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
         if (typeof data.stargazers_count === "number") {
           node.querySelector(".count").textContent = data.stargazers_count;
         }
       })
-      .catch(function () {
-        /* 取不到就用静态回落值,不打扰 */
-      });
+      .catch(function () {});
   });
 })();
