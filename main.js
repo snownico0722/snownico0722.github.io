@@ -2,96 +2,149 @@
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
-/* ---------- 标签横滑切换:旧的淡出左移、新的淡入右移,高度平滑过渡 ---------- */
+/* ============================================================
+   变形导航(FLIP):点首页大卡片 → 同款横幅从卡片位置长大到详情头部,
+   首页其余内容淡出;返回则反向缩回卡片原位。
+   ============================================================ */
 (function () {
   const stage = document.getElementById("stage");
-  const tabs = document.querySelectorAll(".tab[data-go]");
+  const home = stage.querySelector('.view[data-zone="home"]');
   const views = {};
-  let current = "tools";
-  let animating = false;
-
   stage.querySelectorAll(".view[data-zone]").forEach(function (v) {
     views[v.getAttribute("data-zone")] = v;
   });
+  let current = "home";
+  let animating = false;
+  const DUR = 480;
+  const EASE = "cubic-bezier(0.45, 0, 0.15, 1)";
 
-  function syncTabs(zone) {
-    tabs.forEach(function (t) {
-      t.classList.toggle("is-on", t.getAttribute("data-go") === zone);
-    });
+  function lockHeight(to) {
+    const h0 = stage.offsetHeight;
+    stage.style.height = h0 + "px";
+    const h1 = to.offsetHeight;
+    requestAnimationFrame(function () { stage.style.height = h1 + "px"; });
+    setTimeout(function () { stage.style.height = ""; }, DUR + 40);
   }
 
-  function go(zone, instant) {
-    if (!views[zone]) zone = "tools";
-    if (zone === current) return;
-    if (animating && !instant) return;
-    const from = views[current];
+  // FLIP:让 head 从 source 卡片的位置/尺寸,动画到它自己的最终位置
+  function flip(source, head) {
+    if (!source) return;
+    const a = source.getBoundingClientRect();
+    const b = head.getBoundingClientRect();
+    const dx = a.left - b.left;
+    const dy = a.top - b.top;
+    const sx = a.width / b.width;
+    const sy = a.height / b.height;
+    head.animate(
+      [
+        { transformOrigin: "top left", transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+        { transformOrigin: "top left", transform: "none" },
+      ],
+      { duration: DUR, easing: EASE }
+    );
+  }
+
+  function fade(el, from, to) {
+    el.animate([{ opacity: from }, { opacity: to }], { duration: DUR * 0.7, easing: "ease" });
+  }
+
+  function toDetail(zone, sourceBanner) {
     const to = views[zone];
-    syncTabs(zone);
-
-    if (instant) {
-      from.hidden = true;
-      from.className = from.className.replace(/\bis-\w+\b/g, "").trim();
-      to.hidden = false;
-      to.classList.add("is-active");
-      current = zone;
-      return;
-    }
-
+    const head = to.querySelector(".banner.is-head");
     animating = true;
-    const startH = stage.offsetHeight;
-    stage.style.height = startH + "px";
 
     to.hidden = false;
-    to.classList.remove("is-active");
-    to.classList.add("is-entering");
-    from.classList.remove("is-active");
-    from.classList.add("is-leaving");
+    to.classList.add("is-active");
+    lockHeight(to);
 
-    const targetH = to.offsetHeight;
-    requestAnimationFrame(function () { stage.style.height = targetH + "px"; });
+    // 首页留在原地淡出
+    home.classList.add("is-stacked");
+    fade(home, 1, 0);
+
+    // 横幅形变
+    flip(sourceBanner, head);
 
     setTimeout(function () {
-      from.classList.remove("is-leaving");
-      from.hidden = true;
-      to.classList.remove("is-entering");
-      to.classList.add("is-active");
-      stage.style.height = "";
+      home.hidden = true;
+      home.classList.remove("is-stacked");
+      home.style.opacity = "";
       current = zone;
       animating = false;
-    }, 420);
+    }, DUR);
   }
 
+  function toHome(zone) {
+    const from = views[zone];
+    const head = from.querySelector(".banner.is-head");
+    // 对应的首页大卡片(变回它)
+    const target = home.querySelector('.overview .banner[data-go="' + zone + '"]');
+    animating = true;
+
+    home.hidden = false;
+    lockHeight(home);
+
+    // 详情头反向缩回卡片位置
+    if (target) {
+      const a = head.getBoundingClientRect();
+      const b = target.getBoundingClientRect();
+      const dx = a.left - b.left, dy = a.top - b.top;
+      const sx = a.width / b.width, sy = a.height / b.height;
+      target.animate(
+        [
+          { transformOrigin: "top left", transform: `translate(${dx}px, ${dy}px) scale(${sx}, ${sy})` },
+          { transformOrigin: "top left", transform: "none" },
+        ],
+        { duration: DUR, easing: EASE }
+      );
+    }
+    fade(home, 0, 1);
+    from.style.opacity = "0";
+
+    setTimeout(function () {
+      from.hidden = true;
+      from.classList.remove("is-active");
+      from.style.opacity = "";
+      current = "home";
+      animating = false;
+    }, DUR);
+  }
+
+  function navigate(zone, sourceEl) {
+    if (animating || zone === current) return;
+    if (zone === "home") toHome(current);
+    else toDetail(zone, sourceEl);
+  }
+
+  // hash 同步(可分享/前进后退);点击就近找发起的横幅
   document.addEventListener("click", function (e) {
-    const t = e.target.closest(".tab[data-go]");
+    const t = e.target.closest("[data-go]");
     if (!t) return;
     const zone = t.getAttribute("data-go");
-    const target = zone === "tools" ? "" : zone;
+    const target = zone === "home" ? "" : zone;
     if (("#" + target) === location.hash || (target === "" && !location.hash)) {
-      go(zone);
+      navigate(zone, t);
     } else {
+      // 记住发起元素,hashchange 时取用
+      pendingSource = t;
       location.hash = target;
     }
   });
 
+  let pendingSource = null;
   window.addEventListener("hashchange", function () {
-    go(location.hash.replace("#", "") || "tools");
+    const zone = location.hash.replace("#", "") || "home";
+    navigate(zone, pendingSource);
+    pendingSource = null;
   });
 
-  const initial = location.hash.replace("#", "") || "tools";
-  if (initial !== "tools") go(initial, true);
-  syncTabs(current);
-})();
-
-/* ---------- 厂长浮层 ---------- */
-(function () {
-  const modal = document.getElementById("boss-modal");
-  const btn = document.getElementById("boss-btn");
-  if (!modal || !btn) return;
-  function open() { modal.hidden = false; }
-  function close() { modal.hidden = true; }
-  btn.addEventListener("click", open);
-  modal.addEventListener("click", function (e) { if (e.target.hasAttribute("data-close")) close(); });
-  document.addEventListener("keydown", function (e) { if (e.key === "Escape") close(); });
+  // 首屏:带 #games 之类直接落到详情(无动画)
+  const initial = location.hash.replace("#", "") || "home";
+  if (initial !== "home" && views[initial]) {
+    home.hidden = true;
+    views[initial].hidden = false;
+    views[initial].classList.add("is-active");
+    current = initial;
+  }
 })();
 
 /* ---------- 飘浮火花 ---------- */
@@ -99,7 +152,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   const layer = document.querySelector(".sparks");
   if (!layer) return;
   const COLORS = ["#ffb43c", "#ff7a3c", "#7c5cff", "#4ec5d6"];
-  for (let i = 0; i < 18; i++) {
+  for (let i = 0; i < 20; i++) {
     const s = document.createElement("i");
     s.style.left = Math.random() * 100 + "vw";
     s.style.background = COLORS[(Math.random() * COLORS.length) | 0];
@@ -111,7 +164,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
-/* ---------- 作品打分机:逐字搬店主的十分制量表 ---------- */
+/* ---------- 作品打分机:逐字搬魔法师的十分制量表 ---------- */
 (function () {
   const pad = document.getElementById("pad");
   if (!pad) return;

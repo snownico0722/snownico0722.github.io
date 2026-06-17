@@ -1,14 +1,14 @@
 /* ============================================================
-   魔法工厂 · snownico0722
-   常驻顶栏(招牌 + 厂长图标)。下面舞台内部切换:
-   旧的淡出左移、新的淡入右移,舞台高度平滑过渡。
+   魔法工厂 · snownico0722 · 魔法师
+   首页给概览 → 点厂房大卡片,卡片本身变形长大成详情的头(FLIP)。
+   纯手写,无框架。
    ============================================================ */
 
 :root {
-  --bg: #fbf3e4; --bg-2: #f6e7cd; --paper: #fffdf8;
+  --bg: #f7eede; --bg-2: #f1e0c4; --paper: #fffdf8;
   --ink: #2b2620; --ink-soft: #6b6357; --ink-faint: #a89c88; --line: #e6d8bd;
   --brass: #c9952f; --brass-d: #9c6f1c;
-  --magic: #7c5cff; --magic-2: #4ec5d6;
+  --magic: #7c5cff; --magic-d: #5a3fd6; --magic-2: #4ec5d6;
   --ember: #ff7a3c; --ember-2: #ffb43c; --open: #36c46f;
   --shadow: rgba(120, 90, 40, 0.16);
 }
@@ -20,80 +20,94 @@ body {
   font-family: "Baloo 2", "Quicksand", "PingFang SC", "Microsoft YaHei", "Segoe UI", system-ui, sans-serif;
   line-height: 1.7; color: var(--ink);
   background:
-    radial-gradient(circle at 18% 0%, var(--bg-2), transparent 55%),
-    radial-gradient(circle at 90% 12%, #efe0ff 0%, transparent 40%),
+    radial-gradient(circle at 18% -5%, #efe0ff, transparent 45%),
+    radial-gradient(circle at 92% 8%, #d7f4f7, transparent 38%),
     var(--bg);
   background-attachment: fixed; overflow-x: hidden;
 }
 
 /* ---------- 背景氛围 ---------- */
-.bg-gear { position: fixed; fill: rgba(201,149,47,0.10); stroke: rgba(156,111,28,0.12); stroke-width: 2; z-index: 0; pointer-events: none; }
+.bg-gear { position: fixed; fill: rgba(124,92,255,0.08); stroke: rgba(90,63,214,0.10); stroke-width: 2; z-index: 0; pointer-events: none; }
 .bg-gear-1 { width: 230px; height: 230px; top: -60px; left: -70px; animation: spin 26s linear infinite; }
 .bg-gear-2 { width: 320px; height: 320px; bottom: -120px; right: -110px; animation: spin-rev 34s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @keyframes spin-rev { to { transform: rotate(-360deg); } }
 
 .sparks { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; }
-.sparks i { position: absolute; bottom: -10px; width: 6px; height: 6px; border-radius: 50%; background: var(--ember-2); opacity: 0; animation: rise linear infinite; }
+.sparks i { position: absolute; bottom: -10px; width: 6px; height: 6px; border-radius: 50%; opacity: 0; animation: rise linear infinite; }
 @keyframes rise { 0% { transform: translateY(0) scale(1); opacity: 0; } 10% { opacity: 0.9; } 90% { opacity: 0.5; } 100% { transform: translateY(-105vh) scale(0.3); opacity: 0; } }
 
-/* ---------- 整体容器 ---------- */
-.wrap {
+/* ---------- 舞台 ---------- */
+.stage {
   position: relative; z-index: 1;
-  width: 100%; max-width: 680px; margin: 0 auto;
-  padding: clamp(1rem, 3.5vw, 2.2rem) 1.1rem 2.5rem;
+  width: 100%; max-width: 640px; margin: 0 auto;
+  padding: clamp(1.5rem, 5vw, 3.5rem) 1.1rem 1rem;
+  transition: height 0.5s cubic-bezier(0.45, 0, 0.15, 1);
 }
-
-/* ---------- 常驻顶栏 ---------- */
-.topbar {
-  display: flex; align-items: center; gap: 0.8rem;
-  margin-bottom: 1.6rem; flex-wrap: wrap;
-}
-.brand { display: flex; align-items: center; gap: 0.5rem; }
-.brand-gear { width: 34px; height: 34px; fill: var(--brass); stroke: var(--ink); stroke-width: 2.5; animation: spin 12s linear infinite; }
-.brand-name {
-  font-size: 1.4rem; font-weight: 800; letter-spacing: 0.03em;
-  background: linear-gradient(105deg, var(--magic), var(--ember) 60%, var(--brass));
-  -webkit-background-clip: text; background-clip: text; color: transparent;
-}
-.tabs { display: flex; gap: 0.4rem; margin-left: auto; }
-.tab {
-  font-family: inherit; font-size: 0.92rem; font-weight: 800; color: var(--ink-soft);
-  background: var(--paper); border: 2px solid var(--ink); border-radius: 999px;
-  padding: 0.4rem 1rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink);
-  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease, color 0.15s ease;
-}
-.tab:hover { background: var(--bg); }
-.tab.is-on { background: var(--magic); color: var(--paper); transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
-.boss-btn {
-  width: 44px; height: 44px; flex: none; cursor: pointer;
-  background: var(--paper); border: 2px solid var(--ink); border-radius: 50%;
-  box-shadow: 0 3px 0 var(--ink); display: grid; place-items: center;
-  transition: transform 0.15s ease, box-shadow 0.15s ease;
-}
-.boss-btn svg { width: 28px; height: 28px; fill: var(--ember); }
-.boss-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
-.boss-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
-
-/* ---------- 舞台:标签横滑切换 ---------- */
-.stage { position: relative; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 .view { width: 100%; }
 .view[hidden] { display: none; }
-.view.is-leaving, .view.is-entering { position: absolute; top: 0; left: 0; right: 0; }
-.view.is-active { position: relative; }
-.view.is-entering { animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.25, 1) both; }
-.view.is-leaving  { animation: slideOut 0.32s ease both; pointer-events: none; }
-@keyframes slideIn  { from { opacity: 0; transform: translateX(26px); } to { opacity: 1; transform: none; } }
-@keyframes slideOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-26px); } }
+.view.is-stacked { position: absolute; top: clamp(1.5rem, 5vw, 3.5rem); left: 1.1rem; right: 1.1rem; }
 
-/* ---------- 车间导语 ---------- */
-.zone-lead {
-  display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.6rem;
-  padding: 0.45rem 1rem; font-size: 0.9rem; font-weight: 600; color: var(--ink-soft);
-  background: var(--paper); border: 1.5px solid var(--line); border-radius: 999px;
+/* ---------- 首页 · 魔法师 ---------- */
+.hero { text-align: center; margin-bottom: 2.4rem; }
+.hero-hat {
+  width: 76px; height: 76px; fill: var(--magic); stroke: var(--ink); stroke-width: 2.5;
+  filter: drop-shadow(0 4px 0 var(--magic-d));
+  animation: bob 3.4s ease-in-out infinite;
 }
-.bulb { width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--open); animation: blink 2.2s ease-in-out infinite; }
-@keyframes blink { 0%,100% { box-shadow: 0 0 0 0 rgba(54,196,111,0.55); opacity: 1; } 50% { box-shadow: 0 0 0 7px rgba(54,196,111,0); opacity: 0.7; } }
+@keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-8px) rotate(4deg); } }
+.hero-title {
+  font-size: clamp(2.4rem, 10vw, 3.6rem); font-weight: 800; letter-spacing: 0.05em; line-height: 1.1; margin-top: 0.6rem;
+  background: linear-gradient(105deg, var(--magic), var(--ember) 62%, var(--brass));
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero-id { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em; color: var(--magic-d); margin-top: 0.2rem; }
+.hero-line { color: var(--ink-soft); font-size: 1rem; max-width: 28rem; margin: 0.9rem auto 1.3rem; }
+.hero-links { display: inline-flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; }
+.hero-link {
+  font-size: 0.86rem; font-weight: 700; text-decoration: none; color: var(--paper);
+  background: var(--magic); border: 2px solid var(--ink); border-radius: 999px;
+  padding: 0.4rem 1.1rem; box-shadow: 0 3px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+.hero-link:not(.is-off):hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.hero-link:not(.is-off):active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.hero-link.is-off { background: var(--bg-2); color: var(--ink-faint); cursor: not-allowed; opacity: 0.6; filter: grayscale(1); box-shadow: none; border-color: var(--line); }
+
+.overview-hint { text-align: center; font-size: 0.86rem; color: var(--ink-faint); margin-bottom: 1rem; }
+.overview { display: flex; flex-direction: column; gap: 1rem; }
+
+/* ---------- 横幅:首页大卡片 + 详情的头,共用同一外观(变形锚点) ---------- */
+.banner {
+  display: flex; align-items: center; gap: 1rem; width: 100%; text-align: left;
+  font-family: inherit; cursor: pointer;
+  padding: 1.4rem 1.4rem; border: 2px solid var(--ink); border-radius: 18px;
+  box-shadow: 0 6px 0 var(--ink), 0 8px 20px var(--shadow);
+  transition: transform 0.16s ease, box-shadow 0.16s ease;
+}
+.overview .banner:hover { transform: translateY(-4px); box-shadow: 0 10px 0 var(--ink), 0 13px 26px var(--shadow); }
+.overview .banner:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
+.banner-tools { background: linear-gradient(120deg, #ffe9c2, #ffd591); }
+.banner-games { background: linear-gradient(120deg, #e7deff, #c9b8ff); }
+.banner-ico { width: 50px; height: 50px; flex: none; stroke: var(--ink); stroke-width: 2; }
+.banner-tools .banner-ico { fill: var(--brass-d); animation: spin 11s linear infinite; }
+.banner-games .banner-ico { fill: var(--magic-d); }
+.banner-text { flex: 1; display: flex; flex-direction: column; }
+.banner-name { font-size: 1.4rem; font-weight: 800; color: var(--ink); line-height: 1.15; }
+.banner-sub { font-size: 0.84rem; color: var(--ink-soft); }
+.banner-count { flex: none; font-size: 0.72rem; font-weight: 700; color: var(--paper); background: var(--ink); padding: 0.2rem 0.65rem; border-radius: 999px; }
+.banner-back { flex: none; font-size: 0.8rem; font-weight: 700; color: var(--ink); background: rgba(255,255,255,0.6); border: 1.5px solid var(--ink); padding: 0.25rem 0.7rem; border-radius: 999px; }
+
+/* 详情的头:同款横幅,稍微收一点圆角连着 body */
+.banner.is-head { border-radius: 18px; margin-bottom: 1.2rem; }
+.banner.is-head:hover { transform: translateY(-2px); box-shadow: 0 8px 0 var(--ink), 0 10px 22px var(--shadow); }
+
+/* ---------- 详情 body:逐条错峰浮入 ---------- */
+.view-detail.is-active .body > * { animation: floatUp 0.5s ease both; }
+.view-detail.is-active .body > *:nth-child(1) { animation-delay: 0.16s; }
+.view-detail.is-active .body > *:nth-child(2) { animation-delay: 0.24s; }
+.view-detail.is-active .body > *:nth-child(3) { animation-delay: 0.32s; }
+@keyframes floatUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
 
 /* ---------- 货箱 ---------- */
 .crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin-bottom: 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; }
@@ -110,8 +124,9 @@ body {
 /* ---------- 试玩机 ---------- */
 .machine { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.2rem 1.3rem 1.3rem; margin-bottom: 1.2rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); }
 .machine-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
-.machine-tag { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; color: var(--magic); background: rgba(124,92,255,0.12); padding: 0.18rem 0.6rem; border-radius: 7px; }
+.machine-tag { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; color: var(--magic-d); background: rgba(124,92,255,0.12); padding: 0.18rem 0.6rem; border-radius: 7px; }
 .machine-light { width: 11px; height: 11px; border-radius: 50%; background: var(--magic-2); box-shadow: 0 0 8px var(--magic-2); animation: blink 1.6s ease-in-out infinite; }
+@keyframes blink { 0%,100% { box-shadow: 0 0 0 0 rgba(78,197,214,0.55); opacity: 1; } 50% { box-shadow: 0 0 0 7px rgba(78,197,214,0); opacity: 0.7; } }
 .machine-name { font-size: 1.3rem; font-weight: 800; }
 .machine-desc { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 1rem; }
 .score-screen { background: #161320; border-radius: 12px; padding: 1.1rem 1rem; text-align: center; margin-bottom: 0.9rem; border: 2px solid var(--ink); min-height: 96px; display: flex; flex-direction: column; justify-content: center; }
@@ -122,57 +137,18 @@ body {
 .score-pad button:hover { background: var(--ember-2); }
 .score-pad button:active, .score-pad button.on { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); background: var(--magic); color: var(--paper); }
 
-/* ---------- 在造预告 ---------- */
+/* ---------- 在变预告 ---------- */
 .coming-list { display: flex; flex-direction: column; gap: 0.6rem; }
-.coming { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; color: var(--ink-soft); padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.5); border: 1.5px dashed var(--line); border-radius: 12px; }
+.coming { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; color: var(--ink-soft); padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.55); border: 1.5px dashed var(--line); border-radius: 12px; }
 .coming strong { color: var(--ink); }
 .coming-tag { flex: none; font-size: 0.68rem; font-weight: 800; letter-spacing: 0.08em; color: var(--ember); background: rgba(255,122,60,0.12); padding: 0.15rem 0.5rem; border-radius: 6px; margin-top: 0.1rem; }
 
-.wrap-foot { text-align: center; font-size: 0.8rem; color: var(--ink-faint); margin-top: 2rem; }
+.foot { position: relative; z-index: 1; text-align: center; font-size: 0.8rem; color: var(--ink-faint); padding: 1.5rem 1.1rem 2.5rem; }
 
-/* ---------- 厂长浮层 ---------- */
-.modal { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 1.2rem; }
-.modal[hidden] { display: none; }
-.modal-mask { position: absolute; inset: 0; background: rgba(30, 24, 14, 0.45); backdrop-filter: blur(2px); animation: fade 0.2s ease both; }
-.modal-card {
-  position: relative; text-align: center; max-width: 26rem; width: 100%;
-  background: var(--paper); border: 2px solid var(--ink); border-radius: 20px;
-  padding: 2rem 1.6rem 1.8rem; box-shadow: 0 8px 0 var(--ink), 0 14px 36px var(--shadow);
-  animation: pop 0.28s cubic-bezier(0.2, 0.8, 0.25, 1) both;
-}
-@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
-@keyframes pop { from { opacity: 0; transform: scale(0.9) translateY(10px); } to { opacity: 1; transform: none; } }
-.modal-x { position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.5rem; line-height: 1; color: var(--ink-faint); background: none; border: none; cursor: pointer; }
-.modal-x:hover { color: var(--ink); }
-.boss-big { width: 64px; height: 64px; fill: var(--ember); margin-bottom: 0.5rem; }
-.boss-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
-.boss-line { font-size: 0.98rem; color: var(--ink-soft); margin-bottom: 1.3rem; }
-.boss-links { display: flex; flex-direction: column; gap: 0.6rem; text-align: left; }
-.boss-link {
-  display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
-  text-decoration: none; padding: 0.65rem 1rem;
-  border: 2px solid var(--ink); border-radius: 12px; background: var(--paper);
-  box-shadow: 0 3px 0 var(--ink);
-  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-}
-.boss-link:not(.is-off):hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: var(--bg); }
-.boss-link:not(.is-off):active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
-.boss-link-k { font-size: 0.92rem; font-weight: 800; color: var(--ink); }
-.boss-link-v { font-size: 0.82rem; color: var(--ink-soft); }
-/* 置灰:还没开张 */
-.boss-link.is-off {
-  background: var(--bg-2); border-color: var(--line); box-shadow: none;
-  cursor: not-allowed; opacity: 0.55; filter: grayscale(1);
-}
-.boss-link.is-off .boss-link-k,
-.boss-link.is-off .boss-link-v { color: var(--ink-faint); }
-
-/* ---------- 响应式 ---------- */
 @media (max-width: 460px) {
-  .topbar { gap: 0.6rem; }
-  .brand-name { font-size: 1.2rem; }
-  .tabs { width: 100%; order: 3; }
-  .tab { flex: 1; }
+  .banner { padding: 1.1rem; gap: 0.8rem; }
+  .banner-name { font-size: 1.2rem; }
+  .banner-count { display: none; }
 }
 
 @media (prefers-reduced-motion: reduce) {
