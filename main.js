@@ -431,6 +431,102 @@ document.getElementById("year").textContent = new Date().getFullYear();
   intro();
 })();
 
+/* ============================================================
+   赛博生态位测试:每选项给某人格 +1,取最高;平局按 order 优先。
+   ============================================================ */
+(function () {
+  const Q = window.__QUIZ2__;
+  const stage = document.getElementById("quiz2-stage");
+  if (!Q || !stage) return;
+
+  let idx = 0;
+  let tally = {};
+
+  function reset() { tally = {}; Object.keys(Q.types).forEach((k) => (tally[k] = 0)); idx = 0; }
+
+  function intro() {
+    reset();
+    stage.innerHTML = "";
+    const p = mk("p", "quiz-intro-text", Q.intro);
+    const btn = mk("button", "quiz-go", "照一照 →");
+    btn.addEventListener("click", question);
+    stage.appendChild(p);
+    stage.appendChild(btn);
+  }
+
+  function question() {
+    const q = Q.questions[idx];
+    stage.innerHTML = "";
+    const bar = mk("div", "quiz-q-bar");
+    const fill = document.createElement("span");
+    fill.style.width = (idx / Q.questions.length * 100) + "%";
+    bar.appendChild(fill);
+    stage.appendChild(bar);
+    stage.appendChild(mk("div", "quiz-q-num", "第 " + (idx + 1) + " / " + Q.questions.length + " 问"));
+    stage.appendChild(mk("div", "quiz-q-text", q.q));
+    const opts = mk("div", "quiz-opts");
+    q.opts.forEach(function (o) {
+      const b = mk("button", "quiz-opt", o.t);
+      b.addEventListener("click", function () {
+        tally[o.k] = (tally[o.k] || 0) + 1;
+        idx++;
+        if (idx < Q.questions.length) question();
+        else result();
+      });
+      opts.appendChild(b);
+    });
+    stage.appendChild(opts);
+  }
+
+  function result() {
+    // 排序:分高在前;平局按 order
+    const ranked = Object.keys(tally).sort(function (a, b) {
+      if (tally[b] !== tally[a]) return tally[b] - tally[a];
+      return Q.order.indexOf(a) - Q.order.indexOf(b);
+    });
+    const winKey = ranked[0];
+    const win = Q.types[winKey];
+    const max = tally[winKey] || 1;
+
+    stage.innerHTML = "";
+    stage.appendChild(mk("div", "quiz-res-code", "你的赛博原形"));
+    stage.appendChild(mk("div", "quiz-res-name", win.name));
+    stage.appendChild(mk("div", "quiz-res-line", win.line));
+    stage.appendChild(mk("div", "quiz-res-say", win.say));
+
+    // 前三占比迷你条
+    const bars = mk("div", "quiz-bars");
+    ranked.slice(0, 3).forEach(function (k) {
+      if (!tally[k]) return;
+      const row = mk("div", "q2-bar-row");
+      row.appendChild(mk("span", "q2-bar-name", Q.types[k].name));
+      const track = mk("div", "q2-bar-track");
+      const fill = mk("div", "q2-bar-fill");
+      fill.style.width = (tally[k] / max * 100) + "%";
+      track.appendChild(fill);
+      row.appendChild(track);
+      row.appendChild(mk("span", "q2-bar-n", tally[k]));
+      bars.appendChild(row);
+    });
+    stage.appendChild(bars);
+
+    const actions = mk("div", "quiz-actions");
+    const again = mk("button", "quiz-restart", "↺ 再照一次");
+    again.addEventListener("click", intro);
+    actions.appendChild(again);
+    stage.appendChild(actions);
+  }
+
+  function mk(tag, cls, text) {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (text != null) el.textContent = text;
+    return el;
+  }
+
+  intro();
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
