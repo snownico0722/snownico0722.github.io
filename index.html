@@ -4,12 +4,11 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>魔法工厂 · snownico0722</title>
-  <meta name="description" content="一座造好玩又好用小东西的魔法工厂。随便逛,随便拿,记得来玩。" />
+  <meta name="description" content="一座造好玩又好用小东西的魔法工厂。一号车间带得走,二号车间当场玩。" />
   <link rel="preconnect" href="https://api.github.com" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- 飘浮的火花 -->
   <div class="sparks" aria-hidden="true"></div>
 
   <div class="factory">
@@ -26,13 +25,17 @@
     </header>
 
     <p class="intro">
-      这里造一些好玩又好用的小东西。<br />
-      下面货架上的都已出厂,炉子里还烧着新的。
+      这座工厂有两个车间。<br />
+      一号车间出厂<strong>能装进你电脑的工具</strong>,二号车间摆着<strong>当场就能玩的小玩意</strong>。
     </p>
 
-    <!-- 货架:出厂产品 -->
-    <section class="shelf" aria-label="出厂产品">
-      <h2 class="shelf-label">◢ 已出厂 ◣</h2>
+    <!-- ============ 一号车间 · 带得走的 ============ -->
+    <section class="zone zone-tools" aria-label="GitHub 项目">
+      <div class="zone-head">
+        <span class="zone-no">一号车间</span>
+        <h2 class="zone-title">带得走的工具</h2>
+        <p class="zone-sub">下载装上就能用 · 都在 GitHub 上</p>
+      </div>
 
       <article class="crate">
         <div class="crate-tag">No.001</div>
@@ -61,14 +64,44 @@
       </article>
     </section>
 
-    <!-- 炉子:在建 -->
-    <section class="furnace" aria-label="炉子里">
-      <div class="furnace-fire" aria-hidden="true">
-        <span></span><span></span><span></span>
+    <!-- ============ 二号车间 · 当场玩的 ============ -->
+    <section class="zone zone-toys" aria-label="在线小玩具">
+      <div class="zone-head">
+        <span class="zone-no">二号车间</span>
+        <h2 class="zone-title">当场玩的小玩意</h2>
+        <p class="zone-sub">不用下载,点一下就在这页里玩</p>
       </div>
-      <div class="furnace-text">
-        <h2 class="furnace-label">炉子里还烧着</h2>
-        <p>下一件还在成型。想看我接下来造什么,蹲一下 GitHub。</p>
+
+      <!-- 试玩机 No.1:作品打分机 -->
+      <div class="machine">
+        <div class="machine-bar">
+          <span class="machine-tag">试玩 No.1</span>
+          <span class="machine-light"></span>
+        </div>
+        <h3 class="machine-name">作品打分机</h3>
+        <p class="machine-desc">店主亲手定的十分制量表。给个分,听他怎么说。</p>
+
+        <div class="scorer">
+          <div class="score-screen" id="screen">
+            <div class="score-num" id="screen-num">?</div>
+            <div class="score-say" id="screen-say">按下面任意一个分数 ↓</div>
+          </div>
+          <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
+        </div>
+
+        <p class="machine-foot">机身小字:评分和它该得的差太多,会触发「主观补正」直接打 1 分制裁 —— 打的不是作品,是评分体系的双标。</p>
+      </div>
+
+      <!-- 在造预告 -->
+      <div class="coming-list">
+        <div class="coming">
+          <span class="coming-tag">在造</span>
+          <span><strong>双标照妖镜</strong> — 你说 A 落后,它用同一把尺子问:那你珍视的 B 呢,敢说也落后吗。</span>
+        </div>
+        <div class="coming">
+          <span class="coming-tag">在造</span>
+          <span><strong>祛魅压缩机</strong> — 丢进一个玄之又玄的词,吐出一句人话。</span>
+        </div>
       </div>
     </section>
 
@@ -84,7 +117,6 @@
   <svg width="0" height="0" style="position:absolute" aria-hidden="true">
     <defs>
       <g id="gear">
-        <!-- 8 颗等距齿 -->
         <g>
           <rect x="44" y="2" width="12" height="20" rx="2" />
           <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(45 50 50)" />

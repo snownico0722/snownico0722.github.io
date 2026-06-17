@@ -21,7 +21,41 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
-// 星标:联网取真实数,失败保留货架上的静态回落值
+// 作品打分机:逐字搬店主亲手定的十分制量表
+(function () {
+  const pad = document.getElementById("pad");
+  if (!pad) return;
+  const num = document.getElementById("screen-num");
+  const say = document.getElementById("screen-say");
+
+  // 原话照搬,不改写
+  const SCALE = {
+    10: "神作留空 / 我就是要吹爆。",
+    9: "同类里的佼佼者。",
+    8: "观感很棒的优秀作品。",
+    7: "无功无过,有亮点。",
+    6: "怎么说也及格。",
+    5: "反省一下为什么做成这样。",
+    4: "比上不足,比下有余。",
+    3: "我为什么要看完。",
+    2: "什么垃圾。",
+    1: "我甚至会怀疑这个作品的粉丝。",
+  };
+
+  for (let s = 10; s >= 1; s--) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = s;
+    b.addEventListener("click", function () {
+      pad.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
+      b.classList.add("on");
+      num.textContent = s + " 分";
+      say.textContent = SCALE[s];
+    });
+    pad.appendChild(b);
+  }
+})();
+
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
     const repo = node.getAttribute("data-repo");
