@@ -53,38 +53,6 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
-/* ---------- 作品打分机:逐字搬魔法师的十分制量表 ---------- */
-(function () {
-  const pad = document.getElementById("pad");
-  if (!pad) return;
-  const num = document.getElementById("screen-num");
-  const say = document.getElementById("screen-say");
-  const SCALE = {
-    10: "神作留空 / 我就是要吹爆。",
-    9: "同类里的佼佼者。",
-    8: "观感很棒的优秀作品。",
-    7: "无功无过,有亮点。",
-    6: "怎么说也及格。",
-    5: "反省一下为什么做成这样。",
-    4: "比上不足,比下有余。",
-    3: "我为什么要看完。",
-    2: "什么垃圾。",
-    1: "我甚至会怀疑这个作品的粉丝。",
-  };
-  for (let s = 10; s >= 1; s--) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.textContent = s;
-    b.addEventListener("click", function () {
-      pad.querySelectorAll("button").forEach((x) => x.classList.remove("on"));
-      b.classList.add("on");
-      num.textContent = s + " 分";
-      say.textContent = SCALE[s];
-    });
-    pad.appendChild(b);
-  }
-})();
-
 /* ---------- 好感度计算机:逐字搬魔法师量表的维度/权重/锚点 ---------- */
 (function () {
   const rows = document.getElementById("aff-rows");
@@ -99,6 +67,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   const DIMS = [
     ["熟悉度", 10, 0, 100, "0陌生 · 10初识 · 30老友 · 50挚友 · 90自己"],
     ["好感度", 15, -100, 100, "0陌生 · 30有一定兴趣 · 60很喜欢"],
+    ["幻想好感度", 5, -100, 100, "你认为目标对你的好感是多少"],
     ["恋爱度", 20, 0, 100, "0不作为目标 · 5性取向内不反感 · 20有兴趣 · 40想谈 · 60交往中"],
     ["影响度", 10, 0, 100, "0无影响 · 20有一定影响(口癖/思考) · 40较多影响"],
     ["共同回忆度", 10, 0, 100, "0不认识 · 20常一起玩 · 40很长共同经历 · 60多年老友"],
@@ -107,7 +76,6 @@ document.getElementById("year").textContent = new Date().getFullYear();
     ["触发度", 20, 0, 100, "0不会想到 · 30经常想到 · 50基本每天 · 70每天数次"],
     ["认同度", 8, 0, 100, "0陌生 · 30一定认可 · 50很厉害 · 90崇拜"],
     ["幻想度", 5, 0, 100, "对目标的幻想,约等同于期待"],
-    ["幻想好感度", 5, -100, 100, "你认为目标对你的好感是多少"],
     ["借钱额度", 40, 0, 100, "借出全部年薪 = 100"],
     ["不可割舍度", 20, 0, 100, "0无所谓 · 30心痛 · 60无法割舍"],
   ];

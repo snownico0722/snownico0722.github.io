@@ -140,13 +140,6 @@ body {
 @keyframes blink { 0%,100% { box-shadow: 0 0 0 0 rgba(78,197,214,0.55); opacity: 1; } 50% { box-shadow: 0 0 0 7px rgba(78,197,214,0); opacity: 0.7; } }
 .machine-name { font-size: 1.3rem; font-weight: 800; }
 .machine-desc { font-size: 0.92rem; color: var(--ink-soft); margin-bottom: 1rem; }
-.score-screen { background: #161320; border-radius: 12px; padding: 1.1rem 1rem; text-align: center; margin-bottom: 0.9rem; border: 2px solid var(--ink); min-height: 96px; display: flex; flex-direction: column; justify-content: center; }
-.score-num { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--magic-2); margin-bottom: 0.35rem; }
-.score-say { font-size: 0.98rem; color: #e6e1f5; line-height: 1.55; }
-.score-pad { display: grid; grid-template-columns: repeat(5, 1fr); gap: 0.45rem; }
-.score-pad button { font-family: inherit; font-size: 1.05rem; font-weight: 800; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; padding: 0.55rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease; }
-.score-pad button:hover { background: var(--ember-2); }
-.score-pad button:active, .score-pad button.on { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); background: var(--magic); color: var(--paper); }
 
 /* ---------- 好感度计算机 ---------- */
 .aff-screen { position: sticky; top: 0.5rem; z-index: 5; background: #161320; border-radius: 12px; padding: 0.9rem 1rem; text-align: center; margin-bottom: 1rem; border: 2px solid var(--ink); box-shadow: 0 6px 18px rgba(22,19,32,0.35); }
