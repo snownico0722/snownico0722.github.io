@@ -3,22 +3,16 @@
 document.getElementById("year").textContent = new Date().getFullYear();
 
 /* ============================================================
-   导航:只切状态类,不显隐、不量高、不 FLIP —— 所以不闪。
-   data-view 决定谁是主角(别的缩小让位); is-open 决定哪间厂房展开。
+   导航:只切 stage 的 data-view,横幅/内容体靠 CSS 选择器响应。
+   不显隐、不量高、不 FLIP —— 不闪。
    ============================================================ */
 (function () {
   const stage = document.getElementById("stage");
-  const zones = {};
-  stage.querySelectorAll(".zone[data-zone]").forEach(function (z) {
-    zones[z.getAttribute("data-zone")] = z;
-  });
+  const valid = { tools: 1, games: 1 };
 
   function setView(view) {
-    if (view !== "home" && !zones[view]) view = "home";
+    if (!valid[view]) view = "home";
     stage.setAttribute("data-view", view);
-    Object.keys(zones).forEach(function (k) {
-      zones[k].classList.toggle("is-open", k === view);
-    });
   }
 
   document.addEventListener("click", function (e) {

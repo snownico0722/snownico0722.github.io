@@ -1,7 +1,8 @@
 /* ============================================================
    魔法工厂 · snownico0722 · 魔法师
-   所有东西一直在。切到某厂房 → 别的缩小让位,不消失。
-   纯 CSS 状态驱动(grid-rows 0fr↔1fr 平滑展开),无显隐、无量高 → 不闪。
+   所有东西一直在。进厂房 → 魔法师收小(链接变小图标),
+   两个横幅到顶部左右并排,当前厂房内容整宽显示在下面。
+   纯 CSS 状态驱动,无显隐、无量高 → 不闪;不裁切边缘。
    ============================================================ */
 
 :root {
@@ -41,66 +42,86 @@ body {
 /* ---------- 舞台 ---------- */
 .stage { position: relative; z-index: 1; width: 100%; max-width: 640px; margin: 0 auto; padding: clamp(1.5rem, 5vw, 3.5rem) 1.1rem 1rem; }
 
-/* ---------- 魔法师:一直在,详情态缩小 ---------- */
-.hero { text-align: center; transform-origin: top center; transition: transform 0.5s var(--ease), opacity 0.4s var(--ease), margin 0.5s var(--ease); }
-.hero-hat { width: 72px; height: 72px; fill: var(--magic); stroke: var(--ink); stroke-width: 2.5; filter: drop-shadow(0 4px 0 var(--magic-d)); animation: bob 3.4s ease-in-out infinite; }
+/* ---------- 魔法师 ---------- */
+.hero { position: relative; text-align: center; transition: padding 0.5s var(--ease); }
+.hero-hat { width: 72px; height: 72px; fill: var(--magic); stroke: var(--ink); stroke-width: 2.5; filter: drop-shadow(0 4px 0 var(--magic-d)); animation: bob 3.4s ease-in-out infinite; transition: width 0.5s var(--ease), height 0.5s var(--ease); }
 @keyframes bob { 0%,100% { transform: translateY(0) rotate(-4deg); } 50% { transform: translateY(-8px) rotate(4deg); } }
-.hero-title { font-size: clamp(2.3rem, 9vw, 3.4rem); font-weight: 800; letter-spacing: 0.05em; line-height: 1.1; margin-top: 0.5rem; background: linear-gradient(105deg, var(--magic), var(--ember) 62%, var(--brass)); -webkit-background-clip: text; background-clip: text; color: transparent; }
-.hero-id { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em; color: var(--magic-d); margin-top: 0.2rem; }
-.hero-line { color: var(--ink-soft); font-size: 1rem; max-width: 28rem; margin: 0.85rem auto 1.2rem; transition: max-height 0.5s var(--ease), opacity 0.35s var(--ease), margin 0.5s var(--ease); max-height: 5rem; overflow: hidden; }
-.hero-links { display: inline-flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; transition: max-height 0.5s var(--ease), opacity 0.35s var(--ease); max-height: 4rem; overflow: hidden; }
+.hero-title { font-size: clamp(2.3rem, 9vw, 3.4rem); font-weight: 800; letter-spacing: 0.05em; line-height: 1.1; margin-top: 0.5rem; background: linear-gradient(105deg, var(--magic), var(--ember) 62%, var(--brass)); -webkit-background-clip: text; background-clip: text; color: transparent; transition: font-size 0.5s var(--ease); }
+.hero-id { font-size: 0.95rem; font-weight: 700; letter-spacing: 0.1em; color: var(--magic-d); margin-top: 0.2rem; transition: font-size 0.5s var(--ease); }
+.hero-line { color: var(--ink-soft); font-size: 1rem; max-width: 28rem; margin: 0.85rem auto 1.2rem; max-height: 5rem; overflow: hidden; transition: max-height 0.5s var(--ease), opacity 0.35s var(--ease), margin 0.5s var(--ease); }
+.hero-links { display: inline-flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; max-height: 4rem; overflow: hidden; transition: max-height 0.5s var(--ease), opacity 0.35s var(--ease); }
 .hero-link { font-size: 0.86rem; font-weight: 700; text-decoration: none; color: var(--paper); background: var(--magic); border: 2px solid var(--ink); border-radius: 999px; padding: 0.4rem 1.1rem; box-shadow: 0 3px 0 var(--ink); transition: transform 0.15s ease, box-shadow 0.15s ease; }
 .hero-link:not(.is-off):hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
 .hero-link:not(.is-off):active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .hero-link.is-off { background: var(--bg-2); color: var(--ink-faint); cursor: not-allowed; opacity: 0.6; filter: grayscale(1); box-shadow: none; border-color: var(--line); }
 
-/* 详情态:魔法师收成一条小招牌(行间次要信息收起,但本体还在) */
-.stage[data-view="tools"] .hero,
-.stage[data-view="games"] .hero { transform: scale(0.66); margin-bottom: -2.6rem; }
-.stage[data-view="tools"] .hero-line,
-.stage[data-view="games"] .hero-line { max-height: 0; opacity: 0; margin: 0 auto; }
-.stage[data-view="tools"] .hero-links,
-.stage[data-view="games"] .hero-links { max-height: 0; opacity: 0; }
+/* 收小后的小图标(放魔法师右上角) */
+.hero-mini { position: absolute; top: 0; right: 0; display: flex; gap: 0.45rem; opacity: 0; pointer-events: none; transform: translateY(-4px); transition: opacity 0.35s var(--ease) 0.12s, transform 0.35s var(--ease) 0.12s; }
+.mini-ico { width: 38px; height: 38px; display: grid; place-items: center; background: var(--paper); border: 2px solid var(--ink); border-radius: 50%; box-shadow: 0 3px 0 var(--ink); transition: transform 0.15s ease, box-shadow 0.15s ease; }
+.mini-ico svg { width: 20px; height: 20px; fill: var(--ink); }
+.mini-ico:not(.is-off):hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.mini-ico.is-off { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; box-shadow: none; border-color: var(--line); }
+.mini-ico.is-off svg { fill: var(--ink-faint); }
+
+/* 详情态:魔法师收小,长简介/大链接收起,小图标浮出 */
+.stage:not([data-view="home"]) .hero-hat { width: 40px; height: 40px; }
+.stage:not([data-view="home"]) .hero-title { font-size: 1.7rem; }
+.stage:not([data-view="home"]) .hero-id { font-size: 0.8rem; }
+.stage:not([data-view="home"]) .hero-line { max-height: 0; opacity: 0; margin: 0 auto; }
+.stage:not([data-view="home"]) .hero-links { max-height: 0; opacity: 0; }
+.stage:not([data-view="home"]) .hero-mini { opacity: 1; pointer-events: auto; transform: none; }
 
 /* ---------- 提示语:首页才显 ---------- */
-.hint { text-align: center; font-size: 0.86rem; color: var(--ink-faint); margin: 0.3rem 0 1rem; transition: max-height 0.5s var(--ease), opacity 0.35s var(--ease), margin 0.5s var(--ease); max-height: 3rem; overflow: hidden; }
-.stage[data-view="tools"] .hint,
-.stage[data-view="games"] .hint { max-height: 0; opacity: 0; margin: 0; }
+.hint { text-align: center; font-size: 0.86rem; color: var(--ink-faint); margin: 0.6rem 0 1rem; max-height: 3rem; overflow: hidden; transition: max-height 0.5s var(--ease), opacity 0.35s var(--ease), margin 0.5s var(--ease); }
+.stage:not([data-view="home"]) .hint { max-height: 0; opacity: 0; margin: 0; }
 
-/* ---------- 厂房 ---------- */
-.zones { display: flex; flex-direction: column; gap: 1rem; }
-.zone { transition: transform 0.5s var(--ease), opacity 0.4s var(--ease); transform-origin: center top; }
-/* 非激活的厂房:缩小让位,但不消失 */
-.stage[data-view="tools"] .zone-games,
-.stage[data-view="games"] .zone-tools { transform: scale(0.9); opacity: 0.62; }
+/* ---------- 横幅区:首页竖排 → 详情顶部左右并排 ---------- */
+.zones { display: grid; grid-template-columns: 1fr; gap: 1rem; transition: gap 0.5s var(--ease); }
+.stage:not([data-view="home"]) .zones { grid-template-columns: 1fr 1fr; gap: 0.7rem; margin-top: 0.6rem; }
 
-/* ---------- 横幅(一直在) ---------- */
-.banner { display: flex; align-items: center; gap: 1rem; width: 100%; text-align: left; font-family: inherit; cursor: pointer; padding: 1.3rem 1.4rem; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 6px 0 var(--ink), 0 8px 20px var(--shadow); transition: transform 0.16s ease, box-shadow 0.16s ease; }
+.banner { display: flex; align-items: center; gap: 1rem; width: 100%; text-align: left; font-family: inherit; cursor: pointer; padding: 1.3rem 1.4rem; border: 2px solid var(--ink); border-radius: 18px; box-shadow: 0 6px 0 var(--ink), 0 8px 20px var(--shadow); transition: transform 0.16s ease, box-shadow 0.16s ease, padding 0.45s var(--ease); }
 .banner:hover { transform: translateY(-3px); box-shadow: 0 9px 0 var(--ink), 0 12px 24px var(--shadow); }
 .banner:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
 .banner-tools { background: linear-gradient(120deg, #ffe9c2, #ffd591); }
 .banner-games { background: linear-gradient(120deg, #e7deff, #c9b8ff); }
-.banner-ico { width: 48px; height: 48px; flex: none; stroke: var(--ink); stroke-width: 2; }
+.banner-ico { width: 48px; height: 48px; flex: none; stroke: var(--ink); stroke-width: 2; transition: width 0.45s var(--ease), height 0.45s var(--ease); }
 .banner-tools .banner-ico { fill: var(--brass-d); animation: spin 11s linear infinite; }
 .banner-games .banner-ico { fill: var(--magic-d); }
-.banner-text { flex: 1; display: flex; flex-direction: column; }
-.banner-name { font-size: 1.35rem; font-weight: 800; color: var(--ink); line-height: 1.15; }
-.banner-sub { font-size: 0.84rem; color: var(--ink-soft); }
-.banner-count { flex: none; font-size: 0.72rem; font-weight: 700; color: var(--paper); background: var(--ink); padding: 0.2rem 0.65rem; border-radius: 999px; }
-.banner-caret { width: 22px; height: 22px; flex: none; color: var(--ink); transition: transform 0.4s var(--ease); }
-/* 展开的厂房:箭头翻转,变"收起" */
-.zone.is-open .banner-caret { transform: rotate(180deg); }
+.banner-text { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+.banner-name { font-size: 1.35rem; font-weight: 800; color: var(--ink); line-height: 1.15; transition: font-size 0.45s var(--ease); }
+.banner-sub { font-size: 0.84rem; color: var(--ink-soft); max-height: 3rem; overflow: hidden; transition: max-height 0.4s var(--ease), opacity 0.3s var(--ease); }
+.banner-count { flex: none; font-size: 0.72rem; font-weight: 700; color: var(--paper); background: var(--ink); padding: 0.2rem 0.65rem; border-radius: 999px; transition: opacity 0.3s var(--ease); }
+.banner-caret { width: 22px; height: 22px; flex: none; color: var(--ink); opacity: 0; max-width: 0; transition: transform 0.4s var(--ease), opacity 0.3s var(--ease), max-width 0.4s var(--ease); }
 
-/* ---------- 展开体:grid-rows 0fr↔1fr 平滑,不量高、不闪 ---------- */
+/* 详情态横幅:收紧成小标签,副标题/件数让位,显示折叠箭头 */
+.stage:not([data-view="home"]) .banner { padding: 0.75rem 0.9rem; gap: 0.55rem; }
+.stage:not([data-view="home"]) .banner-ico { width: 30px; height: 30px; }
+.stage:not([data-view="home"]) .banner-name { font-size: 1.05rem; }
+.stage:not([data-view="home"]) .banner-sub { max-height: 0; opacity: 0; }
+.stage:not([data-view="home"]) .banner-count { display: none; }
+.stage:not([data-view="home"]) .banner-caret { opacity: 1; max-width: 22px; }
+/* 当前激活的厂房:箭头朝上(=收起),非激活的朝下(=去那边) */
+.stage[data-view="tools"] .banner-tools .banner-caret,
+.stage[data-view="games"] .banner-games .banner-caret { transform: rotate(180deg); }
+/* 非激活厂房标签:淡一点 */
+.stage[data-view="tools"] .banner-games,
+.stage[data-view="games"] .banner-tools { opacity: 0.72; }
+.stage[data-view="tools"] .banner-games:hover,
+.stage[data-view="games"] .banner-tools:hover { opacity: 1; }
+
+/* ---------- 内容体:整宽,grid-rows 平滑展开,内边距留够不裁切 ---------- */
+.bodies { display: block; }
 .body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease); }
-.body-inner { overflow: hidden; min-height: 0; }
-.body-inner > * { transition: opacity 0.4s var(--ease) 0.1s, transform 0.4s var(--ease) 0.1s; opacity: 0; transform: translateY(12px); }
-.zone.is-open .body { grid-template-rows: 1fr; margin-top: 1rem; }
-.zone.is-open .body-inner > * { opacity: 1; transform: none; }
+.body-inner { min-height: 0; overflow: hidden; padding: 0 4px; }   /* 留 4px 给阴影/标签,不裁切 */
+.body-inner > * { opacity: 0; transform: translateY(14px); transition: opacity 0.4s var(--ease) 0.12s, transform 0.4s var(--ease) 0.12s; }
+.stage[data-view="tools"] .body[data-body="tools"],
+.stage[data-view="games"] .body[data-body="games"] { grid-template-rows: 1fr; margin-top: 1.2rem; }
+.stage[data-view="tools"] .body[data-body="tools"] .body-inner > *,
+.stage[data-view="games"] .body[data-body="games"] .body-inner > * { opacity: 1; transform: none; }
 
 /* ---------- 货箱 ---------- */
-.crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin-bottom: 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); }
-.crate:last-child { margin-bottom: 0; }
+.crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin: 6px 0 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; }
+.crate:last-child { margin-bottom: 6px; }
 .crate:hover { transform: translateY(-4px); box-shadow: 0 9px 0 var(--ink), 0 12px 26px var(--shadow); }
 .crate-tag { position: absolute; top: -12px; left: 16px; font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; color: var(--paper); background: var(--ink); padding: 0.15rem 0.6rem; border-radius: 7px; }
 .crate-name { font-size: 1.2rem; font-weight: 700; margin-bottom: 0.45rem; }
@@ -112,7 +133,7 @@ body {
 .stars { margin-left: auto; font-size: 0.86rem; font-weight: 700; color: var(--brass-d); }
 
 /* ---------- 试玩机 ---------- */
-.machine { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.2rem 1.3rem 1.3rem; margin-bottom: 1.2rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); }
+.machine { background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.2rem 1.3rem 1.3rem; margin: 6px 0 1.2rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); }
 .machine-bar { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.7rem; }
 .machine-tag { font-size: 0.72rem; font-weight: 800; letter-spacing: 0.12em; color: var(--magic-d); background: rgba(124,92,255,0.12); padding: 0.18rem 0.6rem; border-radius: 7px; }
 .machine-light { width: 11px; height: 11px; border-radius: 50%; background: var(--magic-2); box-shadow: 0 0 8px var(--magic-2); animation: blink 1.6s ease-in-out infinite; }
@@ -135,10 +156,15 @@ body {
 
 .foot { position: relative; z-index: 1; text-align: center; font-size: 0.8rem; color: var(--ink-faint); padding: 1.5rem 1.1rem 2.5rem; }
 
+/* ---------- 窄屏:详情态横幅文字再收 ---------- */
 @media (max-width: 460px) {
   .banner { padding: 1.1rem; gap: 0.8rem; }
   .banner-name { font-size: 1.2rem; }
-  .banner-count { display: none; }
+  .stage[data-view="home"] .banner-count { display: inline-block; }
+  .stage:not([data-view="home"]) .banner { padding: 0.6rem 0.7rem; }
+  .stage:not([data-view="home"]) .banner-name { font-size: 0.95rem; }
+  .hero-mini { position: static; justify-content: center; margin-top: 0.6rem; }
+  .stage:not([data-view="home"]) .hero { padding-top: 0; }
 }
 
 @media (prefers-reduced-motion: reduce) {
