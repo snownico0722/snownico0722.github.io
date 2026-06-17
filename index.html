@@ -51,7 +51,7 @@
           <span class="banner-name">游戏厅</span>
           <span class="banner-sub">当场玩的 · 文字游戏 / 测试</span>
         </span>
-        <span class="banner-count">1 台在玩 · 更多在变</span>
+        <span class="banner-count">2 台在玩 · 更多在变</span>
         <svg class="banner-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </button>
     </div>
@@ -83,9 +83,23 @@
             <div class="score-pad" id="pad" role="group" aria-label="选择分数"></div>
           </div>
         </div>
+        <div class="machine">
+          <div class="machine-bar"><span class="machine-tag">试玩 No.2</span><span class="machine-light"></span></div>
+          <h3 class="machine-name">好感度计算机</h3>
+          <p class="machine-desc">魔法师亲手做的量表。13 个维度各自加权,实时算出一个人对你的好感总分。</p>
+          <div class="affinity">
+            <div class="aff-screen">
+              <div class="aff-num" id="aff-num">0.0</div>
+              <div class="aff-bar"><span id="aff-fill"></span></div>
+              <div class="aff-say" id="aff-say">拖动下面的滑杆,给一个人打分 ↓</div>
+            </div>
+            <div class="aff-rows" id="aff-rows"></div>
+            <button class="aff-reset" id="aff-reset" type="button">↺ 清零重打</button>
+            <p class="aff-note">公式:Σ(打分 × 权重) ÷ 100。魔法师表里的样本「我对挚友 a」算出来是 66.6。</p>
+          </div>
+        </div>
         <div class="coming-list">
-          <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等魔法师写。这台机器先占着位。</span></div>
-          <div class="coming"><span class="coming-tag">待上架</span><span><strong>测试</strong> — 测点什么由魔法师定。位子留好了。</span></div>
+          <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等魔法师写。位子留好了。</span></div>
         </div>
       </div></div>
     </div>

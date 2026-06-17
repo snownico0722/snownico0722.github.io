@@ -85,6 +85,82 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
+/* ---------- 好感度计算机:逐字搬魔法师量表的维度/权重/锚点 ---------- */
+(function () {
+  const rows = document.getElementById("aff-rows");
+  if (!rows) return;
+  const numEl = document.getElementById("aff-num");
+  const fillEl = document.getElementById("aff-fill");
+  const sayEl = document.getElementById("aff-say");
+  const resetBtn = document.getElementById("aff-reset");
+
+  // [名称, 权重, 取值下限, 取值上限, 打分锚点]
+  const DIMS = [
+    ["熟悉度", 10, 0, 100, "0陌生 · 10初识 · 30老友 · 50挚友 · 90自己"],
+    ["好感度", 15, -100, 100, "0陌生 · 30有一定兴趣 · 60很喜欢"],
+    ["恋爱度", 20, 0, 100, "0不作为目标 · 5性取向内不反感 · 20有兴趣 · 40想谈 · 60交往中"],
+    ["影响度", 10, 0, 100, "0无影响 · 20有一定影响(口癖/思考) · 40较多影响"],
+    ["共同回忆度", 10, 0, 100, "0不认识 · 20常一起玩 · 40很长共同经历 · 60多年老友"],
+    ["投入度", 20, 0, 100, "0无关系 · 15付出一整天 · 40经常为对方做事 · 60主动关心"],
+    ["爱好度", 20, 0, 100, "0无重叠 · 30某方面同好 · 50喜欢领域同好 · 70极度契合"],
+    ["触发度", 20, 0, 100, "0不会想到 · 30经常想到 · 50基本每天 · 70每天数次"],
+    ["认同度", 8, 0, 100, "0陌生 · 30一定认可 · 50很厉害 · 90崇拜"],
+    ["幻想度", 5, 0, 100, "对目标的幻想,约等同于期待"],
+    ["幻想好感度", 5, -100, 100, "你认为目标对你的好感是多少"],
+    ["借钱额度", 40, 0, 100, "借出全部年薪 = 100"],
+    ["不可割舍度", 20, 0, 100, "0无所谓 · 30心痛 · 60无法割舍"],
+  ];
+  const WSUM = DIMS.reduce((a, d) => a + d[1], 0); // 权重合计 203
+
+  // 评语:按总分给一句,语气随魔法师
+  function verdict(v) {
+    if (v <= 0) return "陌生人,或者你不想算这个。";
+    if (v < 15) return "点头之交。记不住生日那种。";
+    if (v < 35) return "认识,有点意思,但还没到掏心窝。";
+    if (v < 55) return "朋友。会主动找,会想起。";
+    if (v < 70) return "挚友级。样本里的「挚友 a」就在这附近(66.6)。";
+    if (v < 85) return "很重的人了。割舍会疼。";
+    return "几乎是另一个自己。这分数你自己清楚意味着什么。";
+  }
+
+  const inputs = [];
+  DIMS.forEach(function (d, i) {
+    const [name, w, lo, hi, hint] = d;
+    const row = document.createElement("div");
+    row.className = "aff-row";
+    row.innerHTML =
+      '<div class="aff-row-top">' +
+        '<span class="aff-row-name">' + name + '</span>' +
+        '<span class="aff-row-w">权重 ' + w + '</span>' +
+        '<span class="aff-row-val" data-val="' + i + '">0</span>' +
+      '</div>' +
+      '<div class="aff-hint">' + hint + '</div>' +
+      '<input class="aff-range" type="range" min="' + lo + '" max="' + hi + '" step="5" value="0" data-i="' + i + '" aria-label="' + name + '">';
+    rows.appendChild(row);
+    inputs.push(row.querySelector("input"));
+  });
+
+  function recompute() {
+    let sum = 0;
+    inputs.forEach(function (inp, i) {
+      const v = Number(inp.value);
+      sum += v * DIMS[i][1];
+      rows.querySelector('[data-val="' + i + '"]').textContent = v;
+    });
+    const total = sum / 100;
+    numEl.textContent = total.toFixed(1);
+    fillEl.style.width = Math.max(0, Math.min(100, (total / WSUM) * 100)) + "%";
+    sayEl.textContent = verdict(total);
+  }
+
+  inputs.forEach((inp) => inp.addEventListener("input", recompute));
+  resetBtn.addEventListener("click", function () {
+    inputs.forEach((inp) => (inp.value = 0));
+    recompute();
+  });
+  recompute();
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {

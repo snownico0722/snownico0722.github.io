@@ -148,6 +148,27 @@ body {
 .score-pad button:hover { background: var(--ember-2); }
 .score-pad button:active, .score-pad button.on { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); background: var(--magic); color: var(--paper); }
 
+/* ---------- 好感度计算机 ---------- */
+.aff-screen { background: #161320; border-radius: 12px; padding: 1.1rem 1rem 1rem; text-align: center; margin-bottom: 1rem; border: 2px solid var(--ink); }
+.aff-num { font-size: 2.4rem; font-weight: 800; line-height: 1; color: var(--magic-2); }
+.aff-bar { height: 8px; background: rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin: 0.7rem 0 0.6rem; }
+.aff-bar span { display: block; height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--magic), var(--magic-2)); transition: width 0.25s var(--ease), background 0.25s ease; }
+.aff-say { font-size: 0.92rem; color: #e6e1f5; line-height: 1.5; }
+.aff-rows { display: flex; flex-direction: column; gap: 0.85rem; }
+.aff-row { }
+.aff-row-top { display: flex; align-items: baseline; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.15rem; }
+.aff-row-name { font-size: 0.96rem; font-weight: 700; color: var(--ink); }
+.aff-row-w { font-size: 0.7rem; font-weight: 700; color: var(--magic-d); background: rgba(124,92,255,0.12); padding: 0.1rem 0.45rem; border-radius: 6px; }
+.aff-row-val { margin-left: auto; font-size: 0.92rem; font-weight: 800; color: var(--ink); font-variant-numeric: tabular-nums; min-width: 2.6em; text-align: right; }
+.aff-hint { font-size: 0.74rem; color: var(--ink-faint); line-height: 1.45; margin-bottom: 0.35rem; }
+.aff-range { width: 100%; -webkit-appearance: none; appearance: none; height: 8px; border-radius: 999px; background: var(--bg-2); border: 1.5px solid var(--ink); outline: none; cursor: pointer; }
+.aff-range::-webkit-slider-thumb { -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%; background: var(--magic); border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); cursor: pointer; }
+.aff-range::-moz-range-thumb { width: 20px; height: 20px; border-radius: 50%; background: var(--magic); border: 2px solid var(--ink); box-shadow: 0 2px 0 var(--ink); cursor: pointer; }
+.aff-reset { margin-top: 1rem; font-family: inherit; font-size: 0.84rem; font-weight: 700; color: var(--ink); background: var(--bg-2); border: 2px solid var(--ink); border-radius: 999px; padding: 0.4rem 1rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.aff-reset:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.aff-reset:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.aff-note { margin-top: 0.9rem; font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5; }
+
 /* ---------- 在变预告 ---------- */
 .coming-list { display: flex; flex-direction: column; gap: 0.6rem; }
 .coming { display: flex; align-items: flex-start; gap: 0.6rem; font-size: 0.9rem; color: var(--ink-soft); padding: 0.7rem 0.9rem; background: rgba(255,255,255,0.55); border: 1.5px dashed var(--line); border-radius: 12px; }
