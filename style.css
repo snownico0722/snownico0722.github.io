@@ -112,7 +112,7 @@ body {
 /* ---------- 内容体:整宽,grid-rows 平滑展开,内边距留够不裁切 ---------- */
 .bodies { display: block; }
 .body { display: grid; grid-template-rows: 0fr; transition: grid-template-rows 0.5s var(--ease); }
-.body-inner { min-height: 0; overflow: hidden; padding: 0 4px; }   /* 留 4px 给阴影/标签,不裁切 */
+.body-inner { min-height: 0; overflow: clip; padding: 0 4px; }   /* clip(非hidden):不破坏内部 sticky;留 4px 给阴影/标签 */
 .body-inner > * { opacity: 0; transform: translateY(14px); transition: opacity 0.4s var(--ease) 0.12s, transform 0.4s var(--ease) 0.12s; }
 .stage[data-view="tools"] .body[data-body="tools"],
 .stage[data-view="games"] .body[data-body="games"] { grid-template-rows: 1fr; margin-top: 1.2rem; }
@@ -149,8 +149,8 @@ body {
 .score-pad button:active, .score-pad button.on { transform: translateY(3px); box-shadow: 0 0 0 var(--ink); background: var(--magic); color: var(--paper); }
 
 /* ---------- 好感度计算机 ---------- */
-.aff-screen { background: #161320; border-radius: 12px; padding: 1.1rem 1rem 1rem; text-align: center; margin-bottom: 1rem; border: 2px solid var(--ink); }
-.aff-num { font-size: 2.4rem; font-weight: 800; line-height: 1; color: var(--magic-2); }
+.aff-screen { position: sticky; top: 0.5rem; z-index: 5; background: #161320; border-radius: 12px; padding: 0.9rem 1rem; text-align: center; margin-bottom: 1rem; border: 2px solid var(--ink); box-shadow: 0 6px 18px rgba(22,19,32,0.35); }
+.aff-num { font-size: 2rem; font-weight: 800; line-height: 1; color: var(--magic-2); }
 .aff-bar { height: 8px; background: rgba(255,255,255,0.12); border-radius: 999px; overflow: hidden; margin: 0.7rem 0 0.6rem; }
 .aff-bar span { display: block; height: 100%; width: 0%; border-radius: 999px; background: linear-gradient(90deg, var(--magic), var(--magic-2)); transition: width 0.25s var(--ease), background 0.25s ease; }
 .aff-say { font-size: 0.92rem; color: #e6e1f5; line-height: 1.5; }
