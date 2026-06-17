@@ -149,6 +149,13 @@ body {
 .bs-copy:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .bs-count { font-size: 0.78rem; color: var(--ink-faint); margin-left: auto; }
 
+/* ---------- 房间内机器选择器 ---------- */
+.picker { display: flex; gap: 0.5rem; flex-wrap: wrap; margin: 6px 0 1.1rem; }
+.pick { font-family: inherit; font-size: 0.86rem; font-weight: 700; color: var(--ink-soft); background: var(--paper); border: 2px solid var(--ink); border-radius: 999px; padding: 0.4rem 0.95rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease, color 0.15s ease; }
+.pick:hover { background: var(--bg); }
+.pick.on { background: var(--magic); color: var(--paper); transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.machine[hidden] { display: none; }
+
 /* ---------- 规则怪谈《夜班守则》 ---------- */
 .rg-rules-toggle { width: 100%; text-align: left; font-family: inherit; font-size: 0.88rem; font-weight: 700; color: #cdd3e0; background: #20242e; border: 2px solid var(--ink); border-radius: 12px; padding: 0.6rem 0.9rem; cursor: pointer; margin-bottom: 0.8rem; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .rg-rules-toggle:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }

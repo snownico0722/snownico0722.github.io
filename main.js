@@ -146,6 +146,22 @@ document.getElementById("year").textContent = new Date().getFullYear();
   recompute();
 })();
 
+/* ---------- 房间内机器选择器:点标签切机器,一次只显示一台 ---------- */
+(function () {
+  document.querySelectorAll(".picker[data-picker]").forEach(function (picker) {
+    const body = picker.closest(".body-inner");
+    picker.addEventListener("click", function (e) {
+      const btn = e.target.closest(".pick[data-machine]");
+      if (!btn) return;
+      const id = btn.getAttribute("data-machine");
+      picker.querySelectorAll(".pick").forEach((p) => p.classList.toggle("on", p === btn));
+      body.querySelectorAll(".machine[data-machine]").forEach(function (m) {
+        m.hidden = m.getAttribute("data-machine") !== id;
+      });
+    });
+  });
+})();
+
 /* ============================================================
    鬼话发生器:同一台机器 + 三套语料(职场黑话 / 老胡体 / 玄学鸡汤)。
    引擎照搬经典"狗屁不通"思路:主题词 + 句式模板 + 名言/废话,
