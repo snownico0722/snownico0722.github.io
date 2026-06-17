@@ -233,6 +233,97 @@ document.getElementById("year").textContent = new Date().getFullYear();
   });
 })();
 
+/* ============================================================
+   规则怪谈《夜班守则》:读守则、遇事、做选择。守则会矛盾、会冒假条,
+   靠"标准一致 + 精确判定"活到天亮。死了告诉你犯了哪条。
+   ============================================================ */
+(function () {
+  const G = window.__RULE_GAME__;
+  const root = document.getElementById("rg");
+  if (!G || !root) return;
+  const rulesEl = document.getElementById("rg-rules");
+  const sceneEl = document.getElementById("rg-scene");
+  const choicesEl = document.getElementById("rg-choices");
+
+  // 守则列表
+  G.rules.forEach(function (r) {
+    const li = document.createElement("li");
+    li.textContent = r;
+    rulesEl.appendChild(li);
+  });
+
+  let cleared = 0;
+  const totalScenes = Object.keys(G.scenes).filter((k) => !G.scenes[k].win).length;
+
+  function render(node, intro) {
+    sceneEl.className = "rg-scene";
+    choicesEl.innerHTML = "";
+
+    if (intro) {
+      sceneEl.textContent = G.intro;
+      const btn = mkBtn("接班,翻开守则 →", "rg-restart");
+      btn.addEventListener("click", function () { cleared = 0; go(G.start); });
+      choicesEl.appendChild(btn);
+      return;
+    }
+
+    const sc = G.scenes[node];
+
+    if (sc.win) {
+      sceneEl.classList.add("is-win");
+      sceneEl.innerHTML = '<span class="rg-win-tag">活到天亮</span>';
+      appendText(sceneEl, sc.text);
+      const btn = mkBtn("↺ 再守一夜", "rg-restart");
+      btn.addEventListener("click", function () { cleared = 0; go(G.start); });
+      choicesEl.appendChild(btn);
+      return;
+    }
+
+    sceneEl.textContent = sc.text;
+    sc.choices.forEach(function (c) {
+      const btn = mkBtn(c.label, "rg-choice");
+      btn.addEventListener("click", function () {
+        if (c.dead) die(c.reason);
+        else { cleared++; go(c.to); }
+      });
+      choicesEl.appendChild(btn);
+    });
+    const p = document.createElement("p");
+    p.className = "rg-progress";
+    p.textContent = "已撑过 " + cleared + " / " + totalScenes + " 关";
+    choicesEl.appendChild(p);
+  }
+
+  function die(reason) {
+    sceneEl.className = "rg-scene is-dead";
+    sceneEl.innerHTML = '<span class="rg-dead-tag">没撑到天亮</span>';
+    const r = document.createElement("p");
+    r.className = "rg-reason";
+    r.textContent = reason;
+    sceneEl.appendChild(r);
+    choicesEl.innerHTML = "";
+    const btn = mkBtn("↺ 回到接班那一刻", "rg-restart");
+    btn.addEventListener("click", function () { cleared = 0; go(G.start); });
+    choicesEl.appendChild(btn);
+  }
+
+  function go(node) { render(node, false); }
+  function appendText(parent, text) {
+    const span = document.createElement("span");
+    span.textContent = text;
+    parent.appendChild(span);
+  }
+  function mkBtn(label, cls) {
+    const b = document.createElement("button");
+    b.type = "button";
+    b.className = cls;
+    b.textContent = label;
+    return b;
+  }
+
+  render(null, true); // 开场
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
