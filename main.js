@@ -244,6 +244,15 @@ document.getElementById("year").textContent = new Date().getFullYear();
   const rulesEl = document.getElementById("rg-rules");
   const sceneEl = document.getElementById("rg-scene");
   const choicesEl = document.getElementById("rg-choices");
+  const rulesToggle = document.getElementById("rg-rules-toggle");
+
+  // 守则开合(JS 控制,不依赖原生 details)
+  rulesToggle.addEventListener("click", function () {
+    const open = rulesEl.hidden;
+    rulesEl.hidden = !open;
+    rulesToggle.setAttribute("aria-expanded", String(open));
+    rulesToggle.textContent = (open ? "📜 夜班守则(点此收起)" : "📜 夜班守则(点开重读)");
+  });
 
   // 守则列表
   G.rules.forEach(function (r) {

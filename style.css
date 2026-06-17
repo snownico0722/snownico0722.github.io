@@ -150,13 +150,12 @@ body {
 .bs-count { font-size: 0.78rem; color: var(--ink-faint); margin-left: auto; }
 
 /* ---------- 规则怪谈《夜班守则》 ---------- */
-.rg-rules { margin-bottom: 1rem; border: 2px solid var(--ink); border-radius: 12px; background: #20242e; overflow: hidden; }
-.rg-rules summary { cursor: pointer; padding: 0.6rem 0.9rem; font-size: 0.88rem; font-weight: 700; color: #cdd3e0; list-style: none; }
-.rg-rules summary::-webkit-details-marker { display: none; }
-.rg-rules summary::before { content: "▸ "; }
-.rg-rules[open] summary::before { content: "▾ "; }
-.rg-rule-list { margin: 0; padding: 0.2rem 1.1rem 0.9rem 2rem; }
-.rg-rule-list li { font-size: 0.86rem; line-height: 1.7; color: #b3b9c7; margin-bottom: 0.35rem; }
+.rg-rules-toggle { width: 100%; text-align: left; font-family: inherit; font-size: 0.88rem; font-weight: 700; color: #cdd3e0; background: #20242e; border: 2px solid var(--ink); border-radius: 12px; padding: 0.6rem 0.9rem; cursor: pointer; margin-bottom: 0.8rem; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.rg-rules-toggle:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.rg-rule-list { margin: 0 0 1rem; padding: 0.9rem 1.1rem 0.9rem 2.2rem; background: #20242e; border: 2px solid var(--ink); border-radius: 12px; }
+.rg-rule-list[hidden] { display: none; }
+.rg-rule-list li { font-size: 0.86rem; line-height: 1.7; color: #b3b9c7; margin-bottom: 0.4rem; }
+.rg-rule-list li:last-child { margin-bottom: 0; }
 .rg-scene { background: #161922; border: 2px solid var(--ink); border-radius: 12px; padding: 1.1rem 1.1rem; color: #e3e6ee; font-size: 0.98rem; line-height: 1.85; white-space: pre-line; min-height: 5rem; }
 .rg-scene.is-dead { border-color: #b23b3b; }
 .rg-scene.is-win { border-color: var(--open); }
