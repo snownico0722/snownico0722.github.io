@@ -1,6 +1,6 @@
-# testsnow0722.github.io
+# snownico0722.github.io
 
-我的个人首页,通过 GitHub Pages 发布在 <https://testsnow0722.github.io>。
+我的个人首页,通过 GitHub Pages 发布在 <https://snownico0722.github.io>。
 
 ## 本地预览
 
