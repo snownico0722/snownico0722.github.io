@@ -333,6 +333,104 @@ document.getElementById("year").textContent = new Date().getFullYear();
   render(null, true); // 开场
 })();
 
+/* ============================================================
+   判断者测试:12 情景 → 四轴打分 → 16 型。轴取自魔法师的判断机。
+   ============================================================ */
+(function () {
+  const Q = window.__QUIZ__;
+  const stage = document.getElementById("quiz-stage");
+  if (!Q || !stage) return;
+
+  let idx = 0;
+  const scores = { a1: 0, a2: 0, a3: 0, a4: 0 };
+
+  function intro() {
+    idx = 0;
+    scores.a1 = scores.a2 = scores.a3 = scores.a4 = 0;
+    stage.innerHTML = "";
+    const p = document.createElement("p");
+    p.className = "quiz-intro-text";
+    p.textContent = Q.intro;
+    const btn = mk("button", "quiz-go", "开始照一照 →");
+    btn.addEventListener("click", question);
+    stage.appendChild(p);
+    stage.appendChild(btn);
+  }
+
+  function question() {
+    const q = Q.questions[idx];
+    stage.innerHTML = "";
+
+    const bar = mk("div", "quiz-q-bar");
+    const fill = document.createElement("span");
+    fill.style.width = (idx / Q.questions.length * 100) + "%";
+    bar.appendChild(fill);
+    stage.appendChild(bar);
+
+    const num = mk("div", "quiz-q-num", "第 " + (idx + 1) + " / " + Q.questions.length + " 问");
+    stage.appendChild(num);
+
+    const opts = mk("div", "quiz-opts");
+    [q.a, q.b].forEach(function (opt) {
+      const b = mk("button", "quiz-opt", opt.t);
+      b.addEventListener("click", function () {
+        // p === "a" 加分(偏向轴的 a 极),"b" 减分
+        scores[q.axis] += (opt.p === "a" ? 1 : -1);
+        idx++;
+        if (idx < Q.questions.length) question();
+        else result();
+      });
+      opts.appendChild(b);
+    });
+    stage.appendChild(opts);
+  }
+
+  function result() {
+    // 每轴 3 题,得分范围 -3..3。>0 取 a 极,否则 b 极(0 归 b,极少见)
+    const code = Q.axes.map(function (ax) {
+      return scores[ax.key] > 0 ? ax.a : ax.b;
+    }).join("");
+    const r = Q.results[code] || { name: "判断者", line: "", say: "" };
+
+    stage.innerHTML = "";
+    stage.appendChild(mk("div", "quiz-res-code", code));
+    stage.appendChild(mk("div", "quiz-res-name", r.name));
+    if (r.line) stage.appendChild(mk("div", "quiz-res-line", r.line));
+    stage.appendChild(mk("div", "quiz-res-say", r.say));
+
+    const bars = mk("div", "quiz-bars");
+    Q.axes.forEach(function (ax) {
+      const s = scores[ax.key];               // -3..3
+      const pct = ((s + 3) / 6) * 100;         // 0..100
+      const row = mk("div", "quiz-bar-row " + (s > 0 ? "lean-a" : "lean-b"));
+      row.appendChild(mk("span", "quiz-bar-a", ax.a));
+      const track = mk("div", "quiz-bar-track");
+      const dot = mk("div", "quiz-bar-dot");
+      dot.style.left = pct + "%";
+      track.appendChild(dot);
+      row.appendChild(track);
+      row.appendChild(mk("span", "quiz-bar-b", ax.b));
+      bars.appendChild(row);
+    });
+    stage.appendChild(bars);
+
+    const actions = mk("div", "quiz-actions");
+    const again = mk("button", "quiz-restart", "↺ 再照一次");
+    again.addEventListener("click", intro);
+    actions.appendChild(again);
+    stage.appendChild(actions);
+  }
+
+  function mk(tag, cls, text) {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (text != null) el.textContent = text;
+    return el;
+  }
+
+  intro();
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {

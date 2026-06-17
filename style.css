@@ -171,6 +171,36 @@ body {
 .rg-restart:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .rg-progress { font-size: 0.76rem; color: var(--ink-faint); margin-top: 0.6rem; text-align: center; }
 
+/* ---------- 判断者测试 ---------- */
+.quiz-stage { background: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 1.2rem 1.1rem; }
+.quiz-intro-text { font-size: 0.98rem; line-height: 1.85; color: var(--ink-soft); white-space: pre-line; margin-bottom: 1.1rem; }
+.quiz-q-bar { height: 7px; background: var(--bg-2); border: 1.5px solid var(--ink); border-radius: 999px; overflow: hidden; margin-bottom: 1rem; }
+.quiz-q-bar span { display: block; height: 100%; background: linear-gradient(90deg, var(--magic), var(--magic-2)); border-radius: 999px; transition: width 0.3s var(--ease); }
+.quiz-q-num { font-size: 0.76rem; font-weight: 700; color: var(--magic-d); margin-bottom: 0.5rem; }
+.quiz-q-text { font-size: 1.05rem; font-weight: 700; color: var(--ink); line-height: 1.6; margin-bottom: 1rem; }
+.quiz-opts { display: flex; flex-direction: column; gap: 0.6rem; }
+.quiz-opt { font-family: inherit; font-size: 0.96rem; font-weight: 600; text-align: left; line-height: 1.6; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 12px; padding: 0.8rem 1rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease; }
+.quiz-opt:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: #efe6ff; }
+.quiz-opt:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.quiz-go { font-family: inherit; font-size: 1rem; font-weight: 800; color: var(--paper); background: var(--magic); border: 2px solid var(--ink); border-radius: 12px; padding: 0.7rem 1.4rem; cursor: pointer; box-shadow: 0 4px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.quiz-go:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+.quiz-go:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+/* 结果 */
+.quiz-res-code { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.3em; color: var(--magic-d); }
+.quiz-res-name { font-size: 1.5rem; font-weight: 800; color: var(--ink); margin: 0.2rem 0 0.3rem; }
+.quiz-res-line { font-size: 0.96rem; color: var(--ink-soft); font-style: italic; margin-bottom: 1rem; }
+.quiz-res-say { font-size: 0.98rem; line-height: 1.85; color: var(--ink); background: var(--bg); border: 1.5px dashed var(--line); border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 1.2rem; }
+.quiz-bars { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1.2rem; }
+.quiz-bar-row { display: flex; align-items: center; gap: 0.6rem; font-size: 0.84rem; font-weight: 700; }
+.quiz-bar-a, .quiz-bar-b { flex: none; width: 1.6em; text-align: center; color: var(--ink-faint); }
+.quiz-bar-track { flex: 1; height: 10px; background: var(--bg-2); border: 1.5px solid var(--ink); border-radius: 999px; position: relative; }
+.quiz-bar-dot { position: absolute; top: 50%; width: 16px; height: 16px; border-radius: 50%; background: var(--magic); border: 2px solid var(--ink); transform: translate(-50%, -50%); transition: left 0.5s var(--ease); }
+.quiz-bar-row.lean-a .quiz-bar-a, .quiz-bar-row.lean-b .quiz-bar-b { color: var(--magic-d); }
+.quiz-actions { display: flex; gap: 0.6rem; flex-wrap: wrap; }
+.quiz-restart { font-family: inherit; font-size: 0.88rem; font-weight: 700; color: var(--ink); background: var(--bg-2); border: 2px solid var(--ink); border-radius: 999px; padding: 0.5rem 1.1rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.quiz-restart:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.quiz-restart:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+
 /* ---------- 货箱 ---------- */
 .crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin: 6px 0 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; }
 .crate:last-child { margin-bottom: 6px; }
