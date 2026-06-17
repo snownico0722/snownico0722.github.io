@@ -15,8 +15,9 @@
 
   <div class="stage" id="stage" data-view="home">
 
-    <!-- 魔法师:一直在,详情时收小 -->
-    <div class="hero">
+    <!-- 魔法师招牌:详情态时可点 = 回门口 -->
+    <div class="hero" id="hero" data-go="home" role="button" tabindex="0" aria-label="回门口">
+      <span class="hero-back">← 回门口</span>
       <svg class="hero-hat" viewBox="0 0 100 100" aria-hidden="true"><use href="#hat" /></svg>
       <h1 class="hero-title">魔法工厂</h1>
       <p class="hero-id">魔法师 · snownico0722</p>
@@ -32,9 +33,9 @@
       </div>
     </div>
 
-    <p class="hint">挑一间厂房推门进去,其它的会让到一边 ↓</p>
+    <p class="hint">挑一间房推门进去,其它的会让到一边 ↓</p>
 
-    <!-- 横幅:首页竖排大卡片,进入后顶部左右并排 -->
+    <!-- 横幅:门口竖排大卡片 → 进入后顶部并排标签 -->
     <div class="zones">
       <button class="banner banner-tools" data-go="tools">
         <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
@@ -43,16 +44,22 @@
           <span class="banner-sub">带得走的工具 · 装上就能用</span>
         </span>
         <span class="banner-count">2 件出厂</span>
-        <svg class="banner-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <button class="banner banner-fortune" data-go="fortune">
+        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#orb" /></svg>
+        <span class="banner-text">
+          <span class="banner-name">占卜室</span>
+          <span class="banner-sub">把关系算成一个数 · 给你个判语</span>
+        </span>
+        <span class="banner-count">1 台水晶球</span>
       </button>
       <button class="banner banner-games" data-go="games">
-        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#wand" /></svg>
+        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
         <span class="banner-text">
           <span class="banner-name">游戏厅</span>
           <span class="banner-sub">当场玩的 · 文字游戏 / 测试</span>
         </span>
-        <span class="banner-count">1 台在玩 · 更多在变</span>
-        <svg class="banner-caret" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="banner-count">在变</span>
       </button>
     </div>
 
@@ -73,11 +80,11 @@
         </article>
       </div></div>
 
-      <div class="body" data-body="games"><div class="body-inner">
+      <div class="body" data-body="fortune"><div class="body-inner">
         <div class="machine">
-          <div class="machine-bar"><span class="machine-tag">试玩 No.1</span><span class="machine-light"></span></div>
+          <div class="machine-bar"><span class="machine-tag">水晶球 No.1</span><span class="machine-light"></span></div>
           <h3 class="machine-name">好感度计算机</h3>
-          <p class="machine-desc">魔法师亲手做的量表。13 个维度各自加权,实时算出一个人对你的好感总分。</p>
+          <p class="machine-desc">魔法师亲手做的量表。13 个维度各自加权,实时算出一个人对你的好感总分。只在你浏览器里算,不上传。</p>
           <div class="affinity">
             <div class="aff-screen">
               <div class="aff-num" id="aff-num">0.0</div>
@@ -86,11 +93,20 @@
             </div>
             <div class="aff-rows" id="aff-rows"></div>
             <button class="aff-reset" id="aff-reset" type="button">↺ 清零重打</button>
-            <p class="aff-note">公式:Σ(打分 × 权重) ÷ 100。魔法师表里的样本「我对挚友 a」算出来是 66.6。</p>
+            <p class="aff-note">公式:Σ(打分 × 权重) ÷ 100。满值 100 为基准。魔法师表里的样本「我对挚友 a」算出来是 66.6。</p>
           </div>
         </div>
+      </div></div>
+
+      <div class="body" data-body="games"><div class="body-inner">
+        <div class="empty-stage">
+          <svg class="empty-joy" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
+          <p class="empty-title">游戏厅还在装修</p>
+          <p class="empty-sub">这里以后放真正能玩的东西。魔法师说先空着,也不放假货充数。</p>
+        </div>
         <div class="coming-list">
-          <div class="coming"><span class="coming-tag">待上架</span><span><strong>文字游戏</strong> — 等魔法师写。位子留好了。</span></div>
+          <div class="coming"><span class="coming-tag">在变</span><span><strong>文字游戏</strong> — 等魔法师写。位子留好了。</span></div>
+          <div class="coming"><span class="coming-tag">在变</span><span><strong>小测试</strong> — 测点什么由魔法师定。</span></div>
         </div>
       </div></div>
     </div>
@@ -121,9 +137,18 @@
         <ellipse cx="50" cy="76" rx="36" ry="10" />
         <path d="M50 22 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1 z" fill="#fff" fill-opacity="0.85" />
       </g>
-      <g id="wand">
-        <rect x="20" y="70" width="56" height="10" rx="5" transform="rotate(-32 48 75)" />
-        <path d="M70 14 l4 10 10 1 -7 7 2 11 -9 -5 -9 5 2 -11 -7 -7 10 -1 z" />
+      <g id="orb">
+        <circle cx="50" cy="42" r="30" />
+        <path d="M30 72 h40 l6 14 H24 z" />
+        <circle cx="42" cy="34" r="8" fill="#fff" fill-opacity="0.55" />
+        <path d="M58 50 l2 5 5 2 -5 2 -2 5 -2 -5 -5 -2 5 -2 z" fill="#fff" fill-opacity="0.85" />
+      </g>
+      <g id="joy">
+        <rect x="22" y="58" width="56" height="30" rx="10" />
+        <rect x="46" y="26" width="8" height="26" rx="4" />
+        <circle cx="50" cy="22" r="11" />
+        <circle cx="36" cy="73" r="4" fill="#000" fill-opacity="0.2" />
+        <circle cx="64" cy="73" r="4" fill="#000" fill-opacity="0.2" />
       </g>
       <g id="gh">
         <path d="M12 .5C5.7.5.5 5.7.5 12c0 5.1 3.3 9.4 7.9 10.9.6.1.8-.3.8-.6v-2c-3.2.7-3.9-1.5-3.9-1.5-.5-1.3-1.3-1.7-1.3-1.7-1.1-.7.1-.7.1-.7 1.2.1 1.8 1.2 1.8 1.2 1 1.8 2.8 1.3 3.5 1 .1-.8.4-1.3.7-1.6-2.6-.3-5.3-1.3-5.3-5.7 0-1.3.5-2.3 1.2-3.1-.1-.3-.5-1.5.1-3.1 0 0 1-.3 3.3 1.2a11.4 11.4 0 0 1 6 0C17 4.2 18 4.5 18 4.5c.6 1.6.2 2.8.1 3.1.8.8 1.2 1.8 1.2 3.1 0 4.4-2.7 5.4-5.3 5.7.4.4.8 1.1.8 2.2v3.3c0 .3.2.7.8.6 4.6-1.5 7.9-5.8 7.9-10.9C23.5 5.7 18.3.5 12 .5z" />

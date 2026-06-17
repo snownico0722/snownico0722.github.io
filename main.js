@@ -8,26 +8,40 @@ document.getElementById("year").textContent = new Date().getFullYear();
    ============================================================ */
 (function () {
   const stage = document.getElementById("stage");
-  const valid = { tools: 1, games: 1 };
+  const valid = { tools: 1, fortune: 1, games: 1 };
 
   function setView(view) {
     if (!valid[view]) view = "home";
     stage.setAttribute("data-view", view);
   }
 
-  document.addEventListener("click", function (e) {
-    const t = e.target.closest("[data-go]");
-    if (!t) return;
-    let zone = t.getAttribute("data-go");
-    // 再点已展开的厂房 = 收起回首页
-    if (zone === stage.getAttribute("data-view")) zone = "home";
+  function nav(zone) {
     const target = zone === "home" ? "" : zone;
     if (("#" + target) === location.hash || (target === "" && !location.hash)) {
       setView(zone);
     } else {
       location.hash = target;
     }
+  }
+
+  document.addEventListener("click", function (e) {
+    const t = e.target.closest("[data-go]");
+    if (!t) return;
+    // 招牌(hero)里点链接不触发回门口
+    if (t.id === "hero" && e.target.closest("a, .mini-ico")) return;
+    nav(t.getAttribute("data-go"));
   });
+
+  // 招牌键盘可达(Enter / 空格 = 回门口)
+  const hero = document.getElementById("hero");
+  if (hero) {
+    hero.addEventListener("keydown", function (e) {
+      if ((e.key === "Enter" || e.key === " ") && stage.getAttribute("data-view") !== "home") {
+        e.preventDefault();
+        nav("home");
+      }
+    });
+  }
 
   window.addEventListener("hashchange", function () {
     setView(location.hash.replace("#", "") || "home");
