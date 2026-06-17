@@ -92,6 +92,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   const numEl = document.getElementById("aff-num");
   const fillEl = document.getElementById("aff-fill");
   const sayEl = document.getElementById("aff-say");
+  const screenEl = document.querySelector(".aff-screen");
   const resetBtn = document.getElementById("aff-reset");
 
   // [名称, 权重, 取值下限, 取值上限, 打分锚点]
@@ -110,17 +111,17 @@ document.getElementById("year").textContent = new Date().getFullYear();
     ["借钱额度", 40, 0, 100, "借出全部年薪 = 100"],
     ["不可割舍度", 20, 0, 100, "0无所谓 · 30心痛 · 60无法割舍"],
   ];
-  const WSUM = DIMS.reduce((a, d) => a + d[1], 0); // 权重合计 203
 
-  // 评语:按总分给一句,语气随魔法师
+  // 评语:满值 100 为基准。超 100 爆表,超 150 反过来质疑打分的人。
   function verdict(v) {
+    if (v > 150) return "这分数我不信了。一个人对另一个人不可能加权到这个地步 —— 要么你重复计了,要么你在骗自己。回去重打。";
+    if (v > 100) return "爆表了。已经超出量表满值 —— 这个人在你这儿,早就不是能被打分衡量的了。";
     if (v <= 0) return "陌生人,或者你不想算这个。";
     if (v < 15) return "点头之交。记不住生日那种。";
     if (v < 35) return "认识,有点意思,但还没到掏心窝。";
     if (v < 55) return "朋友。会主动找,会想起。";
-    if (v < 70) return "挚友级。样本里的「挚友 a」就在这附近(66.6)。";
-    if (v < 85) return "很重的人了。割舍会疼。";
-    return "几乎是另一个自己。这分数你自己清楚意味着什么。";
+    if (v < 80) return "挚友级。样本里的「挚友 a」就在这附近(66.6)。";
+    return "很重的人了。割舍会疼,但还没爆表。";
   }
 
   const inputs = [];
@@ -130,11 +131,10 @@ document.getElementById("year").textContent = new Date().getFullYear();
     row.className = "aff-row";
     row.innerHTML =
       '<div class="aff-row-top">' +
-        '<span class="aff-row-name">' + name + '</span>' +
-        '<span class="aff-row-w">权重 ' + w + '</span>' +
+        '<span class="aff-row-head"><span class="aff-row-name">' + name + '</span>' +
+        '<span class="aff-row-hint">' + hint + '</span></span>' +
         '<span class="aff-row-val" data-val="' + i + '">0</span>' +
       '</div>' +
-      '<div class="aff-hint">' + hint + '</div>' +
       '<input class="aff-range" type="range" min="' + lo + '" max="' + hi + '" step="5" value="0" data-i="' + i + '" aria-label="' + name + '">';
     rows.appendChild(row);
     inputs.push(row.querySelector("input"));
@@ -149,7 +149,10 @@ document.getElementById("year").textContent = new Date().getFullYear();
     });
     const total = sum / 100;
     numEl.textContent = total.toFixed(1);
-    fillEl.style.width = Math.max(0, Math.min(100, (total / WSUM) * 100)) + "%";
+    // 满值 100 为基准线
+    fillEl.style.width = Math.max(0, Math.min(100, total)) + "%";
+    screenEl.classList.toggle("is-over", total > 100);
+    screenEl.classList.toggle("is-doubt", total > 150);
     sayEl.textContent = verdict(total);
   }
 
