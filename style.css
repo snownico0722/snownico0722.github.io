@@ -180,11 +180,27 @@ body {
 .modal-x { position: absolute; top: 0.7rem; right: 0.9rem; font-size: 1.5rem; line-height: 1; color: var(--ink-faint); background: none; border: none; cursor: pointer; }
 .modal-x:hover { color: var(--ink); }
 .boss-big { width: 64px; height: 64px; fill: var(--ember); margin-bottom: 0.5rem; }
-.boss-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.6rem; }
-.boss-line { font-size: 1rem; color: var(--ink-soft); margin-bottom: 1.4rem; }
-.gate-link { display: inline-block; font-size: 1rem; font-weight: 700; color: var(--paper); text-decoration: none; padding: 0.7rem 1.5rem; background: var(--magic); border: 2px solid var(--ink); border-radius: 999px; box-shadow: 0 4px 0 var(--ink); transition: transform 0.15s ease, box-shadow 0.15s ease; }
-.gate-link:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
-.gate-link:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.boss-title { font-size: 1.3rem; font-weight: 800; margin-bottom: 0.5rem; }
+.boss-line { font-size: 0.98rem; color: var(--ink-soft); margin-bottom: 1.3rem; }
+.boss-links { display: flex; flex-direction: column; gap: 0.6rem; text-align: left; }
+.boss-link {
+  display: flex; align-items: center; justify-content: space-between; gap: 0.8rem;
+  text-decoration: none; padding: 0.65rem 1rem;
+  border: 2px solid var(--ink); border-radius: 12px; background: var(--paper);
+  box-shadow: 0 3px 0 var(--ink);
+  transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+}
+.boss-link:not(.is-off):hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: var(--bg); }
+.boss-link:not(.is-off):active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.boss-link-k { font-size: 0.92rem; font-weight: 800; color: var(--ink); }
+.boss-link-v { font-size: 0.82rem; color: var(--ink-soft); }
+/* 置灰:还没开张 */
+.boss-link.is-off {
+  background: var(--bg-2); border-color: var(--line); box-shadow: none;
+  cursor: not-allowed; opacity: 0.55; filter: grayscale(1);
+}
+.boss-link.is-off .boss-link-k,
+.boss-link.is-off .boss-link-v { color: var(--ink-faint); }
 
 /* ---------- 响应式 ---------- */
 @media (max-width: 520px) {
