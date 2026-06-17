@@ -46,89 +46,54 @@ body {
 
 /* ---------- 常驻顶栏 ---------- */
 .topbar {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 1.6rem;
+  display: flex; align-items: center; gap: 0.8rem;
+  margin-bottom: 1.6rem; flex-wrap: wrap;
 }
-.brand {
-  display: flex; align-items: center; gap: 0.55rem;
-  background: none; border: none; cursor: pointer; font-family: inherit; padding: 0;
-}
-.brand-gear { width: 38px; height: 38px; fill: var(--brass); stroke: var(--ink); stroke-width: 2.5; animation: spin 12s linear infinite; }
+.brand { display: flex; align-items: center; gap: 0.5rem; }
+.brand-gear { width: 34px; height: 34px; fill: var(--brass); stroke: var(--ink); stroke-width: 2.5; animation: spin 12s linear infinite; }
 .brand-name {
-  font-size: 1.6rem; font-weight: 800; letter-spacing: 0.04em;
+  font-size: 1.4rem; font-weight: 800; letter-spacing: 0.03em;
   background: linear-gradient(105deg, var(--magic), var(--ember) 60%, var(--brass));
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
+.tabs { display: flex; gap: 0.4rem; margin-left: auto; }
+.tab {
+  font-family: inherit; font-size: 0.92rem; font-weight: 800; color: var(--ink-soft);
+  background: var(--paper); border: 2px solid var(--ink); border-radius: 999px;
+  padding: 0.4rem 1rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink);
+  transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease, color 0.15s ease;
+}
+.tab:hover { background: var(--bg); }
+.tab.is-on { background: var(--magic); color: var(--paper); transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .boss-btn {
-  width: 46px; height: 46px; flex: none; cursor: pointer;
+  width: 44px; height: 44px; flex: none; cursor: pointer;
   background: var(--paper); border: 2px solid var(--ink); border-radius: 50%;
   box-shadow: 0 3px 0 var(--ink); display: grid; place-items: center;
   transition: transform 0.15s ease, box-shadow 0.15s ease;
 }
-.boss-btn svg { width: 30px; height: 30px; fill: var(--ember); }
+.boss-btn svg { width: 28px; height: 28px; fill: var(--ember); }
 .boss-btn:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
 .boss-btn:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 
-/* ---------- 舞台:内部切换 ---------- */
-.stage {
-  position: relative;
-  transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
+/* ---------- 舞台:标签横滑切换 ---------- */
+.stage { position: relative; transition: height 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
 .view { width: 100%; }
-/* 非激活:抽出文档流叠在上面,不可交互 */
 .view[hidden] { display: none; }
-.view.is-leaving,
-.view.is-entering {
-  position: absolute; top: 0; left: 0; right: 0;
-}
+.view.is-leaving, .view.is-entering { position: absolute; top: 0; left: 0; right: 0; }
 .view.is-active { position: relative; }
-
-/* 进出动画 */
 .view.is-entering { animation: slideIn 0.4s cubic-bezier(0.2, 0.8, 0.25, 1) both; }
 .view.is-leaving  { animation: slideOut 0.32s ease both; pointer-events: none; }
 @keyframes slideIn  { from { opacity: 0; transform: translateX(26px); } to { opacity: 1; transform: none; } }
 @keyframes slideOut { from { opacity: 1; transform: none; } to { opacity: 0; transform: translateX(-26px); } }
 
-/* ---------- 导览页 ---------- */
-.hub-tagline {
-  display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.3rem;
-  padding: 0.4rem 1rem; font-size: 0.86rem; font-weight: 600; color: var(--ink-soft);
+/* ---------- 车间导语 ---------- */
+.zone-lead {
+  display: inline-flex; align-items: center; gap: 0.5rem; margin-bottom: 1.6rem;
+  padding: 0.45rem 1rem; font-size: 0.9rem; font-weight: 600; color: var(--ink-soft);
   background: var(--paper); border: 1.5px solid var(--line); border-radius: 999px;
 }
-.bulb { width: 10px; height: 10px; border-radius: 50%; background: var(--open); animation: blink 2.2s ease-in-out infinite; }
+.bulb { width: 10px; height: 10px; flex: none; border-radius: 50%; background: var(--open); animation: blink 2.2s ease-in-out infinite; }
 @keyframes blink { 0%,100% { box-shadow: 0 0 0 0 rgba(54,196,111,0.55); opacity: 1; } 50% { box-shadow: 0 0 0 7px rgba(54,196,111,0); opacity: 0.7; } }
-
-.doors { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-.door {
-  display: flex; flex-direction: column; align-items: center; text-align: center; gap: 0.3rem;
-  padding: 2rem 1rem 1.5rem; cursor: pointer; font-family: inherit;
-  background: var(--paper); border: 2px solid var(--ink); border-radius: 18px;
-  box-shadow: 0 6px 0 var(--ink), 0 7px 18px var(--shadow);
-  transition: transform 0.16s ease, box-shadow 0.16s ease;
-}
-.door:hover { transform: translateY(-5px); box-shadow: 0 11px 0 var(--ink), 0 13px 26px var(--shadow); }
-.door:active { transform: translateY(2px); box-shadow: 0 2px 0 var(--ink); }
-.door-ico { width: 52px; height: 52px; stroke: var(--ink); stroke-width: 2; margin-bottom: 0.4rem; }
-.door-tools .door-ico { fill: var(--brass); animation: spin 11s linear infinite; }
-.door-games .door-ico { fill: var(--magic); }
-.door-no { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.12em; color: var(--ink-faint); }
-.door-name { font-size: 1.3rem; font-weight: 800; color: var(--ink); }
-.door-sub { font-size: 0.8rem; color: var(--ink-soft); }
-.door-count { margin-top: 0.5rem; font-size: 0.72rem; font-weight: 700; color: var(--paper); background: var(--ink); padding: 0.15rem 0.6rem; border-radius: 999px; }
-
-/* ---------- 车间顶栏 ---------- */
-.zone-top { display: flex; align-items: center; justify-content: space-between; gap: 0.6rem; margin-bottom: 0.4rem; }
-.zone-title { font-size: 1.5rem; font-weight: 800; line-height: 1.1; text-align: center; }
-.zone-tools .zone-title { color: var(--brass-d); }
-.zone-games .zone-title { color: var(--magic); }
-.back, .hop {
-  font-family: inherit; font-size: 0.8rem; font-weight: 700; color: var(--ink-soft);
-  background: var(--paper); border: 1.5px solid var(--ink); border-radius: 999px;
-  padding: 0.35rem 0.8rem; cursor: pointer; white-space: nowrap;
-  transition: background 0.15s ease, color 0.15s ease;
-}
-.back:hover, .hop:hover { background: var(--ink); color: var(--paper); }
-.zone-lead { text-align: center; color: var(--ink-soft); font-size: 0.96rem; margin-bottom: 1.6rem; }
 
 /* ---------- 货箱 ---------- */
 .crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin-bottom: 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; }
@@ -203,12 +168,11 @@ body {
 .boss-link.is-off .boss-link-v { color: var(--ink-faint); }
 
 /* ---------- 响应式 ---------- */
-@media (max-width: 520px) {
-  .doors { grid-template-columns: 1fr; gap: 0.8rem; }
-  .door { flex-direction: row; justify-content: flex-start; text-align: left; gap: 0.9rem; padding: 1.1rem; flex-wrap: wrap; }
-  .door-ico { margin-bottom: 0; }
-  .door-name { flex: 1; }
-  .door-count { margin-top: 0; width: 100%; }
+@media (max-width: 460px) {
+  .topbar { gap: 0.6rem; }
+  .brand-name { font-size: 1.2rem; }
+  .tabs { width: 100%; order: 3; }
+  .tab { flex: 1; }
 }
 
 @media (prefers-reduced-motion: reduce) {

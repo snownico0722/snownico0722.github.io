@@ -2,51 +2,54 @@
 
 document.getElementById("year").textContent = new Date().getFullYear();
 
-/* ---------- 舞台内部切换:旧的淡出左移、新的淡入右移,高度平滑过渡 ---------- */
+/* ---------- 标签横滑切换:旧的淡出左移、新的淡入右移,高度平滑过渡 ---------- */
 (function () {
   const stage = document.getElementById("stage");
+  const tabs = document.querySelectorAll(".tab[data-go]");
   const views = {};
-  let current = "hub";
+  let current = "tools";
   let animating = false;
 
   stage.querySelectorAll(".view[data-zone]").forEach(function (v) {
     views[v.getAttribute("data-zone")] = v;
   });
 
+  function syncTabs(zone) {
+    tabs.forEach(function (t) {
+      t.classList.toggle("is-on", t.getAttribute("data-go") === zone);
+    });
+  }
+
   function go(zone, instant) {
-    if (!views[zone]) zone = "hub";
+    if (!views[zone]) zone = "tools";
     if (zone === current) return;
     if (animating && !instant) return;
     const from = views[current];
     const to = views[zone];
+    syncTabs(zone);
 
     if (instant) {
-      from.hidden = true; from.className = from.className.replace(/\bis-\w+\b/g, "").trim();
-      to.hidden = false; to.classList.add("is-active");
+      from.hidden = true;
+      from.className = from.className.replace(/\bis-\w+\b/g, "").trim();
+      to.hidden = false;
+      to.classList.add("is-active");
       current = zone;
       return;
     }
 
     animating = true;
-    // 锁定起始高度,准备过渡
     const startH = stage.offsetHeight;
     stage.style.height = startH + "px";
 
-    // 新视图入场(绝对定位叠上来)
     to.hidden = false;
     to.classList.remove("is-active");
     to.classList.add("is-entering");
-    // 旧视图离场
     from.classList.remove("is-active");
     from.classList.add("is-leaving");
 
-    // 量新视图高度,过渡 stage 高度
     const targetH = to.offsetHeight;
-    requestAnimationFrame(function () {
-      stage.style.height = targetH + "px";
-    });
+    requestAnimationFrame(function () { stage.style.height = targetH + "px"; });
 
-    // 收尾
     setTimeout(function () {
       from.classList.remove("is-leaving");
       from.hidden = true;
@@ -55,17 +58,14 @@ document.getElementById("year").textContent = new Date().getFullYear();
       stage.style.height = "";
       current = zone;
       animating = false;
-      window.scrollTo({ top: 0, behavior: "smooth" });
     }, 420);
   }
 
-  // 点门 / 返回 / 串门 / 招牌回厂区 —— 走 hash,便于前进后退与分享
   document.addEventListener("click", function (e) {
-    const t = e.target.closest("[data-go]");
+    const t = e.target.closest(".tab[data-go]");
     if (!t) return;
-    e.preventDefault();
     const zone = t.getAttribute("data-go");
-    const target = zone === "hub" ? "" : zone;
+    const target = zone === "tools" ? "" : zone;
     if (("#" + target) === location.hash || (target === "" && !location.hash)) {
       go(zone);
     } else {
@@ -74,12 +74,12 @@ document.getElementById("year").textContent = new Date().getFullYear();
   });
 
   window.addEventListener("hashchange", function () {
-    go(location.hash.replace("#", "") || "hub");
+    go(location.hash.replace("#", "") || "tools");
   });
 
-  // 首屏直达
-  const initial = location.hash.replace("#", "") || "hub";
-  if (initial !== "hub") go(initial, true);
+  const initial = location.hash.replace("#", "") || "tools";
+  if (initial !== "tools") go(initial, true);
+  syncTabs(current);
 })();
 
 /* ---------- 厂长浮层 ---------- */

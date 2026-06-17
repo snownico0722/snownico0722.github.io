@@ -16,49 +16,27 @@
 
   <div class="wrap">
 
-    <!-- ===== 常驻顶栏:招牌 + 厂长小图标 ===== -->
+    <!-- ===== 常驻顶栏:招牌 + 车间标签 + 厂长 ===== -->
     <header class="topbar">
-      <button class="brand" data-go="hub" title="回厂区">
+      <div class="brand">
         <svg class="brand-gear" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
         <span class="brand-name">魔法工厂</span>
-      </button>
-      <button class="boss-btn" id="boss-btn" title="厂长在此" aria-label="厂长在此">
+      </div>
+      <nav class="tabs" aria-label="车间">
+        <button class="tab is-on" data-go="tools">工具坊</button>
+        <button class="tab" data-go="games">游戏厅</button>
+      </nav>
+      <button class="boss-btn" id="boss-btn" title="厂长名片" aria-label="厂长名片">
         <svg viewBox="0 0 100 100" aria-hidden="true"><use href="#boss" /></svg>
       </button>
     </header>
 
-    <!-- ===== 舞台:只有这里面在切换 ===== -->
+    <!-- ===== 舞台:两个车间,标签横滑切换 ===== -->
     <div class="stage" id="stage">
 
-      <!-- 厂区导览 -->
-      <section class="view is-active" data-zone="hub">
-        <p class="hub-tagline"><span class="bulb"></span>营业中 · 选个车间进去逛</p>
-        <nav class="doors" aria-label="厂区导览">
-          <button class="door door-tools" data-go="tools">
-            <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
-            <span class="door-no">一号车间</span>
-            <span class="door-name">工具坊</span>
-            <span class="door-sub">带得走的工具 · 装上就能用</span>
-            <span class="door-count">2 件出厂</span>
-          </button>
-          <button class="door door-games" data-go="games">
-            <svg class="door-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
-            <span class="door-no">二号车间</span>
-            <span class="door-name">游戏厅</span>
-            <span class="door-sub">当场玩的 · 文字游戏 / 测试</span>
-            <span class="door-count">1 台在玩 · 更多在造</span>
-          </button>
-        </nav>
-      </section>
-
       <!-- 一号车间 · 工具坊 -->
-      <section class="view zone-tools" data-zone="tools" hidden>
-        <div class="zone-top">
-          <button class="back" data-go="hub">← 厂区</button>
-          <h2 class="zone-title">工具坊</h2>
-          <button class="hop" data-go="games">游戏厅 →</button>
-        </div>
-        <p class="zone-lead">下载装上就能用,都在 GitHub 上。</p>
+      <section class="view is-active zone-tools" data-zone="tools">
+        <p class="zone-lead"><span class="bulb"></span>带得走的工具 · 下载装上就能用,都在 GitHub 上。</p>
 
         <article class="crate">
           <div class="crate-tag">No.001</div>
@@ -87,12 +65,7 @@
 
       <!-- 二号车间 · 游戏厅 -->
       <section class="view zone-games" data-zone="games" hidden>
-        <div class="zone-top">
-          <button class="back" data-go="hub">← 厂区</button>
-          <h2 class="zone-title">游戏厅</h2>
-          <button class="hop" data-go="tools">工具坊 →</button>
-        </div>
-        <p class="zone-lead">不用下载,点一下就在这页里玩。文字游戏和测试陆续上架。</p>
+        <p class="zone-lead"><span class="bulb"></span>当场玩的 · 点一下就在这页里玩。文字游戏和测试陆续上架。</p>
 
         <div class="machine">
           <div class="machine-bar"><span class="machine-tag">试玩 No.1</span><span class="machine-light"></span></div>
@@ -155,14 +128,6 @@
         </g>
         <circle cx="50" cy="50" r="34" />
         <circle cx="50" cy="50" r="13" fill="#000" fill-opacity="0.18" />
-      </g>
-      <g id="joy">
-        <rect x="14" y="34" width="72" height="46" rx="16" />
-        <circle cx="36" cy="57" r="5" fill="#000" fill-opacity="0.2" />
-        <rect x="30" y="50" width="3" height="14" rx="1.5" fill="#000" fill-opacity="0.2" />
-        <rect x="24" y="56" width="14" height="3" rx="1.5" fill="#000" fill-opacity="0.2" />
-        <circle cx="64" cy="51" r="5" fill="#000" fill-opacity="0.2" />
-        <circle cx="74" cy="61" r="5" fill="#000" fill-opacity="0.2" />
       </g>
       <g id="boss">
         <!-- 戴安全帽的厂长 -->
