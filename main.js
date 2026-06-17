@@ -1,33 +1,29 @@
-// snownico0722 — 无依赖脚本
+// 魔法工厂 · 无依赖脚本
 
 // 年份
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// 主题切换：记住选择；不写死，默认跟随 HTML 的 paper
+// 飘浮的火花:随机生成,从底部升起
 (function () {
-  const root = document.documentElement;
-  const btn = document.getElementById("theme-toggle");
-  const saved = localStorage.getItem("theme");
-  if (saved === "paper" || saved === "ink") root.setAttribute("data-theme", saved);
-
-  function label() {
-    btn.textContent = root.getAttribute("data-theme") === "ink" ? "纸" : "墨";
+  const layer = document.querySelector(".sparks");
+  if (!layer) return;
+  const COLORS = ["#ffb43c", "#ff7a3c", "#7c5cff", "#4ec5d6"];
+  const COUNT = 18;
+  for (let i = 0; i < COUNT; i++) {
+    const s = document.createElement("i");
+    s.style.left = Math.random() * 100 + "vw";
+    s.style.background = COLORS[(Math.random() * COLORS.length) | 0];
+    const size = 4 + Math.random() * 5;
+    s.style.width = s.style.height = size + "px";
+    s.style.animationDuration = 7 + Math.random() * 8 + "s";
+    s.style.animationDelay = -Math.random() * 12 + "s";
+    layer.appendChild(s);
   }
-  label();
-
-  btn.addEventListener("click", function () {
-    const next = root.getAttribute("data-theme") === "ink" ? "paper" : "ink";
-    root.setAttribute("data-theme", next);
-    localStorage.setItem("theme", next);
-    label();
-  });
 })();
 
-// 星标：联网取真实数,失败则保留 HTML 里的静态回落值。
-// 要实证、要量化——宁可取真的,也不写死一个会过时的数。
+// 星标:联网取真实数,失败保留货架上的静态回落值
 (function () {
-  const nodes = document.querySelectorAll(".repo-stars[data-repo]");
-  nodes.forEach(function (node) {
+  document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
     const repo = node.getAttribute("data-repo");
     fetch("https://api.github.com/repos/snownico0722/" + repo, {
       headers: { Accept: "application/vnd.github+json" },
@@ -42,7 +38,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
         }
       })
       .catch(function () {
-        /* 取不到就用静态回落值,不报错、不打扰 */
+        /* 取不到就用静态回落值,不打扰 */
       });
   });
 })();

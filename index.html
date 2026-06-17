@@ -1,83 +1,105 @@
 <!DOCTYPE html>
-<html lang="zh-CN" data-theme="paper">
+<html lang="zh-CN">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>snownico0722</title>
-  <meta name="description" content="第一性原理，功利主义。把概念祛魅，压缩成一句话。要实证，要量化，对双标零容忍。" />
+  <title>魔法工厂 · snownico0722</title>
+  <meta name="description" content="一座造好玩又好用小东西的魔法工厂。随便逛,随便拿,记得来玩。" />
   <link rel="preconnect" href="https://api.github.com" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <button id="theme-toggle" class="theme-toggle" type="button" aria-label="切换明暗" title="明 / 墨">墨</button>
+  <!-- 飘浮的火花 -->
+  <div class="sparks" aria-hidden="true"></div>
 
-  <main class="sheet">
+  <div class="factory">
 
-    <header class="head">
-      <div class="seal" aria-hidden="true">理</div>
-      <h1>snownico0722</h1>
-      <p class="kernel">
-        第一性原理，功利主义。把概念祛魅，压缩成一句话。<br />
-        要实证，要量化，对双标零容忍。
-      </p>
+    <!-- 厂门招牌 -->
+    <header class="signboard">
+      <div class="gears" aria-hidden="true">
+        <svg class="gear gear-a" viewBox="0 0 100 100"><use href="#gear" /></svg>
+        <svg class="gear gear-b" viewBox="0 0 100 100"><use href="#gear" /></svg>
+      </div>
+      <h1 class="title">魔法工厂</h1>
+      <p class="subtitle">THE&nbsp;MAGIC&nbsp;FACTORY&nbsp;·&nbsp;snownico0722</p>
+      <p class="open-sign"><span class="bulb"></span>营业中 · 随便逛,随便拿,记得来玩</p>
     </header>
 
-    <hr class="rule" />
+    <p class="intro">
+      这里造一些好玩又好用的小东西。<br />
+      下面货架上的都已出厂,炉子里还烧着新的。
+    </p>
 
-    <section class="block" aria-label="方法">
-      <h2 class="label">方法</h2>
-      <p class="formula">真实有效　·　完整闭环　·　可执行验证　·　代价记账</p>
-      <ul class="claims">
-        <li>不做方向稿。只交付可运行、可验证的东西。</li>
-        <li>讨厌的不是错误，是错误被包装成正确，浅层总结被包装成理解。</li>
-        <li>任何决定都要付出代价。我只是不假装没有代价。</li>
-      </ul>
-    </section>
+    <!-- 货架:出厂产品 -->
+    <section class="shelf" aria-label="出厂产品">
+      <h2 class="shelf-label">◢ 已出厂 ◣</h2>
 
-    <hr class="rule" />
-
-    <section class="block" aria-label="项目">
-      <h2 class="label">项目</h2>
-      <p class="block-note">两个工具，同一条原则：安静、可用、不打扰。原生实现，不堆框架，不把成本转嫁给用户。</p>
-
-      <article class="repo">
-        <div class="repo-top">
-          <a class="repo-name" href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo</a>
-          <span class="repo-stars" data-repo="PaperTodo"><span class="star">★</span><span class="count">76</span></span>
+      <article class="crate">
+        <div class="crate-tag">No.001</div>
+        <h3 class="crate-name">
+          <a href="https://github.com/snownico0722/PaperTodo" target="_blank" rel="noopener">PaperTodo · 一张纸</a>
+        </h3>
+        <p class="crate-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown,没有主窗口,没有账号,没有管理器。</p>
+        <div class="crate-foot">
+          <span class="chip">Windows</span>
+          <span class="chip">C# · WPF</span>
+          <span class="stars" data-repo="PaperTodo">★ <span class="count">76</span></span>
         </div>
-        <p class="repo-desc">让桌面上有几张安静、可用、不打扰人的纸。待办 + Markdown，没有主窗口，没有账号，没有管理器。</p>
-        <p class="repo-meta">C# · WPF · .NET 10</p>
       </article>
 
-      <article class="repo">
-        <div class="repo-top">
-          <a class="repo-name" href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">bookmark-bar-default-resetter</a>
-          <span class="repo-stars" data-repo="bookmark-bar-default-resetter"><span class="star">★</span><span class="count">1</span></span>
+      <article class="crate">
+        <div class="crate-tag">No.002</div>
+        <h3 class="crate-name">
+          <a href="https://github.com/snownico0722/bookmark-bar-default-resetter" target="_blank" rel="noopener">书签栏归位器</a>
+        </h3>
+        <p class="crate-desc">极简 Chrome 扩展。让书签栏永远是你下次保存书签的默认位置。一次轻轻的触碰,不打扰。</p>
+        <div class="crate-foot">
+          <span class="chip">Chrome</span>
+          <span class="chip">JS · MV3</span>
+          <span class="stars" data-repo="bookmark-bar-default-resetter">★ <span class="count">1</span></span>
         </div>
-        <p class="repo-desc">极简 Chrome 扩展（MV3）。让书签栏始终是下次保存书签的默认文件夹。一次触碰，不打扰。</p>
-        <p class="repo-meta">JavaScript · Manifest V3 · Service Worker</p>
       </article>
     </section>
 
-    <hr class="rule" />
-
-    <section class="block" aria-label="领域">
-      <h2 class="label">使同一套方法的地方</h2>
-      <ul class="domains">
-        <li>电子游戏设计</li>
-        <li>AI 能力测评</li>
-        <li>桌面工程 · WPF / Avalonia</li>
-        <li>循证健身</li>
-        <li>第一性原理思辨</li>
-      </ul>
+    <!-- 炉子:在建 -->
+    <section class="furnace" aria-label="炉子里">
+      <div class="furnace-fire" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </div>
+      <div class="furnace-text">
+        <h2 class="furnace-label">炉子里还烧着</h2>
+        <p>下一件还在成型。想看我接下来造什么,蹲一下 GitHub。</p>
+      </div>
     </section>
 
-    <footer class="foot">
-      <a href="https://github.com/snownico0722" target="_blank" rel="noopener">github.com/snownico0722</a>
-      <span class="foot-note">本页同样是原生实现 — 纯 HTML / CSS / JS，无框架，无构建。<span id="year"></span></span>
+    <!-- 厂门出口 -->
+    <footer class="gate">
+      <a class="gate-link" href="https://github.com/snownico0722" target="_blank" rel="noopener">进厂转转 → github.com/snownico0722</a>
+      <p class="gate-note">本工厂全手工打造 — 纯 HTML / CSS / SVG,无框架,无构建。<span id="year"></span></p>
     </footer>
 
-  </main>
+  </div>
+
+  <!-- SVG 齿轮定义 -->
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+    <defs>
+      <g id="gear">
+        <!-- 8 颗等距齿 -->
+        <g>
+          <rect x="44" y="2" width="12" height="20" rx="2" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(45 50 50)" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(90 50 50)" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(135 50 50)" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(180 50 50)" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(225 50 50)" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(270 50 50)" />
+          <rect x="44" y="2" width="12" height="20" rx="2" transform="rotate(315 50 50)" />
+        </g>
+        <circle cx="50" cy="50" r="34" />
+        <circle cx="50" cy="50" r="13" fill="#000" fill-opacity="0.18" />
+      </g>
+    </defs>
+  </svg>
 
   <script src="main.js"></script>
 </body>
