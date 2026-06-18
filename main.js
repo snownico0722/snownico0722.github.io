@@ -361,19 +361,19 @@ document.getElementById("year").textContent = new Date().getFullYear();
     return s;
   }
 
-  // 魔法引擎:中二咒语腔,把主题词当被召唤的存在(与主题标签无关)
+  // 吃了菌子引擎:每个风格专属的疯癫/幻觉生成逻辑
   function chunkMag(n, opener) {
-    const M = window.__BS_MAGIC__;
-    let s = opener ? fill(rand(M.open), theme) : "";
+    const C = D.themes[active].mag;
+    let s = opener ? fill(rand(C.open), theme) : "";
     while (s.length < n) {
       const r = Math.random();
-      if (r < 0.2) {
-        s += rand(M.sages) + "留下一句残篇:“" + rand(M.verses) + "”";
-      } else if (r < 0.34) {
-        s += rand(M.turn).replace(/__T__/g, theme);
-      } else { s += fill(pickBody(M.body), theme); }
+      if (r < 0.2 && C.names) {
+        s += rand(C.names) + "梦呓道:“" + rand(C.quotes) + "”";
+      } else if (r < 0.34 && C.turn.length) {
+        s += rand(C.turn);
+      } else { s += fill(pickBody(C.body), theme); }
     }
-    if (opener) s += fill(rand(M.close), theme);
+    if (opener) s += fill(rand(C.close), theme);
     return s;
   }
 
@@ -396,7 +396,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
       el.textContent = p;
       out.appendChild(el);
     });
-    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 魔法" : "";
+    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 吃了菌子 🍄" : "";
     countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
     copyBtn.hidden = false;
     moreBtn.hidden = false;
@@ -407,7 +407,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
     const el = document.createElement("p");
     el.textContent = makeChunk(120 + ((Math.random() * 60) | 0), false);
     out.appendChild(el);
-    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 魔法" : "";
+    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 吃了菌子 🍄" : "";
     countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
     el.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
