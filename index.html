@@ -9,16 +9,16 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <!-- 动态背景:按房间切换主题。各层由 JS 填充装饰元素 -->
+  <!-- 动态背景:按房间切换主题。three.js 驱动占卜室,canvas 驱动游戏厅/工坊 -->
   <div class="backdrop" id="backdrop">
     <div class="bd bd-home" data-bd="home">
       <div class="sparks" aria-hidden="true"></div>
       <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
       <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
     </div>
-    <div class="bd bd-fortune" data-bd="fortune"><div class="bd-stars" id="bd-stars"></div><div class="bd-moon"></div><div class="bd-runes" id="bd-runes"></div></div>
-    <div class="bd bd-games" data-bd="games"><div class="bd-grid"></div><div class="bd-pix" id="bd-pix"></div><div class="bd-scan"></div></div>
-    <div class="bd bd-tools" data-bd="tools"><div class="bd-cogs" id="bd-cogs"></div><div class="bd-steam" id="bd-steam"></div><div class="bd-rivets"></div></div>
+    <div class="bd bd-fortune" data-bd="fortune"><canvas id="cv-fortune"></canvas></div>
+    <div class="bd bd-games" data-bd="games"><canvas id="cv-games"></canvas><div class="bd-scan"></div></div>
+    <div class="bd bd-tools" data-bd="tools"><canvas id="cv-tools"></canvas><div class="bd-rivets"></div></div>
   </div>
 
   <div class="stage" id="stage" data-view="home">
@@ -258,6 +258,10 @@
     </defs>
   </svg>
 
+  <script type="importmap">
+  { "imports": { "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js" } }
+  </script>
+  <script type="module" src="backgrounds.js"></script>
   <script src="bs-data.js"></script>
   <script src="rule-data.js"></script>
   <script src="quiz-data.js"></script>

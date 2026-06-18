@@ -16,6 +16,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
     if (!valid[view]) view = "home";
     stage.setAttribute("data-view", view);
     document.body.setAttribute("data-view", view); // 驱动背景主题
+    if (window.__setBgView) window.__setBgView(view); // 通知背景渲染器
     if (hatUse) hatUse.setAttribute("href", HATS[view] || "#hat");
   }
 
