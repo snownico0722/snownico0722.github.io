@@ -428,3 +428,27 @@ body[data-view="games"] .hero-hat { fill: #50ffaa; stroke: #06210f; filter: drop
 body[data-view="tools"] .hero-hat { fill: #d9a441; stroke: #1a120a; filter: drop-shadow(0 4px 0 #8a5e18); }
 /* 文字不随房间改色,统一可读的浅色(深色面板上) */
 body:not([data-view="home"]) .hero-id { color: #cfc8e0; }
+
+/* 搞笑小人 SVG 容器 */
+.quiz-res-char {
+  display: block;
+  margin: 0.5rem auto 1rem;
+  width: 140px;
+  height: 170px;
+  filter: drop-shadow(0 4px 10px rgba(124, 92, 255, 0.22));
+  animation: popIn 0.6s cubic-bezier(0.2, 1.4, 0.4, 1) both;
+}
+.quiz-res-char svg,
+.quiz-res-char img {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: contain;
+  border-radius: 8px;
+}
+@keyframes popIn {
+  0% { transform: scale(0) rotate(-12deg); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+

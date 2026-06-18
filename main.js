@@ -602,6 +602,11 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
     stage.innerHTML = "";
     stage.appendChild(mk("div", "quiz-res-code", code));
+    if (r.svg) {
+      const charDiv = mk("div", "quiz-res-char");
+      charDiv.innerHTML = r.svg;
+      stage.appendChild(charDiv);
+    }
     stage.appendChild(mk("div", "quiz-res-name", r.name));
     if (r.line) stage.appendChild(mk("div", "quiz-res-line", r.line));
     stage.appendChild(mk("div", "quiz-res-say", r.say));
@@ -708,6 +713,15 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
     stage.innerHTML = "";
     stage.appendChild(mk("div", "quiz-res-code", "你的赛博原形"));
+    if (win.img) {
+      const charDiv = mk("div", "quiz-res-char");
+      charDiv.innerHTML = '<img src="' + win.img + '" alt="' + win.name + '">';
+      stage.appendChild(charDiv);
+    } else if (win.svg) {
+      const charDiv = mk("div", "quiz-res-char");
+      charDiv.innerHTML = win.svg;
+      stage.appendChild(charDiv);
+    }
     stage.appendChild(mk("div", "quiz-res-name", win.name));
     stage.appendChild(mk("div", "quiz-res-line", win.line));
     stage.appendChild(mk("div", "quiz-res-say", win.say));

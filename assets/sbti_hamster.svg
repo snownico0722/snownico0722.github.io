@@ -1,0 +1,36 @@
+<svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="260" fill="#f5f0fa"/>
+  <!-- Legs & Shoes -->
+  <rect x="80" y="186" width="14" height="40" rx="5" fill="#a78bfa" stroke="#333" stroke-width="3"/>
+  <rect x="106" y="186" width="14" height="40" rx="5" fill="#a78bfa" stroke="#333" stroke-width="3"/>
+  <ellipse cx="87" cy="226" rx="9" ry="5" fill="#333"/>
+  <ellipse cx="113" cy="226" rx="9" ry="5" fill="#333"/>
+  <!-- Neck -->
+  <rect x="94" y="108" width="12" height="15" fill="#ffe3d1" stroke="#333" stroke-width="3"/>
+  <!-- Body (Sweater) -->
+  <rect x="75" y="118" width="50" height="68" rx="12" fill="#c084fc" stroke="#333" stroke-width="3"/>
+  <!-- Head -->
+  <circle cx="100" cy="85" r="28" fill="#ffe3d1" stroke="#333" stroke-width="3"/>
+  <!-- Hamster Ears -->
+  <circle cx="76" cy="62" r="9" fill="#a78bfa" stroke="#333" stroke-width="2.5"/>
+  <circle cx="76" cy="62" r="5" fill="#f472b6"/>
+  <circle cx="124" cy="62" r="9" fill="#a78bfa" stroke="#333" stroke-width="2.5"/>
+  <circle cx="124" cy="62" r="5" fill="#f472b6"/>
+  <!-- Hair (fluffy top) -->
+  <path d="M72 82 C70 62, 80 54, 100 54 C120 54, 130 62, 128 82 L128 85 Q115 76 100 76 Q85 76 72 85 Z" fill="#a78bfa" stroke="#333" stroke-width="3"/>
+  <!-- Face Features -->
+  <circle cx="89" cy="83" r="3" fill="#333"/>
+  <circle cx="111" cy="83" r="3" fill="#333"/>
+  <circle cx="81" cy="89" r="4" fill="#f472b6" opacity="0.6"/>
+  <circle cx="119" cy="89" r="4" fill="#f472b6" opacity="0.6"/>
+  <path d="M96 93 Q100 97 104 93" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <rect x="98" y="93" width="4" height="3" fill="#fff" stroke="#333" stroke-width="1"/>
+  <!-- Folders Stack -->
+  <rect x="74" y="128" width="52" height="14" rx="2" fill="#93c5fd" stroke="#333" stroke-width="2" transform="rotate(-6,100,135)"/>
+  <rect x="70" y="138" width="56" height="14" rx="2" fill="#fde047" stroke="#333" stroke-width="2" transform="rotate(4,100,145)"/>
+  <rect x="72" y="148" width="54" height="14" rx="2" fill="#a7f3d0" stroke="#333" stroke-width="2" transform="rotate(-2,100,155)"/>
+  <rect x="75" y="158" width="50" height="14" rx="2" fill="#fca5a5" stroke="#333" stroke-width="2" transform="rotate(1,100,165)"/>
+  <!-- Hands -->
+  <circle cx="72" cy="148" r="6" fill="#ffe3d1" stroke="#333" stroke-width="2"/>
+  <circle cx="128" cy="148" r="6" fill="#ffe3d1" stroke="#333" stroke-width="2"/>
+</svg>

@@ -1,0 +1,42 @@
+<svg viewBox="0 0 200 260" xmlns="http://www.w3.org/2000/svg">
+  <rect width="200" height="260" fill="#f3e8ff"/>
+  <!-- Legs & Shoes -->
+  <rect x="80" y="186" width="14" height="40" rx="5" fill="#5b21b6" stroke="#333" stroke-width="3"/>
+  <rect x="106" y="186" width="14" height="40" rx="5" fill="#5b21b6" stroke="#333" stroke-width="3"/>
+  <ellipse cx="87" cy="226" rx="9" ry="5" fill="#333"/>
+  <ellipse cx="113" cy="226" rx="9" ry="5" fill="#333"/>
+  <!-- Neck -->
+  <rect x="94" y="108" width="12" height="15" fill="#ffe3d1" stroke="#333" stroke-width="3"/>
+  <!-- Body (Robe) -->
+  <rect x="75" y="118" width="50" height="68" rx="12" fill="#6d28d9" stroke="#333" stroke-width="3"/>
+  <polygon points="85,135 87,139 91,139 88,142 89,146 85,144 81,146 82,142 79,139 83,139" fill="#fde047"/>
+  <polygon points="115,155 117,159 121,159 118,162 119,166 115,164 111,166 112,162 109,159 113,159" fill="#fde047"/>
+  <!-- Beard (behind head) -->
+  <polygon points="90,98 100,122 110,98" fill="#e5e7eb" stroke="#333" stroke-width="2.5"/>
+  <!-- Head -->
+  <circle cx="100" cy="85" r="28" fill="#ffe3d1" stroke="#333" stroke-width="3"/>
+  <!-- Zen-like Eyes -->
+  <path d="M85 86 Q90 90 95 86" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M105 86 Q110 90 115 86" stroke="#333" stroke-width="3" fill="none" stroke-linecap="round"/>
+  <path d="M95 98 Q100 100 105 98" stroke="#333" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+  <!-- Wizard Hair -->
+  <path d="M72 82 C72 60, 85 54, 100 54 C115 54, 128 60, 128 82 L128 108 L120 108 L122 86 L78 86 L80 108 L72 108 Z" fill="#e5e7eb" stroke="#333" stroke-width="3"/>
+  <!-- Pointy Wizard Hat -->
+  <polygon points="68,54 100,10 132,54" fill="#5b21b6" stroke="#333" stroke-width="3"/>
+  <ellipse cx="100" cy="54" rx="35" ry="6" fill="#5b21b6" stroke="#333" stroke-width="3"/>
+  <path d="M96 28 C102 28 104 36 98 40 C94 40 92 34 96 28 Z" fill="#ffd700"/>
+  <!-- Left Arm -->
+  <rect x="53" y="122" width="12" height="32" rx="5" fill="#ffe3d1" stroke="#333" stroke-width="3"/>
+  <!-- Server & Incense -->
+  <rect x="135" y="120" width="22" height="32" rx="2" fill="#1f2937" stroke="#333" stroke-width="2.5"/>
+  <circle cx="140" cy="128" r="2.5" fill="#22c55e"/>
+  <circle cx="140" cy="136" r="2.5" fill="#ef4444"/>
+  <circle cx="140" cy="144" r="2.5" fill="#3b82f6"/>
+  <rect x="128" y="160" width="12" height="10" rx="1" fill="#b45309" stroke="#333" stroke-width="2"/>
+  <line x1="130" y1="160" x2="130" y2="142" stroke="#d97706" stroke-width="1.5"/>
+  <line x1="134" y1="160" x2="134" y2="140" stroke="#d97706" stroke-width="1.5"/>
+  <line x1="138" y1="160" x2="138" y2="144" stroke="#d97706" stroke-width="1.5"/>
+  <path d="M130 138 Q127 132 131 126 M134 136 Q131 130 135 124 M138 140 Q135 134 139 128" stroke="#d1d5db" stroke-width="1" fill="none" opacity="0.6"/>
+  <!-- Right hand -->
+  <circle cx="126" cy="155" r="5" fill="#ffe3d1" stroke="#333" stroke-width="2"/>
+</svg>
