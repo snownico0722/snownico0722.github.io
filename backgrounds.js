@@ -23,6 +23,45 @@ function initFortune() {
   const cam = new THREE.PerspectiveCamera(60, 1, 0.1, 100);
   cam.position.z = 14;
 
+  // 星云:全屏 fbm 噪声着色器(体积感/流动/辉光,纯 CSS 给不了的质感)
+  const nebUniforms = { uTime: { value: 0 }, uRes: { value: new THREE.Vector2(1, 1) } };
+  const nebGeo = new THREE.PlaneGeometry(2, 2);
+  const nebMat = new THREE.ShaderMaterial({
+    uniforms: nebUniforms,
+    depthTest: false, depthWrite: false,
+    vertexShader: "void main(){ gl_Position = vec4(position.xy, 0.999, 1.0); }",
+    fragmentShader: [
+      "precision highp float;",
+      "uniform float uTime; uniform vec2 uRes;",
+      "float hash(vec2 p){ return fract(sin(dot(p, vec2(127.1,311.7)))*43758.5453); }",
+      "float noise(vec2 p){ vec2 i=floor(p), f=fract(p); f=f*f*(3.0-2.0*f);",
+      "  float a=hash(i), b=hash(i+vec2(1,0)), c=hash(i+vec2(0,1)), d=hash(i+vec2(1,1));",
+      "  return mix(mix(a,b,f.x), mix(c,d,f.x), f.y); }",
+      "float fbm(vec2 p){ float v=0.0, a=0.5; mat2 m=mat2(1.6,1.2,-1.2,1.6);",
+      "  for(int i=0;i<6;i++){ v+=a*noise(p); p=m*p; a*=0.5; } return v; }",
+      "void main(){",
+      "  vec2 uv = gl_FragCoord.xy / uRes.xy;",
+      "  vec2 p = (uv - 0.5) * vec2(uRes.x/uRes.y, 1.0) * 3.0;",
+      "  float t = uTime * 0.03;",
+      "  vec2 q = vec2(fbm(p + t), fbm(p + vec2(5.2,1.3) - t));",
+      "  float f = fbm(p + 2.4*q + t*0.5);",
+      "  vec3 deep = vec3(0.05,0.02,0.13);",
+      "  vec3 purp = vec3(0.32,0.14,0.55);",
+      "  vec3 cyan = vec3(0.15,0.45,0.6);",
+      "  vec3 gold = vec3(0.85,0.6,0.3);",
+      "  vec3 col = mix(deep, purp, smoothstep(0.2,0.7,f));",
+      "  col = mix(col, cyan, smoothstep(0.5,0.95,fbm(p*1.5 - t)) * 0.5);",
+      "  col += gold * pow(max(0.0,1.0-length(p)*0.55), 3.0) * (0.4+0.2*sin(uTime*0.5));",
+      "  float vig = smoothstep(1.3, 0.3, length(uv-0.5));",
+      "  col *= 0.55 + 0.65*vig;",
+      "  gl_FragColor = vec4(col, 1.0);",
+      "}",
+    ].join("\n"),
+  });
+  const nebMesh = new THREE.Mesh(nebGeo, nebMat);
+  nebMesh.frustumCulled = false;
+  scene.add(nebMesh);
+
   // 星空:两层,远近视差
   function starLayer(count, radius, size, color) {
     const g = new THREE.BufferGeometry();
@@ -103,13 +142,14 @@ function initFortune() {
 
   function resize() {
     const w = canvas.clientWidth, h = canvas.clientHeight;
-    if (canvas.width !== w || canvas.height !== h) { renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); }
+    if (canvas.width !== w || canvas.height !== h) { renderer.setSize(w, h, false); cam.aspect = w / h; cam.updateProjectionMatrix(); nebUniforms.uRes.value.set(w, h); }
   }
   let t = 0;
   function frame() {
     if (active.view === "fortune") {
       resize();
       t += 0.005;
+      nebUniforms.uTime.value = t * 4.0;
       stars1.rotation.y = t * 0.3; stars1.rotation.x = t * 0.1;
       stars2.rotation.y = -t * 0.4;
       ringGroup.rotation.z = t * 0.4;
@@ -162,8 +202,10 @@ function initGames() {
       ctx.fillStyle = "#0d1024";
       for (let i = 0; i < 8; i++) { const yy = sunY - sunR * 0.1 + i * (sunR / 7); ctx.fillRect(sunX - sunR, yy, sunR * 2, Math.max(1, (i / 2) * devicePixelRatio)); }
       ctx.restore();
-      // 网格地面(透视)
-      ctx.strokeStyle = "rgba(80,255,200,0.5)"; ctx.lineWidth = 1 * devicePixelRatio;
+      // 网格地面(透视)+ 霓虹辉光
+      ctx.save();
+      ctx.shadowColor = "rgba(80,255,200,0.9)"; ctx.shadowBlur = 8 * devicePixelRatio;
+      ctx.strokeStyle = "rgba(120,255,210,0.7)"; ctx.lineWidth = 1.4 * devicePixelRatio;
       const vanX = W / 2;
       for (let i = -10; i <= 10; i++) { ctx.beginPath(); ctx.moveTo(vanX + i * (W * 0.05), horizon); ctx.lineTo(vanX + i * (W * 0.5), H); ctx.stroke(); }
       const scroll = (t * 2 * devicePixelRatio) % 60;
@@ -171,7 +213,7 @@ function initGames() {
         const f = i / 22; const yy = horizon + Math.pow(f, 2) * (H - horizon) + scroll * Math.pow(f, 1.5);
         if (yy > horizon && yy < H) { ctx.globalAlpha = f; ctx.beginPath(); ctx.moveTo(0, yy); ctx.lineTo(W, yy); ctx.stroke(); }
       }
-      ctx.globalAlpha = 1;
+      ctx.globalAlpha = 1; ctx.restore();
       // 像素精灵
       sprites.forEach(function (sp) {
         sp.x -= sp.v; if (sp.x < -0.05) sp.x = 1.05;
@@ -197,24 +239,24 @@ function initTools() {
   function size() { W = canvas.width = canvas.clientWidth * devicePixelRatio; H = canvas.height = canvas.clientHeight * devicePixelRatio; }
   size();
   // 一组互相咬合的齿轮:相邻反向、角速度按齿数反比
-  function gear(cx, cy, teeth, rOuter, color) { return { cx, cy, teeth, rOuter, color, ang: Math.random() * Math.PI }; }
+  function gear(cx, cy, teeth, rOuter, a) { return { cx, cy, teeth, rOuter, a, ang: Math.random() * Math.PI }; }
   let gears = [];
   function layout() {
     const u = Math.min(W, H);
     gears = [
-      gear(W * 0.18, H * 0.22, 16, u * 0.13, "rgba(201,149,47,0.5)"),
-      gear(W * 0.18 + u * 0.13 + u * 0.085, H * 0.22 + u * 0.05, 11, u * 0.09, "rgba(255,200,110,0.45)"),
-      gear(W * 0.8, H * 0.7, 20, u * 0.17, "rgba(201,149,47,0.45)"),
-      gear(W * 0.8 - u * 0.17 - u * 0.07, H * 0.7 + u * 0.04, 9, u * 0.075, "rgba(255,200,110,0.4)"),
-      gear(W * 0.5, H * 0.12, 13, u * 0.1, "rgba(180,130,40,0.4)"),
+      gear(W * 0.18, H * 0.22, 16, u * 0.13, 0.5),
+      gear(W * 0.18 + u * 0.13 + u * 0.085, H * 0.22 + u * 0.05, 11, u * 0.09, 0.42),
+      gear(W * 0.8, H * 0.7, 20, u * 0.17, 0.46),
+      gear(W * 0.8 - u * 0.17 - u * 0.07, H * 0.7 + u * 0.04, 9, u * 0.075, 0.4),
+      gear(W * 0.5, H * 0.12, 13, u * 0.1, 0.38),
     ];
   }
   layout();
   function drawGear(g, dir) {
-    const { cx, cy, teeth, rOuter, color } = g;
-    const rInner = rOuter * 0.78, rHub = rOuter * 0.3, rHole = rOuter * 0.13;
+    const { cx, cy, teeth, rOuter } = g;
+    const rInner = rOuter * 0.78, rHub = rOuter * 0.32, rHole = rOuter * 0.13;
     ctx.save(); ctx.translate(cx, cy); ctx.rotate(g.ang * dir);
-    ctx.fillStyle = color; ctx.strokeStyle = color; ctx.lineWidth = 2 * devicePixelRatio;
+    // 齿廓路径
     ctx.beginPath();
     for (let i = 0; i < teeth; i++) {
       const a0 = (i / teeth) * Math.PI * 2, a1 = ((i + 0.5) / teeth) * Math.PI * 2, a2 = ((i + 1) / teeth) * Math.PI * 2;
@@ -223,11 +265,21 @@ function initTools() {
       ctx.lineTo(Math.cos(a1) * rInner, Math.sin(a1) * rInner);
       ctx.lineTo(Math.cos(a2) * rInner, Math.sin(a2) * rInner);
     }
-    ctx.closePath(); ctx.stroke();
-    ctx.beginPath(); ctx.arc(0, 0, rHub, 0, Math.PI * 2); ctx.stroke();
+    ctx.closePath();
+    // 黄铜径向渐变填充(金属质感)
+    const grad = ctx.createRadialGradient(-rOuter * 0.3, -rOuter * 0.3, rOuter * 0.1, 0, 0, rOuter);
+    grad.addColorStop(0, "rgba(232,196,120," + g.a + ")");
+    grad.addColorStop(0.5, "rgba(176,124,46," + g.a + ")");
+    grad.addColorStop(1, "rgba(96,66,24," + g.a + ")");
+    ctx.fillStyle = grad; ctx.fill();
+    ctx.strokeStyle = "rgba(60,40,14," + g.a + ")"; ctx.lineWidth = 2 * devicePixelRatio; ctx.stroke();
+    // 内圈高光
+    ctx.beginPath(); ctx.arc(0, 0, rHub, 0, Math.PI * 2);
+    ctx.fillStyle = "rgba(40,28,12," + g.a + ")"; ctx.fill();
+    ctx.strokeStyle = "rgba(255,210,130," + (g.a * 0.6) + ")"; ctx.lineWidth = 1.5 * devicePixelRatio; ctx.stroke();
     // 轮辐
-    for (let i = 0; i < 5; i++) { const a = (i / 5) * Math.PI * 2; ctx.beginPath(); ctx.moveTo(Math.cos(a) * rHub, Math.sin(a) * rHub); ctx.lineTo(Math.cos(a) * rInner, Math.sin(a) * rInner); ctx.stroke(); }
-    ctx.beginPath(); ctx.arc(0, 0, rHole, 0, Math.PI * 2); ctx.stroke();
+    for (let i = 0; i < 6; i++) { const a = (i / 6) * Math.PI * 2; ctx.beginPath(); ctx.moveTo(Math.cos(a) * rHub, Math.sin(a) * rHub); ctx.lineTo(Math.cos(a) * rInner, Math.sin(a) * rInner); ctx.strokeStyle = "rgba(150,104,38," + g.a + ")"; ctx.lineWidth = 3 * devicePixelRatio; ctx.stroke(); }
+    ctx.beginPath(); ctx.arc(0, 0, rHole, 0, Math.PI * 2); ctx.fillStyle = "rgba(20,14,8,0.9)"; ctx.fill();
     ctx.restore();
   }
   // 蒸汽
