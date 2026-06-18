@@ -361,20 +361,66 @@ document.getElementById("year").textContent = new Date().getFullYear();
     return s;
   }
 
-  // 吃了菌子引擎:每个风格专属的疯癫/幻觉生成逻辑
-  function chunkMag(n, opener) {
-    const C = D.themes[active].mag;
-    let s = opener ? fill(rand(C.open), theme) : "";
+  function genBsMag(theme, n) {
+    const M = D.themes.bs.mag;
+    let s = "天花板开始倾斜，液态的「" + theme + "」从缝隙里滴下来……";
     while (s.length < n) {
-      const r = Math.random();
-      if (r < 0.2 && C.names) {
-        s += rand(C.names) + "梦呓道:“" + rand(C.quotes) + "”";
-      } else if (r < 0.34 && C.turn.length) {
-        s += rand(C.turn);
-      } else { s += fill(pickBody(C.body), theme); }
+      s += "因为「" + theme + "」" + rand(M.words) + "，所以「" + theme + "」" + rand(M.words) + "。";
+      if (Math.random() < 0.5) {
+        const ech = rand(M.echoes);
+        s += ech + "……" + ech.slice(-1) + "……" + ech.slice(-1) + "……";
+      }
+      s += "（" + rand(M.thoughts) + "）";
     }
-    if (opener) s += fill(rand(C.close), theme);
+    s += "最后，彩虹色的字母散去，只剩下脱水的「" + theme + "」在盘子里不停地尖叫。";
     return s;
+  }
+
+  function genHugeMag(theme, n) {
+    const M = D.themes.huge.mag;
+    let s = "深夜了，老胡在办公室喝了一杯放了三天的隔夜咖啡，想到「" + theme + "」，久久不能平静。";
+    while (s.length < n) {
+      s += "对于「" + theme + "」" + rand(M.words) + "，老胡认为我们" + rand(M.claims) + "。";
+      s += "（" + rand(M.parentheticals) + "）";
+      s += "但话又说回来，" + rand(M.words) + "远没有那么简单，老胡今天就把话撂在这：";
+    }
+    s += "总之，等天亮了，发光的小人散去，「" + theme + "」的定力已经像文身一样印在老胡额头上了。";
+    return s;
+  }
+
+  function genJargonMag(theme, n) {
+    const M = D.themes.jargon.mag;
+    let s = "拉通对齐！让我们用第一性原理，将「" + theme + "」接入多维空间！";
+    while (s.length < n) {
+      s += rand(M.buzzwords) + " >> " + rand(M.buzzwords) + " >> ";
+      s += "把「" + theme + "」" + rand(M.actions) + "；";
+      s += rand(M.glitches) + " >> ";
+      if (Math.random() < 0.4) {
+        s += "（等等，是谁在看我？（别回头，绝对闭轮正在反哺你）） >> ";
+      }
+    }
+    s += "在星云的彼端，跑出「" + theme + "」的永恒飞轮。Over。";
+    return s;
+  }
+
+  function genMeMag(theme, n) {
+    const M = D.themes.me.mag;
+    let s = "[TRACE] 脑部编译器加载「" + theme + "」中…… 编译成功，控制台里排队飞出七彩螺旋光芒。\n";
+    while (s.length < n) {
+      s += "我睁开眼，判定「" + theme + "」" + rand(M.assertions) + "。\n";
+      s += "[WARNING] " + rand(M.logs) + "。\n";
+      s += "代价呢？「" + theme + "」的代价压给了谁？后果是不是回流到了我的视网膜上？\n";
+    }
+    s += "[FATAL] 「" + theme + "」归档完毕，检测到 1KB 脑容量死锁。我先去拔掉电源。";
+    return s;
+  }
+
+  function chunkMag(n, opener) {
+    if (active === "bs") return genBsMag(theme, n);
+    if (active === "huge") return genHugeMag(theme, n);
+    if (active === "jargon") return genJargonMag(theme, n);
+    if (active === "me") return genMeMag(theme, n);
+    return "";
   }
 
   function makeChunk(n, opener) {
