@@ -396,7 +396,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
       el.textContent = p;
       out.appendChild(el);
     });
-    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 吃了菌子 🍄" : "";
+    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 幻觉空间 💫" : "";
     countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
     copyBtn.hidden = false;
     moreBtn.hidden = false;
@@ -407,7 +407,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
     const el = document.createElement("p");
     el.textContent = makeChunk(120 + ((Math.random() * 60) | 0), false);
     out.appendChild(el);
-    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 吃了菌子 🍄" : "";
+    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 幻觉空间 💫" : "";
     countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
     el.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
