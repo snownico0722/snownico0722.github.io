@@ -399,35 +399,43 @@ document.getElementById("year").textContent = new Date().getFullYear();
 })();
 
 /* ============================================================
-   规则怪谈《夜班守则》:读守则、遇事、做选择。守则会矛盾、会冒假条,
-   靠"标准一致 + 精确判定"活到天亮。死了告诉你犯了哪条。
+   规则怪谈:多剧本随机开局 + 选项乱序。守则会矛盾、会冒假条,
+   靠"标准一致 + 精确判定"活到底。死了告诉你犯了哪条。
    ============================================================ */
 (function () {
-  const G = window.__RULE_GAME__;
+  const DECKS = window.__RULE_DECKS__;
   const root = document.getElementById("rg");
-  if (!G || !root) return;
+  if (!DECKS || !root) return;
   const rulesEl = document.getElementById("rg-rules");
   const sceneEl = document.getElementById("rg-scene");
   const choicesEl = document.getElementById("rg-choices");
   const rulesToggle = document.getElementById("rg-rules-toggle");
+  const titleEl = document.querySelector('.machine[data-machine="g1"] .machine-name');
 
-  // 守则开合(JS 控制,不依赖原生 details)
+  let G = DECKS[0];
+  let cleared = 0, totalScenes = 0;
+  const shuffle = (a) => a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((p) => p[1]);
+
+  function loadDeck(deck) {
+    G = deck;
+    cleared = 0;
+    totalScenes = Object.keys(G.scenes).filter((k) => !G.scenes[k].win).length;
+    // 守则列表
+    rulesEl.innerHTML = "";
+    G.rules.forEach(function (r) { const li = document.createElement("li"); li.textContent = r; rulesEl.appendChild(li); });
+    rulesEl.hidden = true;
+    rulesToggle.setAttribute("aria-expanded", "false");
+    rulesToggle.textContent = "📜 " + G.rulesTitle + "(点开重读)";
+    if (titleEl) titleEl.textContent = "规则怪谈 ·《" + G.name + "》";
+  }
+
+  // 守则开合
   rulesToggle.addEventListener("click", function () {
     const open = rulesEl.hidden;
     rulesEl.hidden = !open;
     rulesToggle.setAttribute("aria-expanded", String(open));
-    rulesToggle.textContent = (open ? "📜 夜班守则(点此收起)" : "📜 夜班守则(点开重读)");
+    rulesToggle.textContent = "📜 " + G.rulesTitle + (open ? "(点此收起)" : "(点开重读)");
   });
-
-  // 守则列表
-  G.rules.forEach(function (r) {
-    const li = document.createElement("li");
-    li.textContent = r;
-    rulesEl.appendChild(li);
-  });
-
-  let cleared = 0;
-  const totalScenes = Object.keys(G.scenes).filter((k) => !G.scenes[k].win).length;
 
   function render(node, intro) {
     sceneEl.className = "rg-scene";
@@ -445,16 +453,16 @@ document.getElementById("year").textContent = new Date().getFullYear();
 
     if (sc.win) {
       sceneEl.classList.add("is-win");
-      sceneEl.innerHTML = '<span class="rg-win-tag">活到天亮</span>';
+      sceneEl.innerHTML = '<span class="rg-win-tag">活下来了</span>';
       appendText(sceneEl, sc.text);
-      const btn = mkBtn("↺ 再守一夜", "rg-restart");
-      btn.addEventListener("click", function () { cleared = 0; go(G.start); });
-      choicesEl.appendChild(btn);
+      const again = mkBtn("↺ 换一个场子再来", "rg-restart");
+      again.addEventListener("click", newGame);
+      choicesEl.appendChild(again);
       return;
     }
 
     sceneEl.textContent = sc.text;
-    sc.choices.forEach(function (c) {
+    shuffle(sc.choices.slice()).forEach(function (c) {
       const btn = mkBtn(c.label, "rg-choice");
       btn.addEventListener("click", function () {
         if (c.dead) die(c.reason);
@@ -464,38 +472,36 @@ document.getElementById("year").textContent = new Date().getFullYear();
     });
     const p = document.createElement("p");
     p.className = "rg-progress";
-    p.textContent = "已撑过 " + cleared + " / " + totalScenes + " 关";
+    p.textContent = "已撑过 " + cleared + " / " + totalScenes + " 关 · 《" + G.name + "》";
     choicesEl.appendChild(p);
   }
 
   function die(reason) {
     sceneEl.className = "rg-scene is-dead";
-    sceneEl.innerHTML = '<span class="rg-dead-tag">没撑到天亮</span>';
+    sceneEl.innerHTML = '<span class="rg-dead-tag">没撑过去</span>';
     const r = document.createElement("p");
     r.className = "rg-reason";
     r.textContent = reason;
     sceneEl.appendChild(r);
     choicesEl.innerHTML = "";
-    const btn = mkBtn("↺ 回到接班那一刻", "rg-restart");
-    btn.addEventListener("click", function () { cleared = 0; go(G.start); });
-    choicesEl.appendChild(btn);
+    const retry = mkBtn("↺ 回到开场重试", "rg-restart");
+    retry.addEventListener("click", function () { cleared = 0; go(G.start); });
+    const swap = mkBtn("换个场子", "rg-choice");
+    swap.addEventListener("click", newGame);
+    choicesEl.appendChild(retry);
+    choicesEl.appendChild(swap);
   }
 
+  function newGame() {
+    loadDeck(DECKS[(Math.random() * DECKS.length) | 0]);
+    render(null, true);
+  }
   function go(node) { render(node, false); }
-  function appendText(parent, text) {
-    const span = document.createElement("span");
-    span.textContent = text;
-    parent.appendChild(span);
-  }
-  function mkBtn(label, cls) {
-    const b = document.createElement("button");
-    b.type = "button";
-    b.className = cls;
-    b.textContent = label;
-    return b;
-  }
+  function appendText(parent, text) { const s = document.createElement("span"); s.textContent = text; parent.appendChild(s); }
+  function mkBtn(label, cls) { const b = document.createElement("button"); b.type = "button"; b.className = cls; b.textContent = label; return b; }
 
-  render(null, true); // 开场
+  loadDeck(DECKS[(Math.random() * DECKS.length) | 0]);
+  render(null, true);
 })();
 
 /* ============================================================
