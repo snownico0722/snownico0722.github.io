@@ -221,6 +221,19 @@ body[data-view="tools"] .bd-tools { opacity: 1; }
 .quiz-go:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 /* 结果 */
 .quiz-res-code { font-size: 0.8rem; font-weight: 800; letter-spacing: 0.3em; color: var(--magic-d); }
+/* 结果逐块揭晓 */
+.quiz-stage > .quiz-res-code,
+.quiz-stage > .quiz-res-name,
+.quiz-stage > .quiz-res-line,
+.quiz-stage > .quiz-res-say,
+.quiz-stage > .quiz-bars,
+.quiz-stage > .quiz-actions { animation: resealUp 0.5s var(--ease) both; }
+.quiz-stage > .quiz-res-name { animation-delay: 0.1s; }
+.quiz-stage > .quiz-res-line { animation-delay: 0.2s; }
+.quiz-stage > .quiz-res-say { animation-delay: 0.32s; }
+.quiz-stage > .quiz-bars { animation-delay: 0.46s; }
+.quiz-stage > .quiz-actions { animation-delay: 0.6s; }
+@keyframes resealUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
 .quiz-res-name { font-size: 1.5rem; font-weight: 800; color: var(--ink); margin: 0.2rem 0 0.3rem; }
 .quiz-res-line { font-size: 0.96rem; color: var(--ink-soft); font-style: italic; margin-bottom: 1rem; }
 .quiz-res-say { font-size: 0.98rem; line-height: 1.85; color: var(--ink); background: var(--bg); border: 1.5px dashed var(--line); border-radius: 12px; padding: 0.9rem 1rem; margin-bottom: 1.2rem; }
