@@ -636,13 +636,23 @@ document.getElementById("year").textContent = new Date().getFullYear();
     stage.appendChild(mk("div", "quiz-q-num", "第 " + (idx + 1) + " / " + Q.questions.length + " 问"));
     stage.appendChild(mk("div", "quiz-q-text", q.q));
     const opts = mk("div", "quiz-opts");
+    let locked = false;
     q.opts.forEach(function (o) {
       const b = mk("button", "quiz-opt", o.t);
       b.addEventListener("click", function () {
+        if (locked) return;
+        locked = true;
         tally[o.k] = (tally[o.k] || 0) + 1;
-        idx++;
-        if (idx < Q.questions.length) question();
-        else result();
+        // 即时反馈:选中高亮 + 飘出 "+人格名"
+        b.classList.add("picked");
+        const tag = mk("span", "quiz-pop", "+" + Q.types[o.k].name);
+        b.appendChild(tag);
+        opts.querySelectorAll(".quiz-opt").forEach((x) => { if (x !== b) x.classList.add("dim"); });
+        setTimeout(function () {
+          idx++;
+          if (idx < Q.questions.length) question();
+          else result();
+        }, 560);
       });
       opts.appendChild(b);
     });
