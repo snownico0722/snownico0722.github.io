@@ -224,6 +224,27 @@ body {
 .q2-bar-fill { height: 100%; background: linear-gradient(90deg, var(--magic), var(--magic-2)); border-radius: 999px; transition: width 0.5s var(--ease); }
 .q2-bar-n { flex: none; font-weight: 800; color: var(--magic-d); min-width: 1.2em; text-align: right; }
 
+/* ---------- 工作幸福度计算机 ---------- */
+.work-screen { position: sticky; top: 0.5rem; z-index: 5; background: #161320; border: 2px solid var(--ink); border-radius: 12px; padding: 0.9rem 1rem; text-align: center; margin-bottom: 1rem; box-shadow: 0 6px 18px rgba(22,19,32,0.35); }
+.work-num { font-size: 2.4rem; font-weight: 800; line-height: 1; color: var(--magic-2); }
+.work-say { font-size: 0.92rem; color: #e6e1f5; line-height: 1.5; margin-top: 0.45rem; }
+.work-screen.is-happy .work-num { color: var(--open); }
+.work-screen.is-sad .work-num { color: var(--ember); }
+.work-group { margin-bottom: 1rem; }
+.work-group-name { font-size: 0.78rem; font-weight: 800; letter-spacing: 0.1em; color: var(--magic-d); margin-bottom: 0.5rem; }
+.work-field { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.5rem; }
+.work-field label { flex: 1; font-size: 0.88rem; color: var(--ink-soft); line-height: 1.4; }
+.work-field input[type="number"] { flex: none; width: 6.5rem; font-family: inherit; font-size: 0.92rem; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 8px; padding: 0.35rem 0.5rem; text-align: right; outline: none; }
+.work-field input:focus { box-shadow: 0 0 0 2px rgba(78,197,214,0.4); }
+.work-field select { flex: none; width: 11rem; font-family: inherit; font-size: 0.86rem; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 8px; padding: 0.35rem 0.4rem; outline: none; }
+.work-stars { flex: none; display: flex; gap: 0.15rem; }
+.work-star { font-size: 1.2rem; line-height: 1; color: var(--line); cursor: pointer; transition: color 0.1s ease; }
+.work-star.lit { color: var(--ember-2); }
+.work-go { width: 100%; font-family: inherit; font-size: 1rem; font-weight: 800; color: var(--paper); background: var(--magic); border: 2px solid var(--ink); border-radius: 12px; padding: 0.7rem 0; cursor: pointer; box-shadow: 0 4px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.work-go:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
+.work-go:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.work-note { margin-top: 0.9rem; font-size: 0.78rem; color: var(--ink-faint); line-height: 1.5; }
+
 /* ---------- 货箱 ---------- */
 .crate { position: relative; background: var(--paper); border: 2px solid var(--ink); border-radius: 16px; padding: 1.3rem; margin: 6px 0 1.1rem; box-shadow: 0 5px 0 var(--ink), 0 6px 16px var(--shadow); transition: transform 0.18s ease, box-shadow 0.18s ease; }
 .crate:last-child { margin-bottom: 6px; }

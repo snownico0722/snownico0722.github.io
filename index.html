@@ -85,6 +85,7 @@
           <button class="pick on" data-machine="f0">好感度计算机</button>
           <button class="pick" data-machine="f1">判断者测试</button>
           <button class="pick" data-machine="f2">赛博生态位</button>
+          <button class="pick" data-machine="f3">工作幸福度</button>
         </div>
         <div class="machine" data-machine="f0">
           <div class="machine-bar"><span class="machine-tag">水晶球 No.1</span><span class="machine-light"></span></div>
@@ -115,6 +116,20 @@
           <p class="machine-desc">这面镜子不照人,照网。12 道题,把你在网上的原形照出来 —— 乐子人?杠精?潜水佬?</p>
           <div class="quiz" id="quiz2">
             <div class="quiz-stage" id="quiz2-stage"></div>
+          </div>
+        </div>
+        <div class="machine" data-machine="f3" hidden>
+          <div class="machine-bar"><span class="machine-tag">水晶球 No.4</span><span class="machine-light"></span></div>
+          <h3 class="machine-name">工作幸福度计算机</h3>
+          <p class="machine-desc">魔法师当年算自己那份班值不值,做的一张表。把工资、房租、加班、同事、通勤都填进去,它折算成一个数 —— 大于 1 才算上得快乐。</p>
+          <div class="work" id="work">
+            <div class="work-screen" id="work-screen">
+              <div class="work-num" id="work-num">—</div>
+              <div class="work-say" id="work-say">填完下面,按「掐指一算」。</div>
+            </div>
+            <div class="work-form" id="work-form"></div>
+            <button class="work-go" id="work-go" type="button">掐指一算 ✦</button>
+            <p class="work-note">公式照搬原表:月剩余工资 ÷ 6000 ÷ 工作系数 ÷ 忙碌度 × 1.3 × 1.5(中国就这样补正) × 城市收入系数。只在你浏览器里算。</p>
           </div>
         </div>
       </div></div>
@@ -210,6 +225,7 @@
   <script src="rule-data.js"></script>
   <script src="quiz-data.js"></script>
   <script src="quiz2-data.js"></script>
+  <script src="work-data.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

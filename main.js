@@ -572,6 +572,92 @@ document.getElementById("year").textContent = new Date().getFullYear();
   intro();
 })();
 
+/* ============================================================
+   工作幸福度计算机:多层公式,>1 快乐 <1 不快乐。逐字搬魔法师的表。
+   ============================================================ */
+(function () {
+  const W = window.__WORK__;
+  const form = document.getElementById("work-form");
+  if (!W || !form) return;
+  const numEl = document.getElementById("work-num");
+  const sayEl = document.getElementById("work-say");
+  const screenEl = document.getElementById("work-screen");
+  const goBtn = document.getElementById("work-go");
+  const vals = {};
+
+  W.groups.forEach(function (g) {
+    const box = document.createElement("div");
+    box.className = "work-group";
+    box.appendChild(mk("div", "work-group-name", g.name));
+    g.fields.forEach(function (f) {
+      const key = f[0], label = f[1], def = f[2], type = f[3];
+      vals[key] = def;
+      const row = document.createElement("div");
+      row.className = "work-field";
+      row.appendChild(mk("label", null, label));
+      if (type === "num") {
+        const inp = document.createElement("input");
+        inp.type = "number"; inp.value = def; inp.step = "any";
+        inp.addEventListener("input", function () { vals[key] = parseFloat(inp.value) || 0; });
+        row.appendChild(inp);
+      } else if (type === "sel") {
+        const sel = document.createElement("select");
+        f[4].forEach(function (o) {
+          const op = document.createElement("option");
+          op.value = o[1]; op.textContent = o[0];
+          sel.appendChild(op);
+        });
+        sel.value = def;
+        sel.addEventListener("change", function () { vals[key] = parseFloat(sel.value); });
+        row.appendChild(sel);
+      } else if (type === "star") {
+        const stars = document.createElement("div");
+        stars.className = "work-stars";
+        for (let i = 1; i <= 5; i++) {
+          const s = mk("span", "work-star" + (i <= def ? " lit" : ""), "★");
+          s.dataset.v = i;
+          s.addEventListener("click", function () {
+            vals[key] = i;
+            stars.querySelectorAll(".work-star").forEach(function (st, idx) {
+              st.classList.toggle("lit", idx < i);
+            });
+          });
+          stars.appendChild(s);
+        }
+        row.appendChild(stars);
+      }
+      box.appendChild(row);
+    });
+    form.appendChild(box);
+  });
+
+  function verdict(t) {
+    if (t >= 1.6) return "这班上得是真舒坦。要么你运气好,要么你把表填美化了。";
+    if (t >= 1.15) return "快乐。性价比在线,值得待。";
+    if (t > 1) return "勉强算快乐 —— 过了线,但没富余多少。";
+    if (t > 0.85) return "差一口气。说不上苦,也谈不上值,温水。";
+    if (t > 0.6) return "不快乐。这班在悄悄吃你,你大概也感觉到了。";
+    if (t > 0) return "很不快乐。数字摆这儿了 —— 你早该知道的。";
+    return "填完再算。";
+  }
+
+  goBtn.addEventListener("click", function () {
+    const r = W.compute(vals);
+    const t = r.total;
+    numEl.textContent = (t > 0 ? t.toFixed(2) : "—");
+    sayEl.textContent = verdict(t);
+    screenEl.classList.toggle("is-happy", t > 1);
+    screenEl.classList.toggle("is-sad", t > 0 && t <= 1);
+  });
+
+  function mk(tag, cls, text) {
+    const el = document.createElement(tag);
+    if (cls) el.className = cls;
+    if (text != null) el.textContent = text;
+    return el;
+  }
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
