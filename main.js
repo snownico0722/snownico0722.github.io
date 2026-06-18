@@ -355,24 +355,43 @@ document.getElementById("year").textContent = new Date().getFullYear();
     return s;
   }
 
-  function makeChunk(n, opener) { return mode === "cre" ? chunkCre(n, opener) : chunkDef(n); }
+  // 魔法引擎:中二咒语腔,把主题词当被召唤的存在(与主题标签无关)
+  function chunkMag(n, opener) {
+    const M = window.__BS_MAGIC__;
+    let s = opener ? fill(rand(M.open), theme) : "";
+    while (s.length < n) {
+      const r = Math.random();
+      if (r < 0.2) {
+        s += rand(M.sages) + "留下一句残篇:“" + rand(M.verses) + "”";
+      } else if (r < 0.34) {
+        s += rand(M.turn).replace(/__T__/g, theme);
+      } else { s += fill(pickBody(M.body), theme); }
+    }
+    if (opener) s += fill(rand(M.close), theme);
+    return s;
+  }
+
+  function makeChunk(n, opener) {
+    if (mode === "mag") return chunkMag(n, opener);
+    return mode === "cre" ? chunkCre(n, opener) : chunkDef(n);
+  }
 
   function run() {
     theme = (input.value || "").trim() || rand(["年度复盘", "我的人生", "这杯奶茶", "周一", "搬砖", "摸鱼", "爱情", "上班"]);
     const n = 3 + ((Math.random() * 2) | 0);
     const parts = [];
-    for (let i = 0; i < n; i++) parts.push(makeChunk(120 + ((Math.random() * 50) | 0), i === 0 || i === n - 1 ? false : false));
-    // 创意模式:首段带 open、末段带 close
-    if (mode === "cre") {
-      parts[0] = chunkCre(120, true);
-    }
+    for (let i = 0; i < n; i++) parts.push(makeChunk(120 + ((Math.random() * 50) | 0), false));
+    // 创意 / 魔法:首段带 open、末段带 close
+    if (mode === "cre") { parts[0] = chunkCre(120, true); }
+    else if (mode === "mag") { parts[0] = chunkMag(120, true); }
     out.innerHTML = "";
     parts.forEach(function (p) {
       const el = document.createElement("p");
       el.textContent = p;
       out.appendChild(el);
     });
-    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + (mode === "cre" ? " · 创意" : "");
+    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 魔法" : "";
+    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
     copyBtn.hidden = false;
     moreBtn.hidden = false;
   }
@@ -382,7 +401,8 @@ document.getElementById("year").textContent = new Date().getFullYear();
     const el = document.createElement("p");
     el.textContent = makeChunk(120 + ((Math.random() * 60) | 0), false);
     out.appendChild(el);
-    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + (mode === "cre" ? " · 创意" : "");
+    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 魔法" : "";
+    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
     el.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
