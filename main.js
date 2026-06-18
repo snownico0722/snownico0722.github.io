@@ -192,31 +192,36 @@ document.getElementById("year").textContent = new Date().getFullYear();
 })();
 
 /* ============================================================
-   鬼话发生器:同一台机器 + 三套语料(职场黑话 / 老胡体 / 玄学鸡汤)。
-   引擎照搬经典"狗屁不通"思路:主题词 + 句式模板 + 名言/废话,
-   循环拼接到目标字数,避免连续重复。纯本地,只能拿来玩。
+   鬼话发生器 · 4 主题(狗屁不通/老胡体/互联网黑话/你的味)× 2 模式。
+   默认=原版扁平引擎换词库;创意=每主题结构化新风格 + 专属名人名言。
+   「再来亿点」在结尾继续追加,越滚越长。纯本地,只能拿来玩。
    ============================================================ */
 (function () {
   const input = document.getElementById("bs-input");
-  const stylesBox = document.getElementById("bs-styles");
   const goBtn = document.getElementById("bs-go");
+  const moreBtn = document.getElementById("bs-more");
   const out = document.getElementById("bs-out");
   const copyBtn = document.getElementById("bs-copy");
   const countEl = document.getElementById("bs-count");
+  const stylesBox = document.getElementById("bs-styles");
+  const modeBox = document.getElementById("bs-mode");
   if (!input || !out) return;
 
-  const rand = (arr) => arr[(Math.random() * arr.length) | 0];
+  const D = window.__BS__;
+  const rand = (a) => a[(Math.random() * a.length) | 0];
+  const fill = (s, t) => s.replace(/__T__/g, t);
+  const ORDER = ["bs", "huge", "jargon", "me"];
+  let theme = "";
+  let active = "bs";
+  let mode = "def";
+  let lastBody = -1;
 
-  // 占位 __T__ = 主题词
-  const STYLES = window.__BS_STYLES__;
-  const ORDER = ["jargon", "huge", "soup"];
-
-  let active = "jargon";
+  // 主题标签
   ORDER.forEach(function (key) {
     const b = document.createElement("button");
     b.type = "button";
     b.className = "bs-style" + (key === active ? " on" : "");
-    b.textContent = STYLES[key].label;
+    b.textContent = D.themes[key].label;
     b.addEventListener("click", function () {
       active = key;
       stylesBox.querySelectorAll(".bs-style").forEach((x) => x.classList.remove("on"));
@@ -225,49 +230,81 @@ document.getElementById("year").textContent = new Date().getFullYear();
     stylesBox.appendChild(b);
   });
 
-  function generate(theme, key) {
-    const S = STYLES[key];
-    const target = 220 + ((Math.random() * 160) | 0); // 目标字数
-    const paras = [];
-    let para = "";
-    let lastBucket = -1;
-    let guard = 0;
-    // 句式来源:开篇一句,中间在 名言/铺陈/转折 间随机,适时分段
-    para += fill(rand(S.open), theme);
-    while (totalLen(paras) < target && guard++ < 80) {
-      let bucket;
-      do { bucket = (Math.random() * 3) | 0; } while (bucket === lastBucket && Math.random() < 0.7);
-      lastBucket = bucket;
-      const pool = bucket === 0 ? S.quote : bucket === 1 ? S.body : S.turn;
-      para += fill(rand(pool), theme);
-      if (para.length > 60 && Math.random() < 0.35) { paras.push(para); para = ""; }
+  // 默认 / 创意 开关
+  modeBox.addEventListener("click", function (e) {
+    const b = e.target.closest(".bs-m[data-mode]");
+    if (!b) return;
+    mode = b.getAttribute("data-mode");
+    modeBox.querySelectorAll(".bs-m").forEach((x) => x.classList.toggle("on", x === b));
+  });
+
+  function pickBody(pool) {
+    let i; do { i = (Math.random() * pool.length) | 0; } while (i === lastBody && pool.length > 1);
+    lastBody = i;
+    return pool[i];
+  }
+
+  // 默认引擎:扁平 body 池 + 通用名人乱入
+  function chunkDef(n) {
+    const pool = D.themes[active].def.body;
+    let s = "";
+    while (s.length < n) {
+      if (Math.random() < 0.22) {
+        s += rand(D.famous) + "曾经说过:“" + rand(D.quotes) + "”这句话语虽然很短,但令我浮想联翩。";
+      } else { s += fill(pickBody(pool), theme); }
     }
-    if (para) paras.push(para);
-    paras.push(fill(rand(S.close), theme));
-    return paras;
-
-    function totalLen(ps) { return ps.reduce((a, p) => a + p.length, 0) + para.length; }
+    return s;
   }
 
-  function fill(tpl, theme) {
-    return tpl.replace(/__T__/g, theme);
+  // 创意引擎:open 起头 + body/turn 交错 + 专属名人 + close 收尾(整篇成段)
+  function chunkCre(n, opener) {
+    const C = D.themes[active].cre;
+    let s = opener ? fill(rand(C.open), theme) : "";
+    while (s.length < n) {
+      const r = Math.random();
+      if (r < 0.2 && C.names) {
+        s += rand(C.names) + "说过:“" + rand(C.quotes) + "”用在__T__上,再合适不过。".replace(/__T__/g, theme);
+      } else if (r < 0.34 && C.turn.length) {
+        s += rand(C.turn);
+      } else { s += fill(pickBody(C.body), theme); }
+    }
+    if (opener) s += fill(rand(C.close), theme);
+    return s;
   }
+
+  function makeChunk(n, opener) { return mode === "cre" ? chunkCre(n, opener) : chunkDef(n); }
 
   function run() {
-    const theme = (input.value || "").trim() || rand(["年度复盘", "我的人生", "这杯奶茶", "周一", "搬砖", "摸鱼", "爱情"]);
-    const paras = generate(theme, active);
+    theme = (input.value || "").trim() || rand(["年度复盘", "我的人生", "这杯奶茶", "周一", "搬砖", "摸鱼", "爱情", "上班"]);
+    const n = 3 + ((Math.random() * 2) | 0);
+    const parts = [];
+    for (let i = 0; i < n; i++) parts.push(makeChunk(120 + ((Math.random() * 50) | 0), i === 0 || i === n - 1 ? false : false));
+    // 创意模式:首段带 open、末段带 close
+    if (mode === "cre") {
+      parts[0] = chunkCre(120, true);
+    }
     out.innerHTML = "";
-    paras.forEach(function (p) {
+    parts.forEach(function (p) {
       const el = document.createElement("p");
       el.textContent = p;
       out.appendChild(el);
     });
-    const len = paras.join("").length;
-    countEl.textContent = "约 " + len + " 字 · " + STYLES[active].label;
+    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + (mode === "cre" ? " · 创意" : "");
     copyBtn.hidden = false;
+    moreBtn.hidden = false;
+  }
+
+  function more() {
+    if (!theme) { run(); return; }
+    const el = document.createElement("p");
+    el.textContent = makeChunk(120 + ((Math.random() * 60) | 0), false);
+    out.appendChild(el);
+    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + (mode === "cre" ? " · 创意" : "");
+    el.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
   goBtn.addEventListener("click", run);
+  moreBtn.addEventListener("click", more);
   input.addEventListener("keydown", function (e) { if (e.key === "Enter") run(); });
   copyBtn.addEventListener("click", function () {
     const text = Array.from(out.querySelectorAll("p")).map((p) => p.textContent).join("\n");

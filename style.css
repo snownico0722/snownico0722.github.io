@@ -133,10 +133,17 @@ body {
 .bs-controls { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
 .bs-input { font-family: inherit; font-size: 1rem; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 12px; padding: 0.65rem 0.9rem; outline: none; }
 .bs-input:focus { box-shadow: 0 0 0 3px rgba(78,197,214,0.4); }
-.bs-styles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0.45rem; }
-.bs-style { font-family: inherit; font-size: 0.86rem; font-weight: 700; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; padding: 0.5rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease; }
-.bs-style:hover { background: #cdeef2; }
-.bs-style.on { background: #1f8c99; color: var(--paper); transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+.bs-mode { display: flex; gap: 0.4rem; margin-bottom: 0.6rem; }
+.bs-m { flex: 1; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; padding: 0.45rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease; }
+.bs-m:hover { background: #efe6ff; }
+.bs-m.on { background: var(--magic); color: var(--paper); transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
+.bs-styles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-bottom: 0.7rem; }
+.bs-style { font-family: inherit; font-size: 0.8rem; font-weight: 700; color: var(--ink-soft); background: var(--bg); border: 1.5px solid var(--line); border-radius: 999px; padding: 0.38rem 0; cursor: pointer; transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease; }
+.bs-style:hover { color: var(--ink); border-color: var(--ink-faint); }
+.bs-style.on { color: var(--paper); background: var(--magic-d); border-color: var(--ink); }
+.bs-more { font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--paper); background: var(--magic); border: 2px solid var(--ink); border-radius: 999px; padding: 0.35rem 0.95rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.bs-more:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.bs-more:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .bs-go { font-family: inherit; font-size: 1rem; font-weight: 800; color: var(--paper); background: var(--magic); border: 2px solid var(--ink); border-radius: 12px; padding: 0.7rem 0; cursor: pointer; box-shadow: 0 4px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
 .bs-go:hover { transform: translateY(-2px); box-shadow: 0 6px 0 var(--ink); }
 .bs-go:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
