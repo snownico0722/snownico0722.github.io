@@ -26,9 +26,9 @@ body {
   transition: background 0.6s ease;
 }
 /* 各房间整体底色 */
-body[data-view="fortune"] { background: #140e2a; color: #e9e4ff; }
-body[data-view="games"]   { background: #0d1024; color: #d8f5e6; }
-body[data-view="tools"]   { background: #241a12; color: #f0e3d0; }
+body[data-view="fortune"] { background: #140e2a; color: #e8e4f2; }
+body[data-view="games"]   { background: #0d1024; color: #e8e4f2; }
+body[data-view="tools"]   { background: #241a12; color: #e8e4f2; }
 
 /* ---------- 动态背景:多层,按房间淡入 ---------- */
 .backdrop { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
@@ -379,7 +379,5 @@ body:not([data-view="home"]) .stage {
 body[data-view="fortune"] .hero-hat { fill: #b69bff; stroke: #2a1d52; filter: drop-shadow(0 4px 0 #6a4fd0); }
 body[data-view="games"] .hero-hat { fill: #50ffaa; stroke: #06210f; filter: drop-shadow(0 4px 0 #1f8c5a); }
 body[data-view="tools"] .hero-hat { fill: #d9a441; stroke: #1a120a; filter: drop-shadow(0 4px 0 #8a5e18); }
-/* 深色房间里招牌副标题也提亮 */
-body[data-view="fortune"] .hero-id { color: #c9bcff; }
-body[data-view="games"] .hero-id { color: #7dffc0; }
-body[data-view="tools"] .hero-id { color: #e8c074; }
+/* 文字不随房间改色,统一可读的浅色(深色面板上) */
+body:not([data-view="home"]) .hero-id { color: #cfc8e0; }
