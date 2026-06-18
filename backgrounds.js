@@ -4,9 +4,12 @@
 // 奇怪工坊:canvas 真咬合齿轮组 + 蒸汽
 import * as THREE from "three";
 
-// 只渲染当前房间,省电
-const active = { view: "home" };
+// 只渲染当前房间,省电。初始 view 直接从 hash 读,避免深链刷新时背景不画
+const VIEWS = { fortune: 1, games: 1, tools: 1 };
+function viewFromHash() { const v = (location.hash || "").replace("#", ""); return VIEWS[v] ? v : "home"; }
+const active = { view: viewFromHash() };
 window.__setBgView = function (v) { active.view = v; };
+window.addEventListener("hashchange", function () { active.view = viewFromHash(); });
 
 /* ============================================================
    占卜室 · three.js
