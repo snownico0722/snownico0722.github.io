@@ -542,14 +542,25 @@ document.getElementById("year").textContent = new Date().getFullYear();
     stage.appendChild(num);
 
     const opts = mk("div", "quiz-opts");
+    let locked = false;
     [q.a, q.b].forEach(function (opt) {
       const b = mk("button", "quiz-opt", opt.t);
       b.addEventListener("click", function () {
+        if (locked) return;
+        locked = true;
         // p === "a" 加分(偏向轴的 a 极),"b" 减分
         scores[q.axis] += (opt.p === "a" ? 1 : -1);
-        idx++;
-        if (idx < Q.questions.length) question();
-        else result();
+        const ax = Q.axes.find((x) => x.key === q.axis);
+        const pole = opt.p === "a" ? ax.a : ax.b;
+        b.classList.add("picked");
+        const tag = mk("span", "quiz-pop", "+" + pole);
+        b.appendChild(tag);
+        opts.querySelectorAll(".quiz-opt").forEach((x) => { if (x !== b) x.classList.add("dim"); });
+        setTimeout(function () {
+          idx++;
+          if (idx < Q.questions.length) question();
+          else result();
+        }, 520);
       });
       opts.appendChild(b);
     });
