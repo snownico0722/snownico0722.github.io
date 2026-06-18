@@ -9,16 +9,24 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="sparks" aria-hidden="true"></div>
-  <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
-  <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+  <!-- 动态背景:按房间切换主题。各层由 JS 填充装饰元素 -->
+  <div class="backdrop" id="backdrop">
+    <div class="bd bd-home" data-bd="home">
+      <div class="sparks" aria-hidden="true"></div>
+      <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+      <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+    </div>
+    <div class="bd bd-fortune" data-bd="fortune"><div class="bd-stars" id="bd-stars"></div><div class="bd-moon"></div><div class="bd-runes" id="bd-runes"></div></div>
+    <div class="bd bd-games" data-bd="games"><div class="bd-grid"></div><div class="bd-pix" id="bd-pix"></div><div class="bd-scan"></div></div>
+    <div class="bd bd-tools" data-bd="tools"><div class="bd-cogs" id="bd-cogs"></div><div class="bd-steam" id="bd-steam"></div><div class="bd-rivets"></div></div>
+  </div>
 
   <div class="stage" id="stage" data-view="home">
 
-    <!-- 魔法师招牌:详情态时可点 = 回门口 -->
+    <!-- 魔法师招牌:详情态时可点 = 回门口;帽子按房间变 -->
     <div class="hero" id="hero" data-go="home" role="button" tabindex="0" aria-label="回门口">
       <span class="hero-back">← 回门口</span>
-      <svg class="hero-hat" viewBox="0 0 100 100" aria-hidden="true"><use href="#hat" /></svg>
+      <svg class="hero-hat" id="hero-hat" viewBox="0 0 100 100" aria-hidden="true"><use href="#hat" id="hat-use" /></svg>
       <h1 class="hero-title">魔法工厂</h1>
       <p class="hero-id">魔法师 · snownico0722</p>
       <p class="hero-line">我相信我能算出一切 —— 也包括,把好玩好用的东西,一件件变出来。随便逛,看上了带走。</p>
@@ -37,21 +45,13 @@
 
     <!-- 横幅:门口竖排大卡片 → 进入后顶部并排标签 -->
     <div class="zones">
-      <button class="banner banner-tools" data-go="tools">
-        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
-        <span class="banner-text">
-          <span class="banner-name">工具坊</span>
-          <span class="banner-sub">已成形的法器,装上就归你</span>
-        </span>
-        <span class="banner-count">上架 2 件</span>
-      </button>
       <button class="banner banner-fortune" data-go="fortune">
         <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#orb" /></svg>
         <span class="banner-text">
           <span class="banner-name">占卜室</span>
           <span class="banner-sub">算不清的,我算给你看</span>
         </span>
-        <span class="banner-count">1 卦在算</span>
+        <span class="banner-count">4 卦在算</span>
       </button>
       <button class="banner banner-games" data-go="games">
         <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#joy" /></svg>
@@ -59,7 +59,15 @@
           <span class="banner-name">游戏厅</span>
           <span class="banner-sub">推门即入的术式,不用装</span>
         </span>
-        <span class="banner-count">1 台开张</span>
+        <span class="banner-count">2 台开张</span>
+      </button>
+      <button class="banner banner-tools" data-go="tools">
+        <svg class="banner-ico" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
+        <span class="banner-text">
+          <span class="banner-name">奇怪工坊</span>
+          <span class="banner-sub">已成形的法器,装上就归你</span>
+        </span>
+        <span class="banner-count">上架 2 件</span>
       </button>
     </div>
 
@@ -200,6 +208,30 @@
         <path d="M50 6 L74 74 H26 Z" />
         <ellipse cx="50" cy="76" rx="36" ry="10" />
         <path d="M50 22 l3 7 7 1 -5 5 1 7 -6 -3 -6 3 1 -7 -5 -5 7 -1 z" fill="#fff" fill-opacity="0.85" />
+      </g>
+      <!-- 占卜室 · 西方玄幻巫师帽(弯尖+星月) -->
+      <g id="hat-fortune">
+        <path d="M50 4 C58 26 60 50 74 74 H26 C40 50 42 26 50 4 Z" />
+        <ellipse cx="50" cy="76" rx="37" ry="10" />
+        <circle cx="50" cy="9" r="4" fill="#ffe08a" />
+        <path d="M44 40 l2.5 6 6.5 1 -4.5 4.5 1 6.5 -5.5 -3 -5.5 3 1 -6.5 -4.5 -4.5 6.5 -1 z" fill="#ffe08a" fill-opacity="0.95" />
+        <circle cx="60" cy="58" r="2" fill="#fff" /><circle cx="40" cy="60" r="1.6" fill="#fff" />
+      </g>
+      <!-- 游戏厅 · 8bit 像素帽(方块台阶) -->
+      <g id="hat-games">
+        <rect x="42" y="14" width="16" height="10" /><rect x="34" y="24" width="32" height="10" />
+        <rect x="26" y="34" width="48" height="10" /><rect x="18" y="44" width="64" height="10" />
+        <rect x="14" y="62" width="72" height="12" /><rect x="10" y="74" width="80" height="8" />
+        <rect x="46" y="18" width="5" height="5" fill="#fff" fill-opacity="0.9" />
+      </g>
+      <!-- 奇怪工坊 · 蒸汽朋克礼帽(高顶+护目镜+齿轮) -->
+      <g id="hat-tools">
+        <rect x="32" y="14" width="36" height="46" rx="3" />
+        <rect x="20" y="58" width="60" height="9" rx="4" />
+        <rect x="32" y="40" width="36" height="7" fill="#000" fill-opacity="0.25" />
+        <circle cx="44" cy="52" r="7" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="3" />
+        <circle cx="58" cy="52" r="7" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="3" />
+        <circle cx="62" cy="24" r="6" fill="#000" fill-opacity="0.22" />
       </g>
       <g id="orb">
         <circle cx="50" cy="42" r="30" />

@@ -8,11 +8,15 @@ document.getElementById("year").textContent = new Date().getFullYear();
    ============================================================ */
 (function () {
   const stage = document.getElementById("stage");
+  const hatUse = document.getElementById("hat-use");
   const valid = { tools: 1, fortune: 1, games: 1 };
+  const HATS = { home: "#hat", fortune: "#hat-fortune", games: "#hat-games", tools: "#hat-tools" };
 
   function setView(view) {
     if (!valid[view]) view = "home";
     stage.setAttribute("data-view", view);
+    document.body.setAttribute("data-view", view); // 驱动背景主题
+    if (hatUse) hatUse.setAttribute("href", HATS[view] || "#hat");
   }
 
   function nav(zone) {
@@ -64,6 +68,84 @@ document.getElementById("year").textContent = new Date().getFullYear();
     s.style.animationDuration = 7 + Math.random() * 8 + "s";
     s.style.animationDelay = -Math.random() * 12 + "s";
     layer.appendChild(s);
+  }
+})();
+
+/* ---------- 各房间背景装饰:启动时填充 ---------- */
+(function () {
+  // 占卜室:星辰 + 漂浮符文
+  const stars = document.getElementById("bd-stars");
+  if (stars) {
+    for (let i = 0; i < 80; i++) {
+      const s = document.createElement("i");
+      s.style.left = Math.random() * 100 + "vw";
+      s.style.top = Math.random() * 100 + "vh";
+      s.style.animationDelay = -Math.random() * 3 + "s";
+      const sz = 1 + Math.random() * 2;
+      s.style.width = s.style.height = sz + "px";
+      stars.appendChild(s);
+    }
+  }
+  const runes = document.getElementById("bd-runes");
+  if (runes) {
+    const G = ["✦", "☾", "✶", "⚝", "❋", "✷", "༄", "♆", "☉", "✴"];
+    for (let i = 0; i < 12; i++) {
+      const r = document.createElement("i");
+      r.textContent = G[(Math.random() * G.length) | 0];
+      r.style.left = Math.random() * 100 + "vw";
+      r.style.fontSize = 1 + Math.random() * 1.4 + "rem";
+      r.style.animationDuration = 12 + Math.random() * 12 + "s";
+      r.style.animationDelay = -Math.random() * 20 + "s";
+      runes.appendChild(r);
+    }
+  }
+  // 游戏厅:像素方块
+  const pix = document.getElementById("bd-pix");
+  if (pix) {
+    const C = ["#50ffaa", "#ff5a8a", "#ffe14d", "#5ab0ff", "#c77dff"];
+    for (let i = 0; i < 22; i++) {
+      const p = document.createElement("i");
+      p.style.left = Math.random() * 100 + "vw";
+      p.style.background = C[(Math.random() * C.length) | 0];
+      const sz = 8 + ((Math.random() * 3) | 0) * 6;
+      p.style.width = p.style.height = sz + "px";
+      p.style.animationDuration = 6 + Math.random() * 7 + "s";
+      p.style.animationDelay = -Math.random() * 12 + "s";
+      pix.appendChild(p);
+    }
+  }
+  // 奇怪工坊:背景齿轮 + 蒸汽
+  const cogs = document.getElementById("bd-cogs");
+  if (cogs) {
+    const conf = [
+      { x: "6%", y: "10%", s: 160, d: 30, rev: false },
+      { x: "78%", y: "6%", s: 220, d: 44, rev: true },
+      { x: "12%", y: "62%", s: 260, d: 52, rev: true },
+      { x: "70%", y: "60%", s: 180, d: 36, rev: false },
+    ];
+    conf.forEach(function (c) {
+      const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+      svg.setAttribute("viewBox", "0 0 100 100");
+      svg.style.left = c.x; svg.style.top = c.y;
+      svg.style.width = svg.style.height = c.s + "px";
+      svg.style.animation = "spin" + (c.rev ? "-rev" : "") + " " + c.d + "s linear infinite";
+      const use = document.createElementNS("http://www.w3.org/2000/svg", "use");
+      use.setAttribute("href", "#gear");
+      svg.appendChild(use);
+      cogs.appendChild(svg);
+    });
+  }
+  const steam = document.getElementById("bd-steam");
+  if (steam) {
+    for (let i = 0; i < 10; i++) {
+      const s = document.createElement("i");
+      s.style.left = Math.random() * 100 + "vw";
+      const sz = 40 + Math.random() * 70;
+      s.style.width = s.style.height = sz + "px";
+      s.style.animationDuration = 9 + Math.random() * 9 + "s";
+      s.style.animationDelay = -Math.random() * 16 + "s";
+      steam.appendChild(s);
+    }
   }
 })();
 
