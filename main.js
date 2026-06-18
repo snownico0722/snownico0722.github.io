@@ -745,7 +745,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
       if (type === "num") {
         const inp = document.createElement("input");
         inp.type = "number"; inp.value = def; inp.step = "any";
-        inp.addEventListener("input", function () { vals[key] = parseFloat(inp.value) || 0; });
+        inp.addEventListener("input", function () { vals[key] = parseFloat(inp.value) || 0; recompute(); });
         row.appendChild(inp);
       } else if (type === "sel") {
         const sel = document.createElement("select");
@@ -755,7 +755,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
           sel.appendChild(op);
         });
         sel.value = def;
-        sel.addEventListener("change", function () { vals[key] = parseFloat(sel.value); });
+        sel.addEventListener("change", function () { vals[key] = parseFloat(sel.value); recompute(); });
         row.appendChild(sel);
       } else if (type === "star") {
         const stars = document.createElement("div");
@@ -768,6 +768,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
             stars.querySelectorAll(".work-star").forEach(function (st, idx) {
               st.classList.toggle("lit", idx < i);
             });
+            recompute();
           });
           stars.appendChild(s);
         }
@@ -785,17 +786,20 @@ document.getElementById("year").textContent = new Date().getFullYear();
     if (t > 0.85) return "差一口气。说不上苦,也谈不上值,温水。";
     if (t > 0.6) return "不快乐。这班在悄悄吃你,你大概也感觉到了。";
     if (t > 0) return "很不快乐。数字摆这儿了 —— 你早该知道的。";
-    return "填完再算。";
+    return "填完上面的,数字会自己跳。";
   }
 
-  goBtn.addEventListener("click", function () {
+  function recompute() {
     const r = W.compute(vals);
     const t = r.total;
     numEl.textContent = (t > 0 ? t.toFixed(2) : "—");
     sayEl.textContent = verdict(t);
     screenEl.classList.toggle("is-happy", t > 1);
     screenEl.classList.toggle("is-sad", t > 0 && t <= 1);
-  });
+  }
+
+  if (goBtn) goBtn.style.display = "none"; // 实时计算,不再需要按钮
+  recompute(); // 进来就先按默认值算一版
 
   function mk(tag, cls, text) {
     const el = document.createElement(tag);
