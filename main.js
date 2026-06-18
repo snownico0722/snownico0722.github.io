@@ -11,6 +11,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   const hatUse = document.getElementById("hat-use");
   const valid = { tools: 1, fortune: 1, games: 1 };
   const HATS = { home: "#hat", fortune: "#hat-fortune", games: "#hat-games", tools: "#hat-tools" };
+  let sfxInitial = true;
 
   function setView(view) {
     if (!valid[view]) view = "home";
@@ -18,6 +19,10 @@ document.getElementById("year").textContent = new Date().getFullYear();
     document.body.setAttribute("data-view", view); // 驱动背景主题
     if (window.__setBgView) window.__setBgView(view); // 通知背景渲染器
     if (hatUse) hatUse.setAttribute("href", HATS[view] || "#hat");
+    if (!sfxInitial && window.SFX) {
+      window.SFX.play("switch");
+    }
+    sfxInitial = false;
   }
 
   function nav(zone) {
@@ -255,6 +260,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   const COLORS = ["#ffb43c", "#ff7a3c", "#7c5cff", "#4ec5d6", "#36c46f"];
   hat.addEventListener("click", function (e) {
     e.stopPropagation(); // 别触发招牌的"回门口"
+    if (window.SFX) window.SFX.play("magic");
     const r = hat.getBoundingClientRect();
     const cx = r.left + r.width / 2;
     const cy = r.top + r.height / 2;
@@ -936,5 +942,72 @@ document.getElementById("year").textContent = new Date().getFullYear();
         }
       })
       .catch(function () {});
+  });
+})();
+
+/* ---------- 音效系统 UI 绑定与全局点击事件代理 ---------- */
+(function () {
+  const btnFull = document.getElementById("sfx-toggle-full");
+  const btnMini = document.getElementById("sfx-toggle-mini");
+  const iconUse = document.getElementById("sfx-icon-use");
+
+  function updateUI(muted) {
+    if (btnFull) {
+      btnFull.textContent = muted ? "音效: 关闭" : "音效: 开启";
+      btnFull.classList.toggle("is-muted", muted);
+    }
+    if (btnMini) {
+      btnMini.classList.toggle("is-muted", muted);
+    }
+    if (iconUse) {
+      iconUse.setAttribute("href", muted ? "#sfx-off" : "#sfx-on");
+    }
+  }
+
+  // 初始化音效按钮 UI 状态
+  if (window.SFX) {
+    updateUI(window.SFX.isMuted());
+  }
+
+  // 监听静音状态变更
+  document.addEventListener("sfx_mute_changed", function (e) {
+    updateUI(e.detail.muted);
+  });
+
+  function handleToggle(e) {
+    e.stopPropagation(); // 阻止冒泡，避免触发 hero 面板的点击回到主页逻辑
+    if (window.SFX) {
+      window.SFX.toggleMute();
+    }
+  }
+
+  if (btnFull) btnFull.addEventListener("click", handleToggle);
+  if (btnMini) btnMini.addEventListener("click", handleToggle);
+
+  // 全局事件代理：绑定点击音效，避免侵入各个子模块的数据逻辑
+  document.addEventListener("click", function (e) {
+    const target = e.target;
+    if (!target) return;
+
+    // 筛选可以触发点击音效的目标选择器
+    const clickTarget = target.closest("button, .pick, .quiz-opt, .xj-choice, .rg-choice, .work-star, .hero-link");
+    if (!clickTarget) return;
+
+    // 排除特殊声音处理元素（魔法帽、静音切换按钮）
+    if (clickTarget.closest(".hero-hat") || clickTarget.closest(".sfx-toggle")) return;
+
+    if (window.SFX) {
+      window.SFX.play("click");
+    }
+  });
+
+  // 全局事件代理：绑定滑动条（好感度刻度）拖拽音效，加入节流保护防止破音
+  document.addEventListener("input", function (e) {
+    const target = e.target;
+    if (target && target.type === "range") {
+      if (window.SFX) {
+        window.SFX.playThrottled("click", 90);
+      }
+    }
   });
 })();

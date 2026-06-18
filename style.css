@@ -89,6 +89,29 @@ body:not([data-view="home"]) .stage {
 .mini-ico.is-off { opacity: 0.5; filter: grayscale(1); cursor: not-allowed; box-shadow: none; border-color: var(--line); }
 .mini-ico.is-off svg { fill: var(--ink-faint); }
 
+/* 音效开关按钮样式微调 */
+button.sfx-toggle {
+  font-family: inherit;
+  cursor: pointer;
+  outline: none;
+  border-style: solid;
+}
+button.sfx-toggle:focus-visible {
+  box-shadow: 0 0 0 3px var(--magic-2);
+}
+button.sfx-toggle.is-muted {
+  background: var(--bg-2);
+  color: var(--ink-soft);
+  opacity: 0.8;
+  box-shadow: none;
+}
+button.sfx-toggle.is-muted:not(.mini-ico) {
+  border-color: var(--line);
+}
+button.sfx-toggle.is-muted.mini-ico svg {
+  fill: var(--ink-soft);
+}
+
 /* 详情态:魔法师收小,长简介/大链接收起,小图标浮出 */
 .stage:not([data-view="home"]) .hero-hat { width: 40px; height: 40px; }
 .stage:not([data-view="home"]) .hero-title { font-size: 1.7rem; }
