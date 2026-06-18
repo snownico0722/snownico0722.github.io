@@ -213,6 +213,30 @@ body:not([data-view="home"]) .stage {
 .rg-restart:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
 .rg-progress { font-size: 0.76rem; color: var(--ink-faint); margin-top: 0.6rem; text-align: center; }
 
+/* ---------- 西行劫 · 天道 ---------- */
+.xj-debts { display: flex; gap: 0.5rem; margin-bottom: 1rem; }
+.xj-debt { flex: 1; text-align: center; background: #1a1622; border: 2px solid var(--ink); border-radius: 10px; padding: 0.5rem 0.2rem; }
+.xj-debt-k { font-size: 1.4rem; font-weight: 800; line-height: 1; }
+.xj-debt-sha .xj-debt-k { color: #ff5a5a; }
+.xj-debt-zhi .xj-debt-k { color: #c9a0ff; }
+.xj-debt-qi .xj-debt-k { color: #5ab0ff; }
+.xj-debt-man .xj-debt-k { color: #ffc24d; }
+.xj-debt-n { font-size: 1.1rem; font-weight: 800; color: #e8e4f2; margin-top: 0.2rem; }
+.xj-debt-lbl { font-size: 0.66rem; color: var(--ink-faint); }
+.xj-scene { background: #161320; border: 2px solid var(--ink); border-radius: 12px; padding: 1.1rem; color: #e6e2f2; font-size: 0.98rem; line-height: 1.85; white-space: pre-line; min-height: 5rem; }
+.xj-scene.is-end { border-color: var(--magic); }
+.xj-trial-name { display: inline-block; font-size: 0.74rem; font-weight: 800; letter-spacing: 0.1em; color: #0d0a16; background: #c9a0ff; padding: 0.15rem 0.6rem; border-radius: 6px; margin-bottom: 0.7rem; }
+.xj-boss-name { font-size: 1.6rem; font-weight: 800; color: #ff7a7a; margin-bottom: 0.2rem; }
+.xj-boss-from { font-size: 0.8rem; color: var(--ink-faint); margin-bottom: 0.8rem; }
+.xj-echo { margin-top: 0.7rem; padding-top: 0.7rem; border-top: 1px dashed #3a3450; color: #b9b3d0; font-size: 0.92rem; font-style: italic; }
+.xj-choices { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.8rem; }
+.xj-choice { font-family: inherit; font-size: 0.94rem; font-weight: 600; text-align: left; line-height: 1.6; color: var(--ink); background: var(--paper); border: 2px solid var(--ink); border-radius: 10px; padding: 0.7rem 0.9rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease, background 0.15s ease; }
+.xj-choice:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); background: #efe6ff; }
+.xj-choice:active { transform: translateY(2px); box-shadow: 0 1px 0 var(--ink); }
+.xj-restart { font-family: inherit; font-size: 0.92rem; font-weight: 800; color: var(--paper); background: var(--magic); border: 2px solid var(--ink); border-radius: 10px; padding: 0.7rem 0.9rem; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.12s ease, box-shadow 0.12s ease; }
+.xj-restart:hover { transform: translateY(-2px); box-shadow: 0 5px 0 var(--ink); }
+.xj-progress { font-size: 0.76rem; color: var(--ink-faint); margin-top: 0.6rem; text-align: center; }
+
 /* ---------- 判断者测试 ---------- */
 .quiz-stage { background: var(--paper); border: 2px solid var(--ink); border-radius: 12px; padding: 1.2rem 1.1rem; }
 .quiz-intro-text { font-size: 0.98rem; line-height: 1.85; color: var(--ink-soft); white-space: pre-line; margin-bottom: 1.1rem; }

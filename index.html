@@ -146,6 +146,7 @@
         <div class="picker" data-picker="games">
           <button class="pick on" data-machine="g0">鬼话发生器</button>
           <button class="pick" data-machine="g1">规则怪谈</button>
+          <button class="pick" data-machine="g2">西行劫</button>
         </div>
         <div class="machine" data-machine="g0">
           <div class="machine-bar"><span class="machine-tag">术式 No.1</span><span class="machine-light"></span></div>
@@ -179,6 +180,16 @@
             <ol class="rg-rule-list" id="rg-rules" hidden></ol>
             <div class="rg-scene" id="rg-scene"></div>
             <div class="rg-choices" id="rg-choices"></div>
+          </div>
+        </div>
+        <div class="machine" data-machine="g2" hidden>
+          <div class="machine-bar"><span class="machine-tag">术式 No.3</span><span class="machine-light"></span></div>
+          <h3 class="machine-name">西行劫 · 天道</h3>
+          <p class="machine-desc">一部手机为天道,四位行者入初劫。每个选择都没有对错 —— 但天道在暗处记账,用你欠最多的那笔债,召出专属你的最终 Boss。</p>
+          <div class="xj" id="xj">
+            <div class="xj-debts" id="xj-debts"></div>
+            <div class="xj-scene" id="xj-scene"></div>
+            <div class="xj-choices" id="xj-choices"></div>
           </div>
         </div>
       </div></div>
@@ -268,6 +279,7 @@
   <script src="quiz-data.js"></script>
   <script src="quiz2-data.js"></script>
   <script src="work-data.js"></script>
+  <script src="xj-data.js"></script>
   <script src="main.js"></script>
 </body>
 </html>

@@ -829,6 +829,99 @@ document.getElementById("year").textContent = new Date().getFullYear();
   }
 })();
 
+/* ============================================================
+   西行劫 · 天道:四难,每难一次两难取舍,暗中累积"债";
+   天道用你欠最多的债,召出专属最终 Boss。源自魔法师的桌游设计。
+   ============================================================ */
+(function () {
+  const X = window.__XJ__;
+  const root = document.getElementById("xj");
+  if (!X || !root) return;
+  const debtsEl = document.getElementById("xj-debts");
+  const sceneEl = document.getElementById("xj-scene");
+  const choicesEl = document.getElementById("xj-choices");
+  const KEYS = Object.keys(X.debts);
+  let debt = {}, step = 0;
+
+  function renderDebts() {
+    debtsEl.innerHTML = "";
+    KEYS.forEach(function (k) {
+      const d = mk("div", "xj-debt xj-debt-" + k);
+      d.appendChild(mk("div", "xj-debt-k", X.debts[k]));
+      d.appendChild(mk("div", "xj-debt-n", String(debt[k] || 0)));
+      d.appendChild(mk("div", "xj-debt-lbl", { sha: "杀孽", zhi: "执念", qi: "舍弃", man: "傲慢" }[k]));
+      debtsEl.appendChild(d);
+    });
+  }
+
+  function intro() {
+    debt = {}; step = 0;
+    KEYS.forEach((k) => (debt[k] = 0));
+    renderDebts();
+    sceneEl.className = "xj-scene";
+    sceneEl.textContent = X.intro;
+    choicesEl.innerHTML = "";
+    const b = mk("button", "xj-restart", "入劫 →");
+    b.addEventListener("click", function () { step = 0; trial(); });
+    choicesEl.appendChild(b);
+  }
+
+  function trial() {
+    const tr = X.trials[step];
+    sceneEl.className = "xj-scene";
+    sceneEl.innerHTML = "";
+    sceneEl.appendChild(mk("span", "xj-trial-name", tr.name));
+    appendText(sceneEl, tr.scene);
+    choicesEl.innerHTML = "";
+    shuffle(tr.choices.slice()).forEach(function (c) {
+      const b = mk("button", "xj-choice", c.t);
+      b.addEventListener("click", function () {
+        for (const k in c.d) debt[k] = (debt[k] || 0) + c.d[k];
+        renderDebts();
+        // 选择回响,短暂停顿再进下一难
+        sceneEl.className = "xj-scene";
+        sceneEl.innerHTML = "";
+        sceneEl.appendChild(mk("span", "xj-trial-name", tr.name));
+        const e = mk("p", "xj-echo", c.echo);
+        sceneEl.appendChild(e);
+        choicesEl.innerHTML = "";
+        const next = mk("button", "xj-restart", step < X.trials.length - 1 ? "继续前行 →" : "登顶,见天道 →");
+        next.addEventListener("click", function () { step++; (step < X.trials.length) ? trial() : ending(); });
+        choicesEl.appendChild(next);
+        const p = mk("p", "xj-progress", "第 " + (step + 1) + " / " + X.trials.length + " 难");
+        choicesEl.appendChild(p);
+      });
+      choicesEl.appendChild(b);
+    });
+    const p = mk("p", "xj-progress", "第 " + (step + 1) + " / " + X.trials.length + " 难 · 取舍无对错");
+    choicesEl.appendChild(p);
+  }
+
+  function ending() {
+    // 取欠最多的债;平局按 order
+    let top = X.order[0];
+    X.order.forEach(function (k) { if ((debt[k] || 0) > (debt[top] || 0)) top = k; });
+    const allZero = X.order.every((k) => !debt[k]);
+    const boss = X.bosses[top];
+    sceneEl.className = "xj-scene is-end";
+    sceneEl.innerHTML = "";
+    sceneEl.appendChild(mk("div", "xj-trial-name", "天道 · 最终 Boss"));
+    sceneEl.appendChild(mk("div", "xj-boss-name", boss.name));
+    sceneEl.appendChild(mk("div", "xj-boss-from", "由你欠下最多的「" + boss.from + "」凝成"));
+    appendText(sceneEl, boss.say);
+    choicesEl.innerHTML = "";
+    const again = mk("button", "xj-restart", "↺ 重走一遍,换个走法");
+    again.addEventListener("click", intro);
+    choicesEl.appendChild(again);
+  }
+
+  function shuffle(a) { return a.map((v) => [Math.random(), v]).sort((x, y) => x[0] - y[0]).map((p) => p[1]); }
+  function appendText(parent, text) { const s = document.createElement("span"); s.textContent = text; parent.appendChild(s); }
+  function mk(tag, cls, text) { const el = document.createElement(tag); if (cls) el.className = cls; if (text != null) el.textContent = text; return el; }
+
+  intro();
+})();
+
 /* ---------- 实时星标,失败回落静态值 ---------- */
 (function () {
   document.querySelectorAll(".stars[data-repo]").forEach(function (node) {
