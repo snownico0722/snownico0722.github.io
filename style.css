@@ -174,8 +174,8 @@ button.sfx-toggle.is-muted.mini-ico svg {
 .bs-controls { display: flex; flex-direction: column; gap: 0.7rem; margin-bottom: 1rem; }
 .bs-input { font-family: inherit; font-size: 1rem; color: var(--ink); background: var(--bg); border: 2px solid var(--ink); border-radius: 12px; padding: 0.65rem 0.9rem; outline: none; }
 .bs-input:focus { box-shadow: 0 0 0 3px rgba(78,197,214,0.4); }
-.bs-mode { display: flex; gap: 0.4rem; margin-bottom: 0.6rem; }
-.bs-m { flex: 1; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; padding: 0.45rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease; }
+.bs-mode { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 0.6rem; }
+.bs-m { flex: 1 1 7.2rem; font-family: inherit; font-size: 0.82rem; font-weight: 700; color: var(--ink-soft); background: var(--bg); border: 2px solid var(--ink); border-radius: 10px; padding: 0.45rem 0; cursor: pointer; box-shadow: 0 3px 0 var(--ink); transition: transform 0.1s ease, box-shadow 0.1s ease, background 0.15s ease, color 0.15s ease; }
 .bs-m:hover { background: #efe6ff; }
 .bs-m.on { background: var(--magic); color: var(--paper); transform: translateY(3px); box-shadow: 0 0 0 var(--ink); }
 .bs-styles { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0.4rem; margin-bottom: 0.7rem; }

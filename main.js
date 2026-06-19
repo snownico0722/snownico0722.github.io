@@ -281,7 +281,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
 })();
 
 /* ============================================================
-   鬼话发生器 · 4 主题(狗屁不通/老胡体/互联网黑话/你的味)× 2 模式。
+   鬼话发生器 · 4 主题(狗屁不通/老胡体/互联网黑话/你的味)× 4 模式。
    默认=原版扁平引擎换词库;创意=每主题结构化新风格 + 专属名人名言。
    「再来亿点」在结尾继续追加,越滚越长。纯本地,只能拿来玩。
    ============================================================ */
@@ -304,6 +304,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
   let active = "bs";
   let mode = "def";
   let lastBody = -1;
+  let debtCtx = null;
 
   // 主题标签
   ORDER.forEach(function (key) {
@@ -324,6 +325,7 @@ document.getElementById("year").textContent = new Date().getFullYear();
     const b = e.target.closest(".bs-m[data-mode]");
     if (!b) return;
     mode = b.getAttribute("data-mode");
+    if (mode !== "debt") debtCtx = null;
     modeBox.querySelectorAll(".bs-m").forEach((x) => x.classList.toggle("on", x === b));
   });
 
@@ -361,89 +363,508 @@ document.getElementById("year").textContent = new Date().getFullYear();
     return s;
   }
 
-  function genBsMag(theme, n) {
-    const M = D.themes.bs.mag;
-    let s = "天花板开始倾斜，液态的「" + theme + "」从缝隙里滴下来……";
-    while (s.length < n) {
-      s += "因为「" + theme + "」" + rand(M.words) + "，所以「" + theme + "」" + rand(M.words) + "。";
-      if (Math.random() < 0.5) {
-        const ech = rand(M.echoes);
-        s += ech + "……" + ech.slice(-1) + "……" + ech.slice(-1) + "……";
+  const DEBT = {
+    bs: {
+      calm: [
+        "关于「__T__」，先不急着把它说成问题。我们只看它的定义、原因和结论能不能互相接住；如果接不住，后面的论证再热闹也只是空转。",
+        "先冷静处理「__T__」。它不是不能讨论，真正要看的，是讨论本身有没有把前提、答案和意义放在同一条线上。",
+      ],
+      nouns: ["意义", "问题", "原因", "答案", "前提", "结论", "必然", "废话"],
+      doubts: [
+        "如果__NOUN__本身还没站稳，它凭什么去解释「__T__」？",
+        "__NOUN__到底是在推出结论，还是在冒充结论？",
+        "一旦把__NOUN__拿掉，「__T__」还剩下什么？",
+      ],
+      settlements: [
+        "__NOUN1__正在证明__NOUN2__，可__NOUN2__又反过来要求__NOUN1__先成立。",
+        "所谓__NOUN1__，其实只是__NOUN2__换了一个方向继续空转。",
+        "如果__NOUN1__必须依赖__NOUN2__，那__NOUN2__的意义又是谁给的？",
+      ],
+      fatal: ["所以不是我们说清了「__T__」，是「__T__」把说清这件事也吞了。", "讨论到这里，__T__已经不是主题，是主题自己留下的回声。"],
+    },
+    huge: {
+      calm: [
+        "关于「__T__」，老胡先说一个冷静判断：这件事不能简单看，也不宜急着下结论。越是众说纷纭，越要把事实、情绪和大局分开。",
+        "老胡看「__T__」，第一反应还是观察。复杂问题要复杂看，不能用一句话把所有矛盾都盖过去。",
+      ],
+      nouns: ["定力", "复杂", "大局", "观察", "博弈", "判断", "舆论", "稳"],
+      doubts: [
+        "如果连__NOUN__都没有看清，现在急着表态就会出问题。",
+        "__NOUN__不是口号，老胡必须把它放回「__T__」的现实背景里看。",
+        "越是这个时候，越要问一句：__NOUN__到底还能不能撑住？",
+      ],
+      settlements: [
+        "__NOUN1__需要__NOUN2__来支撑，可__NOUN2__本身也在摇晃。",
+        "老胡想用__NOUN1__稳住__NOUN2__，但__NOUN2__越稳越显得__NOUN1__复杂。",
+        "既要看到__NOUN1__，也要看到__NOUN2__，还要看到两者之间越来越难维持的平衡。",
+      ],
+      fatal: ["总之，老胡还是那个判断：要稳。但稳这件事本身，已经变得很不稳了。", "再观察观察。不是拖，是只能再观察。"],
+    },
+    jargon: {
+      calm: [
+        "关于「__T__」，先不要急着给定义。我们先把核心链路摊开，看它到底接在哪里；只有弄清输入、承接和输出，谈闭环才有意义。",
+        "先回到「__T__」本身。它不是一个孤立概念，需要放进完整链路里看，否则颗粒度一错，后面的判断都会跑偏。",
+      ],
+      nouns: ["闭环", "颗粒度", "链路", "飞轮", "抓手", "漏斗", "心智", "反哺"],
+      doubts: [
+        "__NOUN__如果没有接住「__T__」，后面的增长叙事就全是空转。",
+        "这里的关键不是「__T__」，而是__NOUN__到底有没有真实落点。",
+        "一旦__NOUN__跑偏，整个链路都会开始反向污染。",
+      ],
+      settlements: [
+        "__NOUN1__反哺了__NOUN2__，__NOUN2__又把__NOUN1__包装成了新的入口。",
+        "表面是__NOUN1__，实际是__NOUN2__在借「__T__」完成自我闭环。",
+        "__NOUN1__的底层逻辑变成了__NOUN2__，__NOUN2__的底层逻辑又回到了__NOUN1__。",
+      ],
+      fatal: ["最后，「__T__」不再是议题，只剩下闭环在闭环自己。", "链路已经跑完了，跑回了它自己。"],
+    },
+    me: {
+      calm: [
+        "先冷静说「__T__」。这个词到底指什么，先不要加戏，先拆定义。它如果成立，需要满足什么条件；如果不成立，又是哪一段推导断了，这些要先讲清楚。",
+        "讨论「__T__」之前，先把标准摆出来：真实不真实，有没有证据，能不能落地，代价由谁承担。只要这几项没有说清，后面的漂亮话都只能算包装。",
+        "先别把「__T__」急着归类。它可以是方案、作品、关系，也可以只是一句判断；不管是哪种，标准得一致，代价得有人记账。",
+      ],
+      nouns: ["标准", "代价", "证据", "结论", "推导", "闭环", "边界", "交付", "反例", "来源", "取舍", "意义", "双标", "判断"],
+      doubts: [
+        "连最基本的__NOUN__都没对齐，你就敢往下推结论？",
+        "如果按这个逻辑，__NOUN__最后会反噬到谁脸上？",
+        "中间的__NOUN__呢？被你吃了？",
+        "这不是推导，你这是把__NOUN__包装成了真理。",
+        "按这个标准，换个对象是不是也能这么判？你敢承认吗。",
+        "__NOUN__是真有，还是你为了圆前一句顺手补出来的？",
+        "这不是我故意找茬，是围绕__NOUN__的标准前后不一致。",
+      ],
+      settlements: [
+        "你说的__NOUN1__，本质上只是为了掩盖__NOUN2__的缺失。",
+        "一旦__NOUN1__是假的，整个__NOUN2__也就不存在了。",
+        "谁来兜底这个__NOUN1__？你拿__NOUN2__来兜底吗？",
+        "把__NOUN1__当成__NOUN2__，你真敢拿这东西出来。",
+      ],
+      fatal: ["我有点不接受。", "你自己看这行得通吗？重算。", "把每一步的证据贴上来，别糊弄。", "别让我替你补脑。", "这一步先别过。"],
+    },
+  };
+
+  function debtFill(s, pairs) {
+    Object.keys(pairs).forEach((k) => { s = s.replace(new RegExp("__" + k + "__", "g"), pairs[k]); });
+    return s.replace(/__T__/g, theme);
+  }
+
+  function makeDebtCtx(style) {
+    return {
+      style,
+      stack: [],
+      used: 0,
+      leakAt: 0.28 + Math.random() * 0.16,
+      settleAt: 0.58 + Math.random() * 0.18,
+      limit: 4 + ((Math.random() * 3) | 0),
+    };
+  }
+
+  function debtNoun(ctx) {
+    const pool = DEBT[ctx.style].nouns;
+    const noun = rand(pool);
+    ctx.stack.push(noun);
+    if (ctx.stack.length > 9) ctx.stack.shift();
+    return noun;
+  }
+
+  function debtPull(ctx, count) {
+    const pool = DEBT[ctx.style].nouns;
+    const out = [];
+    while (out.length < count) {
+      let noun = ctx.stack.pop();
+      let guard = 0;
+      while ((!noun || out.includes(noun)) && guard < 12) {
+        noun = rand(pool);
+        guard++;
       }
-      s += "（" + rand(M.thoughts) + "）";
+      out.push(noun);
     }
-    s += "最后，彩虹色的字母散去，只剩下脱水的「" + theme + "」在盘子里不停地尖叫。";
+    return out;
+  }
+
+  function chainDebt(ctx, heat, recentKinds) {
+    const [a, b, c, d] = debtPull(ctx, heat > 0.72 ? 4 : 3);
+    if (ctx.style === "me") {
+      const options = [
+        { k: "jump", t: "你拿" + a + "解释" + b + "，又用" + b + "跳过" + c + "。" + c + "没交代，" + a + "也不成立，别往下糊。" },
+        { k: "missing-chain", t: "中间缺的是" + a + "，你补了个" + b + "，然后把" + c + "写成完成状态。这也敢拿出来？把" + a + "拿出来。" },
+        { k: "hide", t: "别把" + a + "藏在" + b + "后面。" + b + "兜不住" + c + "，" + c + "兜不住" + (d || a) + "，代价谁承担？" },
+        { k: "same-scale", t: "按这个标准，" + b + "可以替" + a + "兜底，那" + c + "是不是也可以替" + b + "兜底？你敢把这把尺子用到底吗。" },
+        { k: "self-correct", t: "不是" + a + "的问题，是你把" + b + "和" + c + "混成一个东西了。也不对，好像还漏了" + (d || "反例") + "，但你这条链肯定没接上。" },
+        { k: "source-cost", t: "你先别急着站队。先问" + a + "从哪来，再问" + b + "凭什么成立，最后问这一步的代价压给谁。一步都别省。" },
+        { k: "binary", t: "现在只有两个可能：要么" + a + "没有成立，要么" + b + "根本不能推出" + c + "。你选一个，别两边都占。" },
+        { k: "not-proof", t: a + "不是证明，" + b + "也不是免死牌。你把" + c + "塞进来，只是在拖延那个最该回答的问题。" },
+      ];
+      const recent = recentKinds || [];
+      const fresh = options.filter((x) => !recent.includes(x.k));
+      const picked = rand(fresh.length ? fresh : options);
+      if (recentKinds) {
+        recentKinds.push(picked.k);
+        if (recentKinds.length > 10) recentKinds.shift();
+      }
+      return picked.t;
+    }
+    const forms = {
+      bs: [
+        "如果" + a + "要证明" + b + "，" + b + "又要求" + c + "先成立，那" + c + "其实已经把" + a + "变成了自己的前提。",
+        a + "推出" + b + "，" + b + "解释" + c + "，可" + c + "回头说" + a + "才是结论；这条链不是断了，是咬回去了。",
+        "现在不是" + a + "缺了" + b + "，是" + b + "拿" + c + "冒充" + a + "，然后要求" + a + "承认自己。"
+      ],
+      huge: [
+        a + "要稳住" + b + "，" + b + "又牵动" + c + "。老胡本来想把" + c + "放回大局，可大局现在又压回" + a + "。",
+        "既要看到" + a + "，也要看到" + b + "，还要看到" + c + "。问题是这三个东西互相要求定力，定力就很吃紧。",
+        a + "不是口号，" + b + "也不是情绪。可一旦" + c + "顶上来，老胡只能说，还得再稳一下，稳住这个稳。"
+      ],
+      jargon: [
+        a + "反哺" + b + "，" + b + "沉淀" + c + "，" + c + "再把" + a + "包装成入口。链路看似跑通，实际只是在互相借壳。",
+        "先用" + a + "承接" + b + "，再用" + b + "定义" + c + "，最后让" + c + "回流" + a + "。这不是闭环，是名词在互相托管。",
+        a + "的底层逻辑变成了" + b + "，" + b + "的颗粒度又落到" + c + "，" + c + "继续反哺" + a + "，动作已经被吃完了。"
+      ],
+    };
+    return rand(forms[ctx.style] || forms.bs);
+  }
+
+  function meDebtDoubt(noun, recentKinds) {
+    const options = [
+      { k: "missing", t: "中间的" + noun + "呢？被你吃了？" },
+      { k: "fake", t: noun + "是真有，还是你为了圆前一句顺手补出来的？" },
+      { k: "basic", t: "连最基本的" + noun + "都没对齐，你就敢往下推结论？" },
+      { k: "mirror", t: "按这个标准，换个对象是不是也能这么判？你敢承认吗。" },
+      { k: "scale", t: "这不是我故意找茬，是围绕" + noun + "的标准前后不一致。" },
+      { k: "source", t: "先别急着下判断，" + noun + "从哪来，这一步先说清。" },
+      { k: "cost", t: "这一步如果成立，代价压给谁？别把账藏起来。" },
+    ];
+    const fresh = options.filter((x) => !recentKinds.includes(x.k));
+    const picked = rand(fresh.length ? fresh : options);
+    recentKinds.push(picked.k);
+    if (recentKinds.length > 10) recentKinds.shift();
+    return picked.t;
+  }
+
+  function genDebtMag(n, opener, ctx, floorHeat) {
+    const G = DEBT[active] || DEBT.bs;
+    if (!ctx || ctx.style !== active) ctx = debtCtx = makeDebtCtx(active);
+    if (opener) {
+      debtNoun(ctx); debtNoun(ctx);
+      return debtFill(rand(G.calm), {});
+    }
+
+    let s = "";
+    const recent = [];
+    const recentKinds = [];
+    while (s.length < n) {
+      const progress = Math.min(1, floorHeat + s.length / Math.max(n, 1) * (0.28 + Math.random() * 0.22));
+      let piece = "";
+      if (progress < ctx.leakAt) {
+        const noun = debtNoun(ctx);
+        piece = active === "me" ? meDebtDoubt(noun, recentKinds) : debtFill(rand(G.doubts), { NOUN: noun });
+      } else if (progress < ctx.settleAt) {
+        const noun = debtNoun(ctx);
+        piece = active === "me" ? meDebtDoubt(noun, recentKinds) : debtFill(rand(G.doubts), { NOUN: noun });
+        if (ctx.stack.length >= ctx.limit && Math.random() < 0.72) piece += chainDebt(ctx, progress, recentKinds);
+        else if (active === "me" && Math.random() < 0.45) piece += rand(["先别往下翻。", "把这一段补上。", "证据别藏。", "反例也补上。", "别让我替你圆。", "这一步不要省。"]);
+        else if (active === "huge" && Math.random() < 0.4) piece += rand(["再观察。", "先稳一下。", "不能急着表态。"]);
+      } else {
+        piece = chainDebt(ctx, progress, recentKinds);
+        if (Math.random() < 0.32) piece += debtFill(rand(G.fatal), {});
+      }
+      if (recent.includes(piece)) {
+        const noun = debtNoun(ctx);
+        piece = progress < ctx.settleAt ? (active === "me" ? meDebtDoubt(noun, recentKinds) : debtFill(rand(G.doubts), { NOUN: noun })) : chainDebt(ctx, progress, recentKinds);
+      }
+      recent.push(piece);
+      if (recent.length > 8) recent.shift();
+      s += piece;
+    }
+    ctx.used++;
+    if ((floorHeat > 0.58 || ctx.used > 3) && Math.random() < 0.38) s += debtFill(rand(G.fatal), {});
     return s;
   }
 
-  function genHugeMag(theme, n) {
-    const M = D.themes.huge.mag;
-    let s = "深夜了，老胡在办公室喝了一杯放了三天的隔夜咖啡，想到「" + theme + "」，久久不能平静。";
-    while (s.length < n) {
-      s += "对于「" + theme + "」" + rand(M.words) + "，老胡认为我们" + rand(M.claims) + "。";
-      s += "（" + rand(M.parentheticals) + "）";
-      s += "但话又说回来，" + rand(M.words) + "远没有那么简单，老胡今天就把话撂在这：";
+  // 逐渐失控档:每个风格使用独立失控机制,不再做通用口吃/报错式后处理。
+  function moodHeat(progress, phase) {
+    const wave = (Math.sin(progress * Math.PI * phase) + 1) * 0.22;
+    const spike = Math.random() < progress * 0.38 ? 0.32 + Math.random() * 0.28 : 0;
+    const dip = Math.random() < 0.18 ? -0.24 : 0;
+    return Math.max(0.08, Math.min(1, progress * 0.58 + wave + spike + dip));
+  }
+
+  function stop(heat, style) {
+    if (style === "me" && heat > 0.58) return rand(["。", "。", "！"]);
+    if (heat > 0.76) return rand(["。", "。", "？"]);
+    return rand(["。", "。", "；"]);
+  }
+
+  function genBsMag(topic, n, opener, floorHeat) {
+    if (opener) {
+      return rand([
+        "关于「" + topic + "」，先把话说平一点：它当然可以被讨论，也可以被解释。问题只在于，解释不能只靠气氛撑着，必须先确认它到底指向什么，否则后面的判断都会飘起来。",
+        "先冷静看「" + topic + "」。它不是不能解释，也不是天然荒唐。至少在一开始，我们只需要确认它的范围、条件和前提，别急着把它说成一个已经成立的答案。",
+        "「" + topic + "」这个问题一开始并不复杂，至少表面上看，它还站得很稳。我们可以先承认它有被讨论的空间，再看它的定义、边界和后果是否真的能接上。",
+      ]);
     }
-    s += "总之，等天亮了，发光的小人散去，「" + theme + "」的定力已经像文身一样印在老胡额头上了。";
+    const nodes = ["问题", "前提", "原因", "结论", "意义", "答案", "讨论", "判断"];
+    const verbs = ["推出", "解释", "证明", "反问", "要求", "包含", "回收"];
+    const linkers = ["因为", "所以", "然而", "由此可见", "换句话说", "归根结底"];
+    const fever = 2.1 + Math.random() * 4.2;
+    let s = "";
+    while (s.length < n) {
+      const heat = Math.min(1, floorHeat + moodHeat(s.length / Math.max(n, 1), fever) * 0.55);
+      const a = rand(nodes), b = rand(nodes), c = rand(nodes), v = rand(verbs);
+      const forms = heat < 0.42 ? [
+        "如果把「" + topic + "」放回" + a + "里看，" + b + "还能暂时解释" + c + stop(heat),
+        "这里真正要分清的是" + a + "和" + b + "，否则" + c + "会被提前当成答案" + stop(heat),
+        a + "看似" + v + b + "，但这一步至少还需要一个能站住的" + c + stop(heat)
+      ] : heat < 0.72 ? [
+        a + "开始" + v + b + "，" + b + "又回头要求" + c + "承认自己，链条没有断，只是转了半圈" + stop(heat),
+        "不是「" + topic + "」推出了" + a + "，是" + a + "借「" + topic + "」把" + b + "推回给" + c + stop(heat),
+        rand(linkers) + "，" + a + "必须先成为" + b + "，" + b + "才能证明" + c + "曾经是" + a + stop(heat)
+      ] : [
+        a + "是" + b + "的前提，" + b + "是" + c + "的结论，" + c + "又说" + a + "还没开始" + stop(heat),
+        rand(linkers) + rand(linkers) + "，不是" + a + "在解释" + b + "，是解释正在要求解释先解释自己" + stop(heat),
+        "前提前提，结论结论。" + a + "咬住" + b + "，" + b + "咬住" + c + "，所以「" + topic + "」被证明为尚未证明" + stop(heat)
+      ];
+      s += rand(forms);
+    }
     return s;
   }
 
-  function genJargonMag(theme, n) {
-    const M = D.themes.jargon.mag;
-    let s = "拉通对齐！让我们用第一性原理，将「" + theme + "」接入多维空间！";
+  function genHugeMag(topic, n, opener, floorHeat) {
+    if (opener) {
+      return rand([
+        "关于「" + topic + "」，老胡先说一个冷静判断：这件事不能简单看，也不宜急着下结论。它背后有现实因素，也有情绪因素，越是这样，越需要把事实和判断先分开。",
+        "老胡看「" + topic + "」，第一反应是先观察。复杂问题要复杂看，情绪不能替代判断。现在最重要的不是马上站队，而是弄清楚它为什么会出现，又会影响到哪些人。",
+        "「" + topic + "」这件事，老胡认为还是要放在更大的背景里看，先稳住，再分析。它未必像一些人说得那么严重，也未必像另一些人说得那么轻松，关键还是看后续变化。",
+      ]);
+    }
+    const anchors = ["复杂", "大局", "定力", "观察", "平衡", "基本盘", "态势"];
+    const calm = ["客观地说", "老胡还是这个看法", "话不能说死", "放到更大背景里看", "越是这个时候"];
+    const fever = 2 + Math.random() * 3.8;
+    let subject = rand(["「" + topic + "」", "这件事", "当前态势"]);
+    let s = "";
     while (s.length < n) {
-      s += rand(M.buzzwords) + " >> " + rand(M.buzzwords) + " >> ";
-      s += "把「" + theme + "」" + rand(M.actions) + "；";
-      s += rand(M.glitches) + " >> ";
-      if (Math.random() < 0.4) {
-        s += "（等等，是谁在看我？（别回头，绝对闭轮正在反哺你）） >> ";
+      const heat = Math.min(1, floorHeat + moodHeat(s.length / Math.max(n, 1), fever) * 0.55);
+      const a = rand(anchors), b = rand(anchors), c = rand(calm);
+      const forms = heat < 0.45 ? [
+        c + "，" + subject + "还是要放在" + a + "里看，不能被一时的情绪带着走" + stop(heat),
+        "对" + subject + "，老胡倾向于再观察一下。" + a + "不是回避，是复杂局面下必要的缓冲" + stop(heat),
+        "一方面要看到" + subject + "的现实压力，另一方面也要看到" + a + "仍然存在" + stop(heat)
+      ] : heat < 0.74 ? [
+        subject + "越复杂，越需要" + a + "；可" + a + "本身也要放进" + b + "里看，这里就不能急" + stop(heat),
+        "老胡不是在和稀泥，是" + a + "正在要求" + b + "，而" + b + "又要求我们继续观察" + stop(heat),
+        c + "，不能慌。可是越强调不能慌，越说明" + a + "已经顶到了" + b + "的边上" + stop(heat)
+      ] : [
+        a + "需要" + b + "来稳，" + b + "又需要" + a + "来解释。老胡说稳，是为了稳住这个稳" + stop(heat),
+        "先观察" + a + "，再观察" + b + "，最后观察观察本身。不能慌，不能对不能慌失去" + a + stop(heat),
+        "大局很大，" + a + "也很大。大到" + subject + "反而找不到落点，所以还得稳住，稳住这个落点" + stop(heat)
+      ];
+      s += rand(forms);
+      if (heat > 0.48 && Math.random() < 0.65) subject = a;
+    }
+    return s;
+  }
+
+  function genJargonMag(topic, n, opener, floorHeat) {
+    if (opener) {
+      return rand([
+        "关于「" + topic + "」，先不要急着给定义。我们先把核心链路摊开，看它到底接在哪里。只有弄清它的输入、承接和输出，后面谈价值、转化和闭环才有意义。",
+        "先回到「" + topic + "」本身。它不是一个孤立概念，需要放进完整链路里看。单点表达很容易制造错觉，真正要判断的是它能不能稳定进入场景并产生反馈。",
+        "讨论「" + topic + "」之前，先对齐一个前提：问题不在口号，而在它如何进入闭环。如果它只是被包装成抓手，却没有真实路径，那后面的所有方法论都会失焦。",
+      ]);
+    }
+    const nouns = ["闭环", "飞轮", "颗粒度", "链路", "抓手", "漏斗", "心智", "矩阵", "场景", "势能", "打法"];
+    const verbs = ["打通", "承接", "反哺", "沉淀", "对齐", "拉通", "转化"];
+    const resets = ["最终还是要看落地。", "先回到业务本身。", "这里需要一次真实验证。"];
+    const fever = 2.2 + Math.random() * 4.4;
+    let gravity = floorHeat * 2;
+    let s = "";
+    while (s.length < n) {
+      const heat = Math.min(1, floorHeat + moodHeat(s.length / Math.max(n, 1), fever) * 0.55 + gravity * 0.06);
+      const a = rand(nouns), b = rand(nouns), c = rand(nouns), v = rand(verbs);
+      gravity += Math.random() < 0.62 ? 0.7 : -0.25;
+      if (gravity > 4.4 && Math.random() < 0.18) {
+        s += rand(resets);
+        gravity = 1.4;
+        continue;
+      }
+      const forms = heat < 0.42 ? [
+        "我们先把「" + topic + "」的" + a + "拆出来，用" + b + "承接，再看能不能" + v + "到真实场景" + stop(heat),
+        a + "不是目的，关键是它能不能让" + b + "进入稳定链路，并且形成可验证反馈" + stop(heat),
+        "如果" + a + "接不住" + b + "，那「" + topic + "」就只是一个被提前包装的抓手" + stop(heat)
+      ] : heat < 0.72 ? [
+        a + "开始反哺" + b + "，" + b + "又把" + c + "沉淀成新的" + a + "，链路在这里出现污染" + stop(heat),
+        "表面是" + a + "在" + v + b + "，实际是" + b + "借" + c + "完成自我闭环" + stop(heat),
+        "动作用完以后，只剩" + a + "的" + b + "、" + b + "的" + c + "，以及" + c + "对" + a + "的反向托管" + stop(heat)
+      ] : [
+        a + "的" + b + "，" + b + "的" + c + "，" + c + "的" + a + "。链路。颗粒度。抓手" + stop(heat),
+        "闭环不再打通闭环，闭环沉淀闭环。" + a + "漏出" + b + "，" + b + "反哺漏斗，漏斗还是漏斗" + stop(heat),
+        a + "，" + b + "，" + c + "。对齐的对齐，反哺的反哺，动作已经没有位置了" + stop(heat)
+      ];
+      s += rand(forms);
+    }
+    return s;
+  }
+
+  function mePieceKey(text) {
+    if (text.indexOf("笑死") === 0) return "laugh";
+    if (text.indexOf("我不接受") === 0) return "reject";
+    if (text.indexOf("你凭什么") === 0) return "why";
+    if (text.indexOf("重算") === 0) return "recalc";
+    if (text.indexOf("停。不要") === 0) return "stop-wrap";
+    if (text.indexOf("按同一标准") === 0) return "same-standard";
+    if (text.indexOf("等一下") === 0) return "interrupt";
+    if (text.indexOf("我不是在挑字眼") === 0) return "not-wording";
+    if (text.indexOf("你说") === 0) return "missing-step";
+    if (text.indexOf("不是") === 0 && text.indexOf("情绪收益") > -1) return "emotion-mix";
+    if (text.indexOf("其实") === 0) return "first-principle";
+    if (text.indexOf("我感觉这里要先切开") === 0) return "split";
+    if (text.indexOf("先别扩大范围") === 0) return "scope";
+    if (text.indexOf("现在的问题不是语气") === 0) return "not-tone";
+    if (text.indexOf("我先按住火") === 0) return "hold";
+    if (text.indexOf("别把喜欢") === 0) return "like-proof";
+    if (text.indexOf("如果你要保留") === 0) return "keep-judge";
+    if (text.indexOf("这一步不是主观补正") === 0) return "subjective-fix";
+    if (text.indexOf("我再问短一点") === 0) return "short-question";
+    if (text.indexOf("换个") === 0 || text.indexOf("放到") === 0 || text.indexOf("按同一把尺子") === 0 || text.indexOf("推到极端") === 0) return "mirror";
+    return text.slice(0, 14);
+  }
+
+  function genMeMag(topic, n, opener, floorHeat) {
+    if (opener) {
+      return rand([
+        "先冷静说「" + topic + "」。这个词到底指什么，先不要加戏，先拆定义。它如果成立，需要满足什么条件；如果不成立，又是哪一段推导断了，这些要先讲清楚。",
+        "讨论「" + topic + "」之前，先把标准摆出来：真实不真实，有没有证据，能不能落地，代价由谁承担。只要这几项没有说清，后面的漂亮话都只能算包装。",
+        "我先不发火。先看「" + topic + "」本身，它成立的条件是什么，代价又由谁承担。如果它只是听起来像一个结论，但没有完整链条，那就还不能算真正说清楚。",
+      ]);
+    }
+    const checks = ["证据", "推导", "标准", "代价", "边界", "交付", "链条", "闭环", "反例", "来源", "取舍", "意义", "一致性"];
+    const evasions = ["方向稿", "润色", "大概成立", "先这样", "后面补", "感觉没问题", "差不多", "先别较真", "大家都这样", "情绪价值"];
+    const objects = ["方案", "作品", "关系", "判断", "选择", "说法", "体验", "评分"];
+    const mirrors = ["换个对象", "换个场景", "换个立场", "放到你自己身上", "按同一把尺子", "推到极端"];
+    const smallBreaks = ["也不对，好像。", "我感觉这里还得重切。", "先别急着同意。", "不是这个意思。", "算了，换个问法。"];
+    const fever = 2.7 + Math.random() * 4.8;
+    let patience = 1 - floorHeat * 0.55;
+    let s = "";
+    const recent = [];
+    const recentKeys = [];
+    while (s.length < n) {
+      const heat = Math.min(1, floorHeat + moodHeat(s.length / Math.max(n, 1), fever) * 0.58 + (1 - patience) * 0.25);
+      const check = rand(checks), dodge = rand(evasions), obj = rand(objects), mirror = rand(mirrors);
+      patience -= 0.12 + Math.random() * 0.18 + (dodge === "润色" || dodge === "方向稿" ? 0.12 : 0);
+      const forms = heat < 0.38 && patience > 0.28 ? [
+        "我先按住火，继续看「" + topic + "」的" + check + "。如果这一项说不清，后面的结论就不能算成立" + stop(heat, "me"),
+        "现在的问题不是语气，是" + check + "没接上。你可以说它还在整理，但不能把整理当成完成" + stop(heat, "me"),
+        "先别扩大范围，就问这一段：" + check + "在哪里，标准怎么来的，代价有没有算" + stop(heat, "me"),
+        "其实「" + topic + "」先不用上价值。它作为一个" + obj + "，到底解决了什么，牺牲了什么，谁在替它付账" + stop(heat, "me"),
+        "我感觉这里要先切开：喜欢不等于成立，能用不等于正当，有吸引力也不代表" + check + "自动补齐" + stop(heat, "me")
+      ] : heat < 0.68 ? [
+        "等一下，你又把" + dodge + "塞进来了。" + dodge + "不是" + check + "，更不是结论，别拿它糊过去" + stop(heat, "me"),
+        "你说「" + topic + "」已经成立，那中间的" + check + "呢？别跳，别绕，缺哪一步你自己看" + stop(heat, "me"),
+        "我不是在挑字眼，我是在问" + check + "。没有" + check + "，这套说法就只是方向稿套了个外壳" + stop(heat, "me"),
+        mirror + "看一遍，如果它还能成立，那我认；如果不能，你就是在双标" + stop(heat, "me"),
+        "不是" + dodge + "的问题，是你把" + obj + "的情绪收益当成了" + check + "。这两件事不要混" + stop(heat, "me"),
+        rand(smallBreaks) + "「" + topic + "」不是不能喜欢，也不是不能做，但你别把取舍说成没有代价" + stop(heat, "me")
+      ] : [
+        check + "呢？别低头。你拿" + dodge + "冒充" + check + "，这也敢叫完成" + stop(heat, "me"),
+        "重算。我说了重算，不是润色。把" + check + "补上，把取舍写清楚，现在" + stop(heat, "me"),
+        "你凭什么把它当结论？谁允许你跳过" + check + "？代价谁承担？你说，别糊弄" + stop(heat, "me"),
+        "停。不要再包装了。方向稿不是交付，" + dodge + "不是证据，缺的那一步你自己补上" + stop(heat, "me"),
+        "按同一标准，另一个" + obj + "也能这么洗吗？你敢说它也对吗？不敢就别装这把尺子客观" + stop(heat, "me"),
+        "笑死，不是笑你，是这个逻辑真的撑不住。你自己看，" + dodge + "、" + check + "、代价，三个东西有一个站稳了吗" + stop(heat, "me"),
+        "我不接受。不是因为我情绪大，是你前后标准不一致，还非要把它包装成一个完整判断" + stop(heat, "me"),
+        "别把喜欢当证明。你可以喜欢，但你不能因为喜欢就把" + check + "省掉" + stop(heat, "me"),
+        "如果你要保留这个判断，就把反例一起放上来。别只挑能赢的那半边" + stop(heat, "me"),
+        "这一步不是主观补正，这是偷换标准。你自己知道区别，不要装不知道" + stop(heat, "me"),
+        "我再问短一点：" + check + "在哪，代价谁付，为什么不是另一个结论" + stop(heat, "me")
+      ];
+      let piece = rand(forms);
+      let key = mePieceKey(piece);
+      let guard = 0;
+      while ((recent.includes(piece) || recentKeys.includes(key)) && forms.length > 1 && guard < 8) {
+        const rest = forms.filter((x) => !recent.includes(x) && !recentKeys.includes(mePieceKey(x)));
+        piece = rand(rest.length ? rest : forms);
+        key = mePieceKey(piece);
+        guard++;
+      }
+      s += piece;
+      recent.push(piece);
+      if (recent.length > 12) recent.shift();
+      recentKeys.push(key);
+      if (recentKeys.length > 12) recentKeys.shift();
+      if (patience < 0 && Math.random() < 0.55) {
+        s += rand(["行，压一下。继续看下一步。", "我再给你一次机会，把链条接上。", "先不吵，证据拿出来。", "也不对，好像我刚才切得太快，但你这个答案还是没接住。", "先停一下，我不是不让你喜欢，我是不接受你把喜欢伪装成证明。"]);
+        patience = 0.34 + Math.random() * 0.22;
       }
     }
-    s += "在星云的彼端，跑出「" + theme + "」的永恒飞轮。Over。";
     return s;
   }
 
-  function genMeMag(theme, n) {
-    const M = D.themes.me.mag;
-    let s = "[TRACE] 脑部编译器加载「" + theme + "」中…… 编译成功，控制台里排队飞出七彩螺旋光芒。\n";
-    while (s.length < n) {
-      s += "我睁开眼，判定「" + theme + "」" + rand(M.assertions) + "。\n";
-      s += "[WARNING] " + rand(M.logs) + "。\n";
-      s += "代价呢？「" + theme + "」的代价压给了谁？后果是不是回流到了我的视网膜上？\n";
-    }
-    s += "[FATAL] 「" + theme + "」归档完毕，检测到 1KB 脑容量死锁。我先去拔掉电源。";
-    return s;
+  function chunkMag(n, opener, floorHeat) {
+    floorHeat = floorHeat || 0;
+    if (active === "bs") return genBsMag(theme, n, opener, floorHeat);
+    if (active === "huge") return genHugeMag(theme, n, opener, floorHeat);
+    if (active === "jargon") return genJargonMag(theme, n, opener, floorHeat);
+    if (active === "me") return genMeMag(theme, n, opener, floorHeat);
+    return "";
   }
 
-  function chunkMag(n, opener) {
-    if (active === "bs") return genBsMag(theme, n);
-    if (active === "huge") return genHugeMag(theme, n);
-    if (active === "jargon") return genJargonMag(theme, n);
-    if (active === "me") return genMeMag(theme, n);
+  function chunkDebt(n, opener, floorHeat) {
+    return genDebtMag(n, opener, debtCtx, floorHeat || 0);
+  }
+
+  function modeTag() {
+    if (mode === "cre") return " · 创意模式";
+    if (mode === "debt") return " · 追问模式";
+    if (mode === "decay") return " · 失控模式";
     return "";
   }
 
   function makeChunk(n, opener) {
-    if (mode === "mag") return chunkMag(n, opener);
+    if (mode === "debt") return chunkDebt(n, opener, 0.4);
+    if (mode === "decay") return chunkMag(n, opener);
     return mode === "cre" ? chunkCre(n, opener) : chunkDef(n);
   }
 
   function run() {
     theme = (input.value || "").trim() || rand(["年度复盘", "我的人生", "这杯奶茶", "周一", "搬砖", "摸鱼", "爱情", "上班"]);
+    if (mode === "debt" || mode === "decay") {
+      if (mode === "debt") debtCtx = makeDebtCtx(active);
+      const target = 400 + ((Math.random() * 160) | 0);
+      const chunker = mode === "debt" ? chunkDebt : chunkMag;
+      const parts = [chunker(150, true, 0)];
+      let blockIndex = 1;
+      while (parts.join("").length < target && parts.length < 5) {
+        const floorHeat = Math.min(0.68, blockIndex * 0.18);
+        const next = chunker(65 + ((Math.random() * 35) | 0), false, floorHeat);
+        if (parts.join("").length >= 400 && parts.join("").length + next.length > 610) break;
+        parts.push(next);
+        blockIndex++;
+      }
+      if (parts.join("").length < 380) parts.push(chunker(65, false, Math.min(0.68, blockIndex * 0.18)));
+      out.innerHTML = "";
+      parts.forEach(function (p) {
+        const el = document.createElement("p");
+        el.textContent = p;
+        out.appendChild(el);
+      });
+      countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + modeTag();
+      copyBtn.hidden = false;
+      moreBtn.hidden = false;
+      return;
+    }
     const n = 3 + ((Math.random() * 2) | 0);
     const parts = [];
     for (let i = 0; i < n; i++) parts.push(makeChunk(120 + ((Math.random() * 50) | 0), false));
-    // 创意 / 魔法:首段带 open、末段带 close
+    // 创意:首段带 open、末段带 close
     if (mode === "cre") { parts[0] = chunkCre(120, true); }
-    else if (mode === "mag") { parts[0] = chunkMag(120, true); }
     out.innerHTML = "";
     parts.forEach(function (p) {
       const el = document.createElement("p");
       el.textContent = p;
       out.appendChild(el);
     });
-    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 幻觉空间 💫" : "";
-    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
+    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + modeTag();
     copyBtn.hidden = false;
     moreBtn.hidden = false;
   }
@@ -451,10 +872,14 @@ document.getElementById("year").textContent = new Date().getFullYear();
   function more() {
     if (!theme) { run(); return; }
     const el = document.createElement("p");
-    el.textContent = makeChunk(120 + ((Math.random() * 60) | 0), false);
+    if (mode === "debt") {
+      if (!debtCtx || debtCtx.style !== active) debtCtx = makeDebtCtx(active);
+      el.textContent = chunkDebt(120 + ((Math.random() * 60) | 0), false, 0.68);
+    } else {
+      el.textContent = makeChunk(120 + ((Math.random() * 60) | 0), false);
+    }
     out.appendChild(el);
-    const tag = mode === "cre" ? " · 创意" : mode === "mag" ? " · 幻觉空间 💫" : "";
-    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + tag;
+    countEl.textContent = "约 " + out.textContent.length + " 字 · " + D.themes[active].label + modeTag();
     el.scrollIntoView({ behavior: "smooth", block: "nearest" });
   }
 
