@@ -45,24 +45,34 @@
     return noiseBuffer;
   }
 
-  // 1. 占卜室 (fortune) - 空灵魔导水晶点击音效
+  // 1. 占卜室 (fortune) - 空灵水晶敲击音(主音 + 高频泛音 + 混响尾)
   function synthCrystalClick(ctx) {
     const now = ctx.currentTime;
+    // 主音
     const osc = ctx.createOscillator();
     const gain = ctx.createGain();
-
     osc.type = "sine";
     osc.frequency.setValueAtTime(1600, now);
     osc.frequency.exponentialRampToValueAtTime(750, now + 0.12);
-
-    gain.gain.setValueAtTime(0.16, now);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.14);
-
+    gain.gain.setValueAtTime(0.14, now);
+    gain.gain.exponentialRampToValueAtTime(0.001, now + 0.18);
     osc.connect(gain);
     gain.connect(ctx.destination);
-
     osc.start(now);
-    osc.stop(now + 0.15);
+    osc.stop(now + 0.2);
+    // 高频泛音(水晶共鸣)
+    const osc2 = ctx.createOscillator();
+    const gain2 = ctx.createGain();
+    osc2.type = "sine";
+    osc2.frequency.setValueAtTime(3200, now);
+    osc2.frequency.exponentialRampToValueAtTime(2100, now + 0.08);
+    osc2.detune.setValueAtTime(5, now);
+    gain2.gain.setValueAtTime(0.06, now);
+    gain2.gain.exponentialRampToValueAtTime(0.001, now + 0.25);
+    osc2.connect(gain2);
+    gain2.connect(ctx.destination);
+    osc2.start(now);
+    osc2.stop(now + 0.26);
   }
 
   // 2. 游戏厅 (games) - FC 8bit 像素按键音效
@@ -284,6 +294,44 @@
     });
   }
 
+  // 9. 奇怪工坊核心动作 (action_tools) - 高压蒸汽泄放 + 金属管壁共振
+  function synthSteamAction(ctx) {
+    const now = ctx.currentTime;
+    // 高压蒸汽泄放(长白噪声 + 高通滤波渐降)
+    const buf = getNoiseBuffer(ctx);
+    const source = ctx.createBufferSource();
+    source.buffer = buf;
+    source.loop = true;
+    const hp = ctx.createBiquadFilter();
+    hp.type = "highpass";
+    hp.frequency.setValueAtTime(4500, now);
+    hp.frequency.exponentialRampToValueAtTime(800, now + 0.8);
+    const gainN = ctx.createGain();
+    gainN.gain.setValueAtTime(0, now);
+    gainN.gain.linearRampToValueAtTime(0.12, now + 0.03);
+    gainN.gain.setValueAtTime(0.12, now + 0.15);
+    gainN.gain.exponentialRampToValueAtTime(0.001, now + 0.9);
+    source.connect(hp);
+    hp.connect(gainN);
+    gainN.connect(ctx.destination);
+    source.start(now);
+    source.stop(now + 0.9);
+    // 金属管壁低频共振
+    [0.05, 0.18].forEach(function (delay) {
+      const osc = ctx.createOscillator();
+      const gainO = ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(160, now + delay);
+      osc.frequency.linearRampToValueAtTime(45, now + delay + 0.12);
+      gainO.gain.setValueAtTime(0.08, now + delay);
+      gainO.gain.exponentialRampToValueAtTime(0.001, now + delay + 0.12);
+      osc.connect(gainO);
+      gainO.connect(ctx.destination);
+      osc.start(now + delay);
+      osc.stop(now + delay + 0.13);
+    });
+  }
+
   // --- 播放控制逻辑 ---
 
   function playWav(name) {
@@ -360,6 +408,9 @@
           return;
         } else if (room === "games") {
           synthPixelAction(ctx);
+          return;
+        } else if (room === "tools") {
+          synthSteamAction(ctx);
           return;
         }
       } catch (e) {

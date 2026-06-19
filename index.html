@@ -16,9 +16,25 @@
       <svg class="bg-gear bg-gear-1" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
       <svg class="bg-gear bg-gear-2" viewBox="0 0 100 100" aria-hidden="true"><use href="#gear" /></svg>
     </div>
-    <div class="bd bd-fortune" data-bd="fortune"><canvas id="cv-fortune"></canvas></div>
-    <div class="bd bd-games" data-bd="games"><canvas id="cv-games"></canvas><div class="bd-scan"></div></div>
-    <div class="bd bd-tools" data-bd="tools"><canvas id="cv-tools"></canvas><div class="bd-rivets"></div></div>
+    <div class="bd bd-fortune" data-bd="fortune">
+      <canvas id="cv-fortune"></canvas>
+      <img class="fortune-shelf" src="assets/fortune_potion_shelf.png" alt="" aria-hidden="true" />
+      <img class="fortune-window" src="assets/fortune_window_book.png" alt="" aria-hidden="true" />
+      <div class="fortune-runes" aria-hidden="true">
+        <span class="f-rune">✦</span><span class="f-rune">⚝</span>
+        <span class="f-rune">❋</span><span class="f-rune">✦</span>
+        <span class="f-rune">⚝</span><span class="f-rune">❋</span>
+      </div>
+    </div>
+    <div class="bd bd-games" data-bd="games"><canvas id="cv-games" class="cv-pixel"></canvas><div class="bd-scan"></div></div>
+    <div class="bd bd-tools" data-bd="tools">
+      <canvas id="cv-tools"></canvas>
+      <img class="tools-furnace" src="assets/tools_furnace.png" alt="" aria-hidden="true" />
+      <img class="tools-gauge" src="assets/tools_gauge.png" alt="" aria-hidden="true" />
+      <img class="tools-pipes-l" src="assets/tools_pipes.png" alt="" aria-hidden="true" />
+      <img class="tools-pipes-r" src="assets/tools_pipes.png" alt="" aria-hidden="true" />
+      <div class="bd-rivets"></div>
+    </div>
   </div>
 
   <div class="stage" id="stage" data-view="home">
@@ -250,7 +266,7 @@
       <g id="hat-fortune">
         <path d="M50 4 C58 26 60 50 74 74 H26 C40 50 42 26 50 4 Z" />
         <ellipse cx="50" cy="76" rx="37" ry="10" />
-        <circle cx="50" cy="9" r="4" fill="#ffe08a" />
+        <circle cx="50" cy="9" r="4" fill="#ffe08a"><animate attributeName="opacity" values="1;0.5;1" dur="2.5s" repeatCount="indefinite"/></circle>
         <path d="M44 40 l2.5 6 6.5 1 -4.5 4.5 1 6.5 -5.5 -3 -5.5 3 1 -6.5 -4.5 -4.5 6.5 -1 z" fill="#ffe08a" fill-opacity="0.95" />
         <circle cx="60" cy="58" r="2" fill="#fff" /><circle cx="40" cy="60" r="1.6" fill="#fff" />
       </g>
@@ -268,7 +284,7 @@
         <rect x="32" y="40" width="36" height="7" fill="#000" fill-opacity="0.25" />
         <circle cx="44" cy="52" r="7" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="3" />
         <circle cx="58" cy="52" r="7" fill="none" stroke="#000" stroke-opacity="0.3" stroke-width="3" />
-        <circle cx="62" cy="24" r="6" fill="#000" fill-opacity="0.22" />
+        <circle cx="62" cy="24" r="6" fill="#000" fill-opacity="0.22"><animateTransform attributeName="transform" type="rotate" values="0 62 24;360 62 24" dur="8s" repeatCount="indefinite"/></circle>
       </g>
       <g id="orb">
         <circle cx="50" cy="42" r="30" />

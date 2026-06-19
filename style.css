@@ -422,6 +422,91 @@ button.sfx-toggle.is-muted.mini-ico svg {
 .bd-tools { background: radial-gradient(circle at 50% 30%, #3a2a1a 0%, #1f1610 75%); }
 .bd-rivets { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,200,110,0.08) 2px, transparent 3px); background-size: 64px 64px; }
 
+/* ---- 占卜室道具:魔药柜 + 拱窗魔导书 + 飘浮符文 ---- */
+.fortune-shelf {
+  position: absolute; left: 0; bottom: 0;
+  width: clamp(100px, 18vw, 240px); height: auto;
+  object-fit: contain; pointer-events: none;
+  opacity: 0.7; filter: brightness(0.85);
+  animation: fortunePropFloat 8s ease-in-out infinite;
+}
+.fortune-window {
+  position: absolute; right: 0; top: 5%;
+  width: clamp(100px, 18vw, 240px); height: auto;
+  object-fit: contain; pointer-events: none;
+  opacity: 0.6; filter: brightness(0.8);
+  animation: fortunePropFloat 10s ease-in-out 1s infinite;
+}
+@keyframes fortunePropFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.fortune-runes {
+  position: absolute; inset: 0; pointer-events: none; overflow: hidden;
+}
+.f-rune {
+  position: absolute; font-size: clamp(1rem, 3vw, 2.2rem);
+  color: rgba(255, 224, 138, 0.45); pointer-events: none;
+  text-shadow: 0 0 12px rgba(255, 200, 80, 0.5);
+  animation: runeFloat 12s ease-in-out infinite;
+}
+.f-rune:nth-child(1) { left: 8%; top: 15%; animation-delay: 0s; animation-duration: 11s; }
+.f-rune:nth-child(2) { left: 22%; top: 60%; animation-delay: -3s; animation-duration: 14s; }
+.f-rune:nth-child(3) { right: 18%; top: 25%; animation-delay: -1.5s; animation-duration: 13s; }
+.f-rune:nth-child(4) { right: 8%; top: 70%; animation-delay: -5s; animation-duration: 10s; }
+.f-rune:nth-child(5) { left: 42%; top: 8%; animation-delay: -7s; animation-duration: 15s; }
+.f-rune:nth-child(6) { left: 55%; bottom: 12%; animation-delay: -4s; animation-duration: 12s; }
+@keyframes runeFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); opacity: 0.35; }
+  25% { transform: translateY(-18px) rotate(8deg); opacity: 0.65; }
+  50% { transform: translateY(-6px) rotate(-5deg); opacity: 0.45; }
+  75% { transform: translateY(-22px) rotate(12deg); opacity: 0.7; }
+}
+
+/* ---- 游戏厅像素化渲染 ---- */
+.cv-pixel {
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+}
+
+/* ---- 奇怪工坊道具:熔炉 + 压力表 + 铜管道 ---- */
+.tools-furnace {
+  position: absolute; bottom: 0; left: 50%;
+  transform: translateX(-50%);
+  width: clamp(200px, 50vw, 600px); height: auto;
+  object-fit: contain; pointer-events: none;
+  opacity: 0.55; filter: brightness(0.75);
+  mix-blend-mode: screen;
+}
+.tools-gauge {
+  position: absolute; right: 3%; bottom: 12%;
+  width: clamp(50px, 10vw, 120px); height: auto;
+  object-fit: contain; pointer-events: none;
+  opacity: 0.5;
+  animation: gaugeShake 0.15s ease-in-out infinite;
+}
+@keyframes gaugeShake {
+  0%, 100% { transform: rotate(0deg); }
+  25% { transform: rotate(0.5deg); }
+  75% { transform: rotate(-0.5deg); }
+}
+.tools-pipes-l {
+  position: absolute; left: 0; top: 0;
+  width: clamp(60px, 12vw, 160px); height: 100%;
+  object-fit: cover; object-position: right;
+  pointer-events: none; opacity: 0.4;
+  filter: brightness(0.7);
+}
+.tools-pipes-r {
+  position: absolute; right: 0; top: 0;
+  width: clamp(60px, 12vw, 160px); height: 100%;
+  object-fit: cover; object-position: left;
+  pointer-events: none; opacity: 0.4;
+  filter: brightness(0.7);
+  transform: scaleX(-1);
+}
+
+
 /* ---- 帽子按房间换色 ---- */
 body[data-view="fortune"] .hero-hat { fill: #b69bff; stroke: #2a1d52; filter: drop-shadow(0 4px 0 #6a4fd0); }
 body[data-view="games"] .hero-hat { fill: #50ffaa; stroke: #06210f; filter: drop-shadow(0 4px 0 #1f8c5a); }
